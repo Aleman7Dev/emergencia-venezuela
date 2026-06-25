@@ -31,6 +31,13 @@ puntos de ayuda humanitaria, todo sobre un mapa interactivo.
   mapa, y precisión indicada (exacta / aproximada).
 - **✅ Confirmación múltiple**: un reporte se retira al ser confirmado por varias
   personas distintas, reduciendo información falsa o desactualizada.
+- **💬 Contacto directo por WhatsApp**: si el reporte incluye un móvil (p. ej. de
+  un familiar o de un buscador voluntario), el botón abre el chat con esa persona;
+  si no, ofrece compartir el reporte.
+- **📍 Ordenar por cercanía** (GPS) en las listas, **⏱️ actualización automática**
+  opcional (cada 60 s, se pausa con la pestaña oculta) y memoria de filtros y
+  última pestaña.
+- **🌗 Modo claro/oscuro** con preferencia recordada.
 - **🔋 Modo bajo consumo**: el mapa abre sin descargar calles para ahorrar datos;
   las calles se activan a demanda.
 - **📱 Diseño responsivo**: una sola columna optimizada para móvil y un layout
