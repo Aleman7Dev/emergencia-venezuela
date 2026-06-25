@@ -32,6 +32,10 @@ puntos de ayuda humanitaria, todo sobre un mapa interactivo.
   amplio de dos columnas (mapa + panel de estadísticas) en escritorio.
 - **🌐 Funciona aunque falle la red**: si la nube o los CDN no están disponibles,
   la app degrada con elegancia usando datos locales y de respaldo.
+- **📲 Instalable (PWA)**: se puede instalar en el teléfono como una app y abre
+  **sin conexión** gracias a un *service worker* que cachea la interfaz. Los
+  datos de reportes siempre se piden frescos a la red (nunca se muestran datos
+  obsoletos en una emergencia).
 
 ---
 
@@ -69,6 +73,8 @@ Cloudflare Pages…). No hay paso de build.
 - **[Supabase](https://supabase.com/)** como backend de reportes (con respaldo
   local cuando no hay conexión).
 - Gráfica de estadísticas dibujada con HTML/CSS puro (sin dependencias).
+- **PWA**: `manifest.webmanifest` + `sw.js` (service worker) para instalación y
+  uso offline. Iconos generados sin dependencias.
 
 ---
 
@@ -76,8 +82,15 @@ Cloudflare Pages…). No hay paso de build.
 
 ```
 .
-├── index.html           # Aplicación completa (UI + lógica)
-├── municipios-ven.json  # Geometría de municipios (carga perezosa)
+├── index.html             # Aplicación completa (UI + lógica)
+├── municipios-ven.json    # Geometría de municipios (carga perezosa)
+├── manifest.webmanifest   # Metadatos de la PWA (instalación)
+├── sw.js                  # Service worker (caché / offline)
+├── icon.svg               # Icono vectorial (favicon)
+├── icon-192.png           # Icono PWA 192×192
+├── icon-512.png           # Icono PWA 512×512
+├── apple-touch-icon.png   # Icono para iOS
+├── LICENSE                # Licencia MIT
 └── README.md
 ```
 
@@ -97,3 +110,10 @@ pueden costar vidas** al desviar recursos de rescate.
 Las mejoras son bienvenidas. Al ser un único archivo, basta con editar
 `index.html` y probar en el navegador. Sugerencias útiles: accesibilidad,
 internacionalización, nuevas categorías de reporte y mejoras de rendimiento.
+
+---
+
+## 📄 Licencia
+
+Distribuido bajo la licencia **MIT**. Consulta el archivo [`LICENSE`](./LICENSE)
+para más detalles.

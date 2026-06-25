@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Epicentro sísmico">
+  <rect width="512" height="512" rx="0" fill="#0a0e14"/>
+  <g fill="none">
+    <circle cx="256" cy="256" r="210" stroke="#ef4444" stroke-opacity="0.16" stroke-width="16"/>
+    <circle cx="256" cy="256" r="160" stroke="#ef4444" stroke-opacity="0.30" stroke-width="17"/>
+    <circle cx="256" cy="256" r="112" stroke="#ef4444" stroke-opacity="0.55" stroke-width="19"/>
+    <circle cx="256" cy="256" r="66"  stroke="#ef4444" stroke-opacity="0.85" stroke-width="21"/>
+  </g>
+  <circle cx="256" cy="256" r="34" fill="#ef4444"/>
+</svg>

@@ -2,8 +2,34 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emergencia Sísmica Venezuela</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Herramienta comunitaria para coordinar reportes ciudadanos durante una emergencia sísmica en Venezuela: emergencias, daños, desaparecidos, hospitales, acopio y ayuda sobre un mapa interactivo. No reemplaza a las autoridades; en una urgencia llama al 171.">
+<meta name="keywords" content="emergencia, sismo, terremoto, Venezuela, reportes, desaparecidos, ayuda humanitaria, mapa, rescate">
+<meta name="author" content="Leonardo Maizo">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0e14">
+<title>Emergencia Sísmica · Venezuela — Reportes ciudadanos en el mapa</title>
+
+<!-- PWA / instalable -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Emergencia VE">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Open Graph / redes sociales -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_VE">
+<meta property="og:site_name" content="Emergencia Sísmica Venezuela">
+<meta property="og:title" content="Emergencia Sísmica · Venezuela">
+<meta property="og:description" content="Reportes ciudadanos en tiempo real sobre el mapa: emergencias, desaparecidos, hospitales, acopio y ayuda. Herramienta comunitaria.">
+<meta property="og:image" content="icon-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Emergencia Sísmica · Venezuela">
+<meta name="twitter:description" content="Reportes ciudadanos en tiempo real sobre el mapa. Herramienta comunitaria.">
+<meta name="twitter:image" content="icon-512.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
@@ -167,15 +193,32 @@
     nav .tab{ font-size:13.5px; }
     .map-grid{ grid-template-columns:minmax(0,1fr) 420px; }
   }
+
+  /* ===== Accesibilidad ===== */
+  :focus-visible{ outline:2px solid var(--acc); outline-offset:2px; }
+  .tab:focus-visible, .fchip:focus-visible, .sbtn:focus-visible, .loc-btn:focus-visible,
+  .btn-done:focus-visible, .fab:focus-visible, .submit:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+  .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  }
+
+  /* ===== Safe-area (notch / home indicator en móvil y PWA) ===== */
+  @supports (padding: env(safe-area-inset-bottom)){
+    header{ padding-top:calc(12px + env(safe-area-inset-top)); padding-left:calc(16px + env(safe-area-inset-left)); padding-right:calc(16px + env(safe-area-inset-right)); }
+    .emergency-banner{ padding-left:calc(16px + env(safe-area-inset-left)); padding-right:calc(16px + env(safe-area-inset-right)); }
+    .fab{ bottom:calc(20px + env(safe-area-inset-bottom)); }
+    main{ padding-bottom:calc(90px + env(safe-area-inset-bottom)); }
+  }
 </style>
 </head>
 <body>
 <header>
   <div class="htop">
-    <span class="pulse" id="pulse"></span>
+    <span class="pulse" id="pulse" aria-hidden="true"></span>
     <div>
       <h1>Emergencia Sísmica · Venezuela</h1>
-      <div class="hsub" id="clock">Estado de Emergencia Nacional · 25 jun 2026</div>
+      <div class="hsub" id="clock" aria-live="polite">Estado de Emergencia Nacional · 25 jun 2026</div>
     </div>
   </div>
 </header>
@@ -192,13 +235,13 @@
   </div>
 </div>
 
-<nav>
-  <button class="tab on" data-v="mapa">🗺️ Mapa</button>
-  <button class="tab" data-v="reportes">📋 Reportes</button>
-  <button class="tab" data-v="desap">🧍 Desaparecidos</button>
-  <button class="tab" data-v="hosp">🏥 Hospitales</button>
-  <button class="tab" data-v="acopio">📦 Acopio y ayuda</button>
-  <button class="tab" data-v="tel">📞 Teléfonos</button>
+<nav role="tablist" aria-label="Secciones de la aplicación">
+  <button class="tab on" role="tab" aria-selected="true" data-v="mapa">🗺️ Mapa</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="reportes">📋 Reportes</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="desap">🧍 Desaparecidos</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="hosp">🏥 Hospitales</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="acopio">📦 Acopio y ayuda</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="tel">📞 Teléfonos</button>
 </nav>
 
 <main>
@@ -209,10 +252,10 @@
         <div class="mapwrap">
           <div id="map"></div>
           <div class="mapctl">
-            <button id="zin" title="Acercar">＋</button>
-            <button id="zout" title="Alejar">－</button>
-            <button id="zfit" title="Ver Venezuela completa">⛶</button>
-            <button id="refresh" title="Refrescar desde la nube">🔄</button>
+            <button id="zin" title="Acercar" aria-label="Acercar el mapa">＋</button>
+            <button id="zout" title="Alejar" aria-label="Alejar el mapa">－</button>
+            <button id="zfit" title="Ver Venezuela completa" aria-label="Ver Venezuela completa">⛶</button>
+            <button id="refresh" title="Refrescar desde la nube" aria-label="Refrescar reportes desde la nube">🔄</button>
           </div>
           <button id="tiletoggle" class="tiletoggle" title="Mostrar/ocultar calles y carreteras">🛣️ Calles</button>
         </div>
@@ -285,7 +328,7 @@
   </section>
 </main>
 
-<button class="fab" id="fab">＋ Reportar</button>
+<button class="fab" id="fab" aria-label="Crear un nuevo reporte">＋ Reportar</button>
 
 <div id="pickbanner" style="display:none;">
   <span>🗺️ Toca el mapa donde está el edificio o la persona</span>
@@ -293,9 +336,9 @@
 </div>
 
 <div class="overlay" id="overlay">
-  <div class="sheet">
-    <button class="close" id="closeSheet">✕</button>
-    <h2>Nuevo reporte</h2>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <button class="close" id="closeSheet" aria-label="Cerrar">✕</button>
+    <h2 id="sheetTitle">Nuevo reporte</h2>
     <p class="h">Tu reporte aparece en el mapa para los equipos de rescate.</p>
     <div class="typegrid" id="typegrid"></div>
     <div id="formfields"></div>
@@ -562,7 +605,7 @@ function useGPS(){
   );
 }
 function activateTab(name){
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on', x.dataset.v===name));
+  document.querySelectorAll('.tab').forEach(x=>{ const on=x.dataset.v===name; x.classList.toggle('on', on); x.setAttribute('aria-selected', on?'true':'false'); });
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
   document.getElementById('v-'+name).classList.add('on');
   if(name==='mapa' && map) setTimeout(()=>map.invalidateSize(),60);
@@ -840,9 +883,9 @@ document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''
 
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.tab').forEach(x=>{ x.classList.remove('on'); x.setAttribute('aria-selected','false'); });
     document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
-    t.classList.add('on');
+    t.classList.add('on'); t.setAttribute('aria-selected','true');
     document.getElementById('v-'+t.dataset.v).classList.add('on');
     if(t.dataset.v==='mapa' && map){ setTimeout(()=>map.invalidateSize(),60); }
   });
@@ -950,8 +993,24 @@ document.getElementById('submitRep').addEventListener('click',async()=>{
   anime({targets:'#pulse',scale:[1,2.2,1],duration:600,easing:'easeOutQuad'});
 });
 
-anime({targets:'#pulse',opacity:[1,.3,1],duration:1800,loop:true,easing:'easeInOutSine'});
+// Respeta "reducir movimiento": no animar el pulso de forma infinita
+if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
+  anime({targets:'#pulse',opacity:[1,.3,1],duration:1800,loop:true,easing:'easeInOutSine'});
+}
 fmtClock();
+
+// Service Worker (PWA / uso offline). Solo bajo http(s); si falla, no afecta a la app.
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+
+// Cerrar con la tecla Escape el formulario de reporte o el modo "marcar punto"
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  const ov=document.getElementById('overlay');
+  if(ov && ov.classList.contains('on')){ ov.classList.remove('on'); return; }
+  if(typeof pickMode!=='undefined' && pickMode){ exitPickMode(true); }
+});
 
 // Aviso de privacidad (una vez por sesión)
 (async function(){
