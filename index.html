@@ -248,6 +248,15 @@
   .appfoot{ margin-top:22px; padding:16px; border-top:1px solid var(--line); text-align:center; }
   .appfoot p{ font-size:12px; color:var(--muted); line-height:1.6; max-width:520px; margin:0 auto; }
   .appfoot .appfoot-sub{ font-size:11px; margin-top:8px; opacity:.85; }
+  .appfoot a{ color:var(--acc); text-decoration:none; font-weight:600; }
+
+  /* Coincidencias hospital ↔ desaparecido */
+  .match-badge{ margin-top:8px; font-size:11.5px; line-height:1.5; background:#f59e0b14; border:1px solid #f59e0b44; color:#fbbf24; border-radius:9px; padding:8px 10px; }
+  .match-badge.strong{ background:#ef444418; border-color:#ef444555; color:#fca5a5; }
+  .match-badge .mb-verify{ color:var(--muted); }
+  .match-banner{ background:#f59e0b14; border:1px solid #f59e0b44; color:var(--txt); border-radius:11px; padding:11px 13px; margin-bottom:12px; font-size:12.5px; line-height:1.55; }
+  .match-notif{ display:inline-block; margin-left:6px; background:var(--acc); color:#fff; border:none; border-radius:8px; padding:5px 10px; font-size:11.5px; font-weight:700; cursor:pointer; }
+  .tabbadge{ display:inline-block; min-width:16px; height:16px; line-height:16px; text-align:center; background:var(--crit); color:#fff; font-size:10px; font-weight:800; border-radius:9px; padding:0 4px; margin-left:5px; vertical-align:top; }
 </style>
 </head>
 <body>
@@ -350,6 +359,7 @@
 
   <section class="view" id="v-desap">
     <div class="sectitle">Personas desaparecidas</div>
+    <div id="match-banner-desap" class="match-banner" style="display:none" role="status"></div>
     <div class="searchbar">
       <input id="missSearch" placeholder="Buscar por nombre, zona o estado…">
       <button class="sclear" id="missClear">Limpiar</button>
@@ -361,6 +371,7 @@
 
   <section class="view" id="v-hosp">
     <div class="sectitle">Personas ubicadas en centros de salud</div>
+    <div id="match-banner-hosp" class="match-banner" style="display:none" role="status"></div>
     <div class="searchbar">
       <input id="hospSearch" placeholder="Buscar por nombre, hospital o estado…">
       <button class="sclear" id="hospClear">Limpiar</button>
@@ -418,6 +429,7 @@
   <footer class="appfoot">
     <p>Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b></p>
     <p class="appfoot-sub">Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.</p>
+    <p class="appfoot-sub">¿Encontraste un problema en el sitio? Escríbenos a <a href="mailto:alemandev@outlook.com">alemandev@outlook.com</a></p>
   </footer>
 </main>
 
@@ -483,6 +495,9 @@ const SEED = [
   {id:'r8', type:'miss', title:'Familia Barone', loc:'Caraballeda, La Guaira', lon:-66.85, lat:10.61, need:'Contacto: +58 414-3925735\nhttps://desaparecidosterremotovenezuela.com/?persona=p90ce309b8962', when:'hace 5 h'},
   {id:'r9', type:'miss', title:'Familia Caicedo', loc:'Macuto, La Guaira', lon:-66.90, lat:10.60, need:'Esposa Lucena y bebé Luciano', when:'hace 4 h'},
   {id:'r14', type:'volunteer', title:'Buscador voluntario', loc:'Chacao y este de Caracas', lon:-66.85, lat:10.50, need:'Puedo recorrer mi sector y verificar direcciones. Contacto: +58 412-0000000 (WhatsApp)', when:'hace 1 h'},
+  {id:'r15', type:'miss', title:'Carlos Rivas', loc:'Petare, Sucre, Miranda', lon:-66.81, lat:10.49, need:'Hombre 35 años, camisa azul. Contacto familiar: +58 414-1112233 CIH:1a2b3c4d', when:'hace 6 h'},
+  {id:'r16', type:'hosp', title:'Carlos Rivas', loc:'Hospital Pérez de León II, Petare', lon:-66.81, lat:10.49, need:'Estable y consciente, ingresado por golpes. CIH:1a2b3c4d', when:'hace 1 h'},
+  {id:'r17', type:'road', title:'Estado de vía / vialidad', loc:'Autopista Gran Mariscal, Guarenas–Caracas', lon:-66.61, lat:10.47, need:'Derrumbe en el canal derecho, paso lento · Causa: Deslizamiento RS:partial', when:'hace 2 h'},
   {id:'r10', type:'water', title:'Sin suministro de agua', loc:'Maracay, Aragua', lon:-67.60, lat:10.25, need:'Agua potable / cisternas', when:'hace 3 h'},
   {id:'r11', type:'build', title:'Daños en edificaciones', loc:'Valencia, Carabobo', lon:-68.00, lat:10.18, need:'Evaluación estructural', when:'hace 5 h'},
   {id:'r12', type:'hosp', title:'Hombre adulto, ~40 años', loc:'Hospital Vargas de Caracas, San José', lon:-66.91, lat:10.50, need:'Estable, sin identificación. Tatuaje en antebrazo derecho', when:'hace 2 h'},
@@ -504,6 +519,12 @@ async function sbInsert(rep){
   const r = await fetch(`${SUPABASE_URL}/rest/v1/reports`, { method:'POST', headers:{...SB_HEAD, Prefer:'return=representation'}, body:JSON.stringify(rep) });
   if(!r.ok) throw new Error('insert '+r.status);
   return (await r.json())[0];
+}
+// Actualiza la descripción de un reporte (usado para cambiar el estado de vialidad).
+// Requiere que la BD permita UPDATE; si no, el cambio queda solo en este dispositivo.
+async function sbUpdateNeed(id, need){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/reports?id=eq.${encodeURIComponent(id)}`, { method:'PATCH', headers:{...SB_HEAD, Prefer:'return=minimal'}, body:JSON.stringify({ need }) });
+  if(!r.ok) throw new Error('update '+r.status);
 }
 // Confirmación múltiple: llama a la función RPC que incrementa de forma atómica
 // y retira el reporte (status='atendido') al alcanzar el umbral. Devuelve el nº de confirmaciones.
@@ -530,6 +551,8 @@ let zoom=1, panX=0, panY=0;
 let activeFilters=new Set(Object.keys(TYPES).filter(k=>k!=='safe'));
 let missQuery='', hospQuery='', volunQuery='';
 let nearMode=false, userLoc=null;   // ordenar listas por cercanía (GPS)
+let currentMatches={};              // coincidencias hospital ↔ desaparecido (por id)
+let notifiedMatches=new Set();      // pares ya notificados (evita repetir avisos)
 
 // ---- Municipios (capa que aparece al enfocar un estado) ----
 let MUNIS=null;              // { estado: [ [nombre, tipo, coords], ... ] }
@@ -583,8 +606,16 @@ function extractProfile(rp){
   if(!m) return null;
   return safeProfileLink(m[0]); // re-validación estricta (defensa en profundidad)
 }
+const CIH_RE=/\s*\bCIH:[a-f0-9]{8}\b/ig;
+const RS_RE=/\s*\bRS:(closed|partial|moto|foot|open)\b/ig;
 function stripProfile(text){
-  return String(text==null?'':text).replace(PROFILE_RE,'').replace(/\s{2,}/g,' ').replace(/\s*[\n·|]\s*$/,'').trim();
+  return String(text==null?'':text).replace(PROFILE_RE,'').replace(CIH_RE,'').replace(RS_RE,'').replace(/\s{2,}/g,' ').replace(/\s*[\n·|]\s*$/,'').trim();
+}
+// Estado de paso de un reporte de vialidad (por defecto 'closed' si no se indicó)
+function roadStatus(rp){
+  if(!rp||rp.type!=='road') return null;
+  const m=String(rp.need||'').match(/\bRS:(closed|partial|moto|foot|open)\b/i);
+  return m?m[1].toLowerCase():'closed';
 }
 
 // Detecta un móvil venezolano (412/414/416/424/426 + 7 dígitos) y lo normaliza
@@ -596,6 +627,39 @@ function waPhone(text){
   const tail=m[2].replace(/\D/g,'');
   if(tail.length!==7) return null;
   return '58'+m[1]+tail;
+}
+
+// ---- Coincidencias hospital ↔ desaparecido ----
+// Normaliza texto (minúsculas, sin acentos) para búsquedas y comparación de nombres.
+function normName(s){ return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
+// Hash corto y NO reversible-en-UI de la cédula: permite cruzar coincidencias sin
+// publicar el número (el aviso de privacidad desaconseja exponer documentos).
+function hashCI(ci){
+  const s=String(ci==null?'':ci).replace(/\D/g,'');
+  if(s.length<6 || s.length>10) return null;
+  let h=2166136261>>>0;
+  for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  return ('00000000'+h.toString(16)).slice(-8);
+}
+function reportCedHash(rp){ const m=String(rp&&rp.need||'').match(/\bCIH:([a-f0-9]{8})\b/i); return m?m[1].toLowerCase():null; }
+function isGenericTitle(rp){ return !rp||rp.title===TYPES.miss.t||rp.title===TYPES.hosp.t; }
+// Devuelve { id -> [{rp, strong}] } cruzando desaparecidos (miss) con hospital (hosp).
+function computeMatches(){
+  const miss=reports.filter(r=>r.type==='miss');
+  const hosp=reports.filter(r=>r.type==='hosp');
+  const out={};
+  const add=(a,b,strong)=>{ (out[a.id]=out[a.id]||[]).push({rp:b,strong}); };
+  miss.forEach(m=>hosp.forEach(h=>{
+    const mh=reportCedHash(m), hh=reportCedHash(h);
+    let ok=false, strong=false;
+    if(mh&&hh&&mh===hh){ ok=true; strong=true; }                       // misma cédula => fuerte
+    else if(!isGenericTitle(m)&&!isGenericTitle(h)){
+      const nm=normName(m.title);
+      if(nm && nm===normName(h.title)){ ok=true; strong=false; }       // mismo nombre => posible
+    }
+    if(ok){ add(m,h,strong); add(h,m,strong); }
+  }));
+  return out;
 }
 
 function shareLinks(rp){
@@ -787,14 +851,16 @@ function refreshMarkers(){
   reports.forEach(rp=>{
     if(rp.lon==null) return;
     if(!activeFilters.has(rp.type)) return;
-    const c=TYPES[rp.type].c;
+    const rs0=roadStatus(rp);
+    const c=rs0?ROAD_STATUS[rs0].c:TYPES[rp.type].c;   // vialidad: color según el estado de paso
     const pl=precLabel(rp.precision);
     const mk=L.circleMarker([rp.lat,rp.lon], pl.exact
       ? { radius: rp.type==='crit'?8:6, color:c, weight:2, fillColor:c, fillOpacity:.9 }
       : { radius: rp.type==='crit'?8:6, color:c, weight:1, fillColor:c, fillOpacity:.3, dashArray:'3,3' }
     );
+    const popupTitle = rs0 ? `${ROAD_STATUS[rs0].e} ${esc(rp.title)} — ${ROAD_STATUS[rs0].t}` : `${TYPES[rp.type].e} ${esc(rp.title)}`;
     mk.bindPopup(
-      `<b>${TYPES[rp.type].e} ${esc(rp.title)}</b><br>📍 ${esc(rp.loc)}<br>ℹ️ ${esc(rp.need)}`+
+      `<b>${popupTitle}</b><br>📍 ${esc(rp.loc)}<br>ℹ️ ${esc(stripProfile(rp.need))}`+
       `<br><span style="color:${pl.exact?'#10b981':'#f59e0b'}">${pl.exact?'✓':'≈'} ${pl.t}</span>`+
       `<br><span style="color:var(--muted)">🕓 ${esc(rp.when)}</span>`
     );
@@ -923,8 +989,12 @@ function card(rp){
   const mine=confirmedByMe.has(String(rp.id));
   // Etiqueta según el tipo: desaparecidos -> "encontrado"; resto -> "confirmar"
   const verbo = rp.type==='miss' ? 'Confirmar encontrado' : 'Confirmar';
-  // Botón de confirmación (no aplica a buscadores voluntarios)
-  const confBtn = rp.type==='volunteer' ? '' : (mine
+  // Vialidad: estado de paso (badge) y acción para marcar despejada
+  const rs=roadStatus(rp);
+  const roadBadge = rs ? `<span class="roadbadge" style="background:${ROAD_STATUS[rs].c}22;color:${ROAD_STATUS[rs].c}">${ROAD_STATUS[rs].e} ${ROAD_STATUS[rs].t}</span>` : '';
+  const clearBtn = (rs && rs!=='open') ? `<button class="sbtn" data-clear="${esc(rp.id)}" style="color:var(--acopio)">✅ Marcar despejada</button>` : '';
+  // Botón de confirmación (no aplica a voluntarios ni a vialidad)
+  const confBtn = (rp.type==='volunteer'||rp.type==='road') ? '' : (mine
     ? `<button class="btn-done sbtn" disabled style="color:var(--muted);opacity:.7">✓ Confirmaste (${c}/${CONFIRM_THRESHOLD})</button>`
     : `<button class="btn-done sbtn" data-done="${esc(rp.id)}" style="color:var(--safe)">✓ ${verbo} (${c}/${CONFIRM_THRESHOLD})</button>`);
   const pl=precLabel(rp.precision);
@@ -942,18 +1012,30 @@ function card(rp){
     : `<a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">↗ Compartir</a>`;
   const dispLoc = esc(stripProfile(rp.loc));
   const dispNeed = esc(stripProfile(rp.need)) || '(sin detalle)';
+  // Aviso de posible coincidencia hospital ↔ desaparecido
+  const mlist = currentMatches[rp.id];
+  let matchBadge='';
+  if(mlist && mlist.length){
+    const strong = mlist.some(x=>x.strong);
+    const other = mlist[0].rp;
+    const where = rp.type==='miss' ? 'en un centro de salud' : 'en la lista de desaparecidos';
+    matchBadge = `<div class="match-badge ${strong?'strong':''}">⚠️ <b>Posible coincidencia</b> ${where}${strong?' · misma cédula':''}: ${esc(stripProfile(other.title))} — ${esc(stripProfile(other.loc))}. <span class="mb-verify">Verifíquenlo antes de actuar.</span></div>`;
+  }
   return `<div class="card"><div class="crow">
     <div class="cicon" style="background:${t.c}22">${t.e}</div>
     <div style="flex:1">
       <div class="ctitle">${esc(rp.title)}</div>
       <div class="cmeta">📍 ${dispLoc}<br>ℹ️ ${dispNeed}</div>
       <span class="ctag" style="background:${t.c}22;color:${t.c}">${t.t}</span>
+      ${roadBadge}
       ${precBadge}
       <span style="font-size:10.5px;color:var(--muted);margin-left:6px">${esc(rp.when)}</span>
+      ${matchBadge}
       <div class="share-row">
         ${waBtn}
         <button class="sbtn" data-copy="${esc(rp.id)}">⧉ Copiar</button>
         ${fichaBtn}
+        ${clearBtn}
         ${confBtn}
       </div>
     </div></div></div>`;
@@ -1011,6 +1093,7 @@ function renderChart(){
 }
 
 function render(){
+  currentMatches=computeMatches();   // cruza hospital ↔ desaparecidos antes de pintar tarjetas
   buildFilters();
   buildMap();
   document.getElementById('s-crit').textContent=reports.filter(r=>r.type==='crit').length;
@@ -1020,16 +1103,17 @@ function render(){
   const all=reports.filter(r=>!['miss','acopio','hosp','aid','volunteer'].includes(r.type));
   document.getElementById('list-rep').innerHTML=all.length?sortNear(all).map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
   let miss=reports.filter(r=>r.type==='miss');
-  if(missQuery){ const q=missQuery.toLowerCase(); miss=miss.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
+  if(missQuery){ const q=normName(missQuery); miss=miss.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
   document.getElementById('list-miss').innerHTML=miss.length?sortNear(miss).map(card).join(''):'<div class="empty">'+(missQuery?'Sin coincidencias para “'+esc(missQuery)+'”.':'No hay personas reportadas.')+'</div>';
   let hosp=reports.filter(r=>r.type==='hosp');
-  if(hospQuery){ const q=hospQuery.toLowerCase(); hosp=hosp.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
+  if(hospQuery){ const q=normName(hospQuery); hosp=hosp.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
   document.getElementById('list-hosp').innerHTML=hosp.length?sortNear(hosp).map(card).join(''):'<div class="empty">'+(hospQuery?'Sin coincidencias para “'+esc(hospQuery)+'”.':'Aún no hay personas reportadas en centros de salud.')+'</div>';
   const aco=reports.filter(r=>r.type==='acopio'||r.type==='aid');
   document.getElementById('list-acopio').innerHTML=aco.length?sortNear(aco).map(card).join(''):'<div class="empty">No hay centros de acopio ni puntos de ayuda reportados.</div>';
   let volun=reports.filter(r=>r.type==='volunteer');
-  if(volunQuery){ const q=volunQuery.toLowerCase(); volun=volun.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
+  if(volunQuery){ const q=normName(volunQuery); volun=volun.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
   document.getElementById('list-volun').innerHTML=volun.length?sortNear(volun).map(card).join(''):'<div class="empty">'+(volunQuery?'Sin coincidencias para “'+esc(volunQuery)+'”.':'Aún no hay buscadores voluntarios. ¡Ofrécete con ＋ Reportar!')+'</div>';
+  updateMatchUI();
   document.querySelectorAll('[data-done]').forEach(b=>{ b.addEventListener('click',async()=>{
     const id=b.dataset.done;
     if(confirmedByMe.has(String(id))) return;            // ya confirmado por este navegador
@@ -1053,6 +1137,16 @@ function render(){
     const rp=reports.find(r=>r.id===b.dataset.copy); if(!rp)return;
     const txt=shareLinks(rp).txt;
     navigator.clipboard?.writeText(txt).then(()=>{ b.textContent='✓ Copiado'; setTimeout(()=>b.textContent='⧉ Copiar',1500); }).catch(()=>{ b.textContent='✗'; });
+  }); });
+  // Vialidad: marcar una vía como despejada (ya se puede circular)
+  document.querySelectorAll('[data-clear]').forEach(b=>{ b.addEventListener('click',async()=>{
+    const id=b.dataset.clear; const rp=reports.find(r=>String(r.id)===String(id)); if(!rp) return;
+    b.disabled=true; b.textContent='Actualizando…';
+    const cur=String(rp.need||'');
+    const newNeed = /\bRS:(closed|partial|moto|foot|open)\b/i.test(cur) ? cur.replace(/\bRS:(closed|partial|moto|foot|open)\b/i,'RS:open') : (cur+' RS:open');
+    const isLocal = String(id).indexOf('u')===0 || String(id).indexOf('r')===0; // seed o reporte local
+    if(cloudOK && !isLocal){ try{ await sbUpdateNeed(id, newNeed); }catch(e){ /* la BD puede no permitir UPDATE: queda en local */ } }
+    rp.need=newNeed; save(); render();
   }); });
 }
 
@@ -1101,6 +1195,49 @@ document.querySelectorAll('.sortnear').forEach(b=>b.addEventListener('click',()=
 function saveFilters(){ try{ window.storage && window.storage.set('vzla_filters', JSON.stringify([...activeFilters])); }catch(e){} }
 function saveTab(name){ try{ window.storage && window.storage.set('vzla_tab', name); }catch(e){} }
 
+// ---- UI y notificación de coincidencias hospital ↔ desaparecido ----
+function loadNotified(){ try{ const v=localStorage.getItem('vzla_notified'); if(v) notifiedMatches=new Set(JSON.parse(v)); }catch(e){} }
+function saveNotified(){ try{ localStorage.setItem('vzla_notified', JSON.stringify([...notifiedMatches].slice(-200))); }catch(e){} }
+function pairKey(a,b){ return [String(a),String(b)].sort().join('|'); }
+function matchPairs(){
+  const seen=new Set(), pairs=[];
+  Object.keys(currentMatches).forEach(id=>{
+    const rp=reports.find(r=>String(r.id)===String(id)); if(!rp) return;
+    currentMatches[id].forEach(({rp:other,strong})=>{
+      const k=pairKey(id, other.id); if(seen.has(k)) return; seen.add(k);
+      pairs.push({ miss: rp.type==='miss'?rp:other, hosp: rp.type==='hosp'?rp:other, strong, key:k });
+    });
+  });
+  return pairs;
+}
+function maybeNotify(pairs){
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  let changed=false;
+  pairs.forEach(p=>{ if(notifiedMatches.has(p.key)) return; notifiedMatches.add(p.key); changed=true;
+    const who = !isGenericTitle(p.miss)?p.miss.title : (!isGenericTitle(p.hosp)?p.hosp.title : 'Una persona');
+    try{ new Notification('⚠️ Posible coincidencia', { body:`${who}: un reporte en hospital podría coincidir con un desaparecido. Revísalo en la app.`, icon:'icon-192.png', tag:p.key }); }catch(e){}
+  });
+  if(changed) saveNotified();
+}
+function updateMatchUI(){
+  const pairs=matchPairs();
+  const canNotify=('Notification' in window);
+  [['miss','match-banner-desap'],['hosp','match-banner-hosp']].forEach(([t,bid])=>{
+    const el=document.getElementById(bid); if(!el) return;
+    if(!pairs.length){ el.style.display='none'; el.innerHTML=''; return; }
+    el.style.display='block';
+    const notifBtn = canNotify && Notification.permission==='default' ? ` <button class="match-notif" data-notif>🔔 Avisarme</button>` : '';
+    el.innerHTML=`⚠️ <b>${pairs.length}</b> posible(s) coincidencia(s) entre <b>hospital</b> y <b>desaparecidos</b>. Revisa las tarjetas marcadas.${notifBtn}`;
+  });
+  document.querySelectorAll('.tab[data-v="desap"], .tab[data-v="hosp"]').forEach(tb=>{
+    const old=tb.querySelector('.tabbadge'); if(old) old.remove();
+    if(pairs.length){ const b=document.createElement('span'); b.className='tabbadge'; b.textContent=pairs.length; tb.appendChild(b); }
+  });
+  document.querySelectorAll('[data-notif]').forEach(b=>b.onclick=()=>{ if('Notification' in window) Notification.requestPermission().then(()=>{ updateMatchUI(); maybeNotify(matchPairs()); }); });
+  maybeNotify(pairs);
+}
+loadNotified();
+
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(x=>{ x.classList.remove('on'); x.setAttribute('aria-selected','false'); });
@@ -1135,15 +1272,31 @@ function buildSheet(){
     : (isOffer ? (selType==='aid' ? 'Ej.: agua, comida, atención médica, refugio. Horario y a quién atiende.' : 'Ej.: reciben agua, medicinas, alimentos. Horario de recepción.')
                 : 'Ej.: paramédicos, agua, maquinaria, cisterna...'));
   // Campo opcional de ficha oficial (solo para personas: desaparecidos / hospital)
+  // Identidad (solo personas): nombre -> título; cédula -> hash para cruzar coincidencias
+  const personFields = isPerson ? `
+    <label class="fl">Nombre y apellido <span style="font-weight:400;color:var(--muted)">(si se conoce)</span></label>
+    <input id="f-name" placeholder="Ej.: Juan Pérez">
+    <label class="fl">Cédula <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
+    <input id="f-ci" inputmode="numeric" placeholder="Ej.: 12345678">
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.</div>` : '';
   const fichaField = isPerson ? `
     <label class="fl">Ficha en desaparecidosterremotovenezuela.com <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
     <input id="f-link" type="url" inputmode="url" placeholder="https://desaparecidosterremotovenezuela.com/?persona=...">
     <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 Solo se aceptan enlaces de <b>desaparecidosterremotovenezuela.com</b> (por seguridad).</div>` : '';
+  // Vialidad: estado de paso + causa (estructurados)
+  const isRoad = (selType==='road');
+  const roadFields = isRoad ? `
+    <label class="fl">Estado del paso</label>
+    <select id="f-rstatus">${Object.entries(ROAD_STATUS).map(([k,v])=>`<option value="${k}" ${k==='closed'?'selected':''}>${v.e} ${v.t}</option>`).join('')}</select>
+    <label class="fl">Causa <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
+    <select id="f-rcause"><option value="">— Sin especificar —</option>${ROAD_CAUSE.map(c=>`<option>${esc(c)}</option>`).join('')}</select>` : '';
   document.getElementById('formfields').innerHTML=`
+    ${personFields}
     <label class="fl">${locLabel}</label>
     <input id="f-loc" placeholder="${locPh}">
     <label class="fl">${needLabel}</label>
     <textarea id="f-need" placeholder="${needPh}"></textarea>
+    ${roadFields}
     ${fichaField}
     <label class="fl">Ubicación en el mapa <span style="font-weight:400;color:var(--muted)">(recomendado para rescate)</span></label>
     <div class="loc-btns">
@@ -1206,15 +1359,26 @@ document.getElementById('submitRep').addEventListener('click',async()=>{
     profileUrl=safeProfileLink(linkEl.value);
     if(!profileUrl){ alert('El enlace debe ser de https://desaparecidosterremotovenezuela.com'); return; }
   }
-  // Componer la descripción adjuntando el enlace validado (sin alterar el esquema de la BD)
-  const needFinal = (need||'(sin detalle)') + (profileUrl ? `\n${profileUrl}` : '');
+  // Identidad (solo personas): nombre -> título; cédula -> hash (no se publica el número)
+  const nameEl=document.getElementById('f-name');
+  const personName = nameEl ? nameEl.value.trim() : '';
+  const ciEl=document.getElementById('f-ci');
+  const ciHash = ciEl ? hashCI(ciEl.value) : null;
+  // Componer la descripción adjuntando enlace validado + hash de cédula (sin alterar el esquema)
+  let needFinal = (need||'(sin detalle)') + (profileUrl ? `\n${profileUrl}` : '') + (ciHash ? ` CIH:${ciHash}` : '');
+  // Vialidad: adjunta causa (texto) y estado de paso (token RS:)
+  if(selType==='road'){
+    const rs=document.getElementById('f-rstatus'); const rc=document.getElementById('f-rcause');
+    const status=(rs&&rs.value)||'closed'; const cause=(rc&&rc.value)||'';
+    needFinal += (cause?` · Causa: ${cause}`:'') + ` RS:${status}`;
+  }
   // Componer ubicación con municipio si se eligió
   const loc = muni ? `${loc0} — ${muni}, ${st}` : loc0;
   // Coordenadas: usar punto preciso (GPS o marcado) si existe; si no, centro del estado (aprox)
   let lon, lat, precision;
   if(pickedLat!=null){ lat=pickedLat; lon=pickedLon; precision=pickedSrc; }
   else { const [clon,clat]=stateCentroidLonLat(st); const jit=()=>(Math.random()-.5)*0.25; lon=clon+jit(); lat=clat+jit(); precision='approx'; }
-  const rep={ type:selType, title:TYPES[selType].t, loc, need:needFinal, lon, lat, precision };
+  const rep={ type:selType, title:(personName || TYPES[selType].t), loc, need:needFinal, lon, lat, precision };
   const btn=document.getElementById('submitRep');
   btn.textContent='Publicando…'; btn.disabled=true;
   if(cloudOK){
