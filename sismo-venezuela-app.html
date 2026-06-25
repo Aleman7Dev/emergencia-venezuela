@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergencia Sísmica Venezuela</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#0a0e14; --panel:#11161f; --panel2:#161d29; --line:#222c3a;
+    --txt:#e6edf3; --muted:#8b97a7; --acc:#3b82f6;
+    --crit:#ef4444; --build:#f59e0b; --miss:#a855f7; --acopio:#22c55e; --dark:#64748b; --water:#06b6d4; --safe:#10b981;
+  }
+  html,body{ background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior:none; }
+  body{ max-width:520px; margin:0 auto; min-height:100vh; position:relative; }
+  header{ position:sticky; top:0; z-index:30; background:rgba(10,14,20,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 16px; }
+  .htop{ display:flex; align-items:center; gap:10px; }
+  .pulse{ width:10px; height:10px; border-radius:50%; background:var(--crit); flex:none; }
+  h1{ font-size:16px; font-weight:700; letter-spacing:.2px; }
+  .hsub{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .emergency-banner{ background:linear-gradient(90deg,#7f1d1d,#991b1b); font-size:11.5px; padding:7px 16px; color:#fecaca; border-bottom:1px solid #b91c1c; }
+
+  nav{ display:flex; gap:6px; padding:10px 12px; overflow-x:auto; border-bottom:1px solid var(--line); scrollbar-width:none; }
+  nav::-webkit-scrollbar{ display:none; }
+  .tab{ flex:none; padding:8px 13px; border-radius:20px; background:var(--panel2); color:var(--muted); font-size:12.5px; font-weight:600; border:1px solid transparent; cursor:pointer; transition:color .15s,background .15s; }
+  .tab.on{ background:var(--acc); color:#fff; }
+
+  main{ padding:14px 16px 90px; }
+  .view{ display:none; } .view.on{ display:block; }
+
+  /* MAPA */
+  .mapwrap{ position:relative; background:#0c1119; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  svg.vmap{ display:block; width:100%; height:auto; touch-action:none; }
+  .vstate{ fill:#1b2433; stroke:#2b3848; stroke-width:.5; transition:fill .15s; cursor:pointer; }
+  .vstate:hover{ fill:#243044; }
+  .vstate.hot{ fill:#3a2030; stroke:#7f1d1d; }
+  .vstate.sel{ fill:#2d3a52; stroke:var(--acc); }
+  .mlabel{ font-size:5px; fill:#7c8aa0; pointer-events:none; font-weight:600; }
+  .vmuni{ fill:rgba(59,130,246,.07); stroke:#3b82f6; stroke-width:.35; stroke-opacity:.7; pointer-events:none; vector-effect:non-scaling-stroke; }
+  .munilabel{ fill:#aeb9ca; pointer-events:none; font-weight:600; }
+  .legend{ display:flex; flex-wrap:wrap; gap:8px 12px; padding:12px; background:var(--panel); border:1px solid var(--line); border-top:none; border-radius:0 0 14px 14px; }
+  .lg{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+  .dot{ width:10px; height:10px; border-radius:50%; flex:none; }
+  .mapctl{ position:absolute; top:8px; right:8px; display:flex; flex-direction:column; gap:4px; }
+  .mapctl button{ width:30px; height:30px; border-radius:8px; background:rgba(17,22,31,.9); border:1px solid var(--line); color:var(--txt); font-size:16px; cursor:pointer; }
+  .filters{ display:flex; gap:6px; overflow-x:auto; padding:0 0 10px; scrollbar-width:none; }
+  .filters::-webkit-scrollbar{ display:none; }
+  .fchip{ flex:none; display:flex; align-items:center; gap:5px; padding:6px 11px; border-radius:18px; background:var(--panel2); border:1px solid var(--line); font-size:11.5px; font-weight:600; color:var(--muted); cursor:pointer; }
+  .fchip.on{ color:#fff; }
+  .fchip .fdot{ width:8px; height:8px; border-radius:50%; }
+  .searchbar{ display:flex; gap:8px; margin-bottom:12px; }
+  .searchbar input{ flex:1; }
+  .sclear{ background:var(--panel2); border:1px solid var(--line); color:var(--muted); border-radius:10px; padding:0 14px; cursor:pointer; font-size:13px; }
+  .share-row{ display:flex; gap:8px; margin-top:9px; }
+  .sbtn{ flex:1; text-align:center; font-size:11px; padding:7px; border-radius:8px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); cursor:pointer; text-decoration:none; font-weight:600; }
+  .sbtn.wa{ color:#25d366; border-color:#1e3a2f; }
+  .sbtn.flag{ color:#f59e0b; }
+  .vbadge{ display:inline-block; font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:9px; margin-left:6px; vertical-align:middle; }
+  .vbadge.v{ background:#10b98122; color:#10b981; }
+  .vbadge.u{ background:#64748b22; color:#94a3b8; }
+  .roadbadge{ display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9px; margin-top:6px; }
+
+  .stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0; }
+  .stat{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 8px; text-align:center; }
+  .stat .n{ font-size:20px; font-weight:800; } .stat .l{ font-size:10px; color:var(--muted); margin-top:2px; }
+
+  .sectitle{ font-size:13px; font-weight:700; margin:18px 0 10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:10px; }
+  .crow{ display:flex; gap:11px; align-items:flex-start; }
+  .cicon{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex:none; }
+  .ctitle{ font-size:14px; font-weight:700; } .cmeta{ font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.5; }
+  .ctag{ display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-top:6px; }
+  .btn-done{ margin-top:9px; font-size:11px; padding:6px 11px; border-radius:8px; background:var(--panel2); border:1px solid var(--line); color:var(--safe); cursor:pointer; font-weight:600; }
+
+  .phone{ display:flex; align-items:center; justify-content:space-between; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:9px; text-decoration:none; }
+  .phone .pl{ font-size:13.5px; font-weight:600; color:var(--txt); } .phone .ps{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .phone .pn{ font-size:18px; font-weight:800; color:var(--crit); }
+
+  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:40; background:var(--crit); color:#fff; border:none; padding:14px 26px; border-radius:30px; font-size:14.5px; font-weight:700; box-shadow:0 6px 22px rgba(239,68,68,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:50; display:none; align-items:flex-end; justify-content:center; }
+  .overlay.on{ display:flex; }
+  .sheet{ background:var(--panel); width:100%; max-width:520px; border-radius:18px 18px 0 0; border-top:1px solid var(--line); padding:18px 18px 26px; max-height:88vh; overflow-y:auto; }
+  .sheet h2{ font-size:16px; margin-bottom:4px; } .sheet p.h{ font-size:12px; color:var(--muted); margin-bottom:14px; }
+  .typegrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px; }
+  .tcard{ background:var(--panel2); border:1.5px solid var(--line); border-radius:11px; padding:11px; cursor:pointer; transition:border-color .15s; }
+  .tcard.sel{ border-color:var(--acc); }
+  .tcard .te{ font-size:20px; } .tcard .tt{ font-size:11.5px; font-weight:600; margin-top:5px; }
+  label.fl{ font-size:11.5px; color:var(--muted); display:block; margin:11px 0 5px; font-weight:600; }
+  input,textarea,select{ width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:11px; color:var(--txt); font-size:14px; font-family:inherit; }
+  textarea{ resize:vertical; min-height:64px; }
+  .submit{ width:100%; margin-top:16px; background:var(--acc); color:#fff; border:none; padding:14px; border-radius:11px; font-size:15px; font-weight:700; cursor:pointer; }
+  .close{ position:absolute; right:16px; top:14px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; }
+  .empty{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 10px; }
+  .note{ font-size:10.5px; color:var(--muted); line-height:1.55; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:11px; margin-top:14px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="htop">
+    <span class="pulse" id="pulse"></span>
+    <div>
+      <h1>Emergencia Sísmica · Venezuela</h1>
+      <div class="hsub" id="clock">Estado de Emergencia Nacional · 25 jun 2026</div>
+    </div>
+  </div>
+</header>
+<div class="emergency-banner">⚠️ Doble terremoto 7,2 y 7,5 — Réplicas activas. Mantente alejado de estructuras dañadas.</div>
+
+<div id="privacy" style="display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.75);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:420px;padding:22px;">
+    <div style="font-size:30px;text-align:center;margin-bottom:8px">🔒</div>
+    <h2 style="font-size:17px;text-align:center;margin-bottom:12px">Aviso de privacidad</h2>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Esta es una herramienta comunitaria. <b>Todo lo que publiques será visible públicamente</b> para cualquier persona que use la app.</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">No incluyas información sensible innecesaria (documentos de identidad, datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.</p>
+    <button id="privacyOk" style="width:100%;background:var(--acc);color:#fff;border:none;padding:13px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer">Entiendo y acepto</button>
+  </div>
+</div>
+
+<nav>
+  <button class="tab on" data-v="mapa">🗺️ Mapa</button>
+  <button class="tab" data-v="reportes">📋 Reportes</button>
+  <button class="tab" data-v="desap">🧍 Desaparecidos</button>
+  <button class="tab" data-v="hosp">🏥 Hospitales</button>
+  <button class="tab" data-v="acopio">📦 Acopio</button>
+  <button class="tab" data-v="tel">📞 Teléfonos</button>
+</nav>
+
+<main>
+  <section class="view on" id="v-mapa">
+    <div class="filters" id="filters"></div>
+    <div class="mapwrap">
+      <svg class="vmap" id="svgmap" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="mapctl">
+        <button id="zin">＋</button>
+        <button id="zout">－</button>
+        <button id="zfit" title="Ver Venezuela completa">⛶</button>
+        <button id="zreset" title="Reiniciar vista">⟳</button>
+        <button id="refresh" title="Refrescar desde la nube">🔄</button>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="lg"><span class="dot" style="background:var(--crit)"></span>Emergencia crítica</span>
+      <span class="lg"><span class="dot" style="background:var(--build)"></span>Edificio/acceso dañado</span>
+      <span class="lg"><span class="dot" style="background:var(--miss)"></span>Desaparecido</span>
+      <span class="lg"><span class="dot" style="background:var(--acopio)"></span>Centro de acopio</span>
+      <span class="lg"><span class="dot" style="background:var(--dark)"></span>Zona sin luz</span>
+      <span class="lg"><span class="dot" style="background:var(--water)"></span>Sin agua potable</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="s-crit" style="color:var(--crit)">0</div><div class="l">Críticas</div></div>
+      <div class="stat"><div class="n" id="s-build" style="color:var(--build)">0</div><div class="l">Daños/servicios</div></div>
+      <div class="stat"><div class="n" id="s-miss" style="color:var(--miss)">0</div><div class="l">Buscados</div></div>
+    </div>
+    <div class="note">🔋 <b>Modo bajo consumo activo.</b> Mapa vectorial ligero (sin tiles ni red), tema oscuro para OLED y sin actualización automática — toca "Refrescar" para ver nuevos reportes. Pellizca o usa ＋/－ para acercar.</div>
+  </section>
+
+  <section class="view" id="v-reportes">
+    <div class="sectitle">Reportes activos</div>
+    <div id="list-rep"></div>
+  </section>
+
+  <section class="view" id="v-desap">
+    <div class="sectitle">Personas desaparecidas</div>
+    <div class="searchbar">
+      <input id="missSearch" placeholder="Buscar por nombre, zona o estado…">
+      <button class="sclear" id="missClear">Limpiar</button>
+    </div>
+    <div id="list-miss"></div>
+    <div class="note">Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.</div>
+  </section>
+
+  <section class="view" id="v-hosp">
+    <div class="sectitle">Personas ubicadas en centros de salud</div>
+    <div class="searchbar">
+      <input id="hospSearch" placeholder="Buscar por nombre, hospital o estado…">
+      <button class="sclear" id="hospClear">Limpiar</button>
+    </div>
+    <div id="list-hosp"></div>
+    <div class="note">🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.</div>
+  </section>
+
+  <section class="view" id="v-acopio">
+    <div class="sectitle">Centros de acopio y atención</div>
+    <div id="list-acopio"></div>
+  </section>
+
+  <section class="view" id="v-tel">
+    <div class="sectitle">Teléfonos de emergencia oficiales</div>
+    <a class="phone" href="tel:171"><div><div class="pl">Emergencias 171 (VEN911)</div><div class="ps">Atención integrada nacional</div></div><div class="pn">171</div></a>
+    <a class="phone" href="tel:171"><div><div class="pl">Bomberos</div><div class="ps">Rescate e incendios</div></div><div class="pn">171</div></a>
+    <a class="phone" href="tel:0800724"><div><div class="pl">Protección Civil (PCDNA)</div><div class="ps">Gestión de desastres</div></div><div class="pn">0800-PCIVIL</div></a>
+    <a class="phone" href="tel:0212571"><div><div class="pl">Cruz Roja Venezolana</div><div class="ps">Atención médica / ambulancias</div></div><div class="pn">0212-571</div></a>
+    <a class="phone" href="tel:0212"><div><div class="pl">FUNVISIS — Reporte sísmico</div><div class="ps">Información de sismos y réplicas</div></div><div class="pn">0212</div></a>
+    <div class="note">📌 Verifica los números regionales con tu alcaldía. El 171 es la línea integrada nacional de emergencias. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
+  </section>
+</main>
+
+<button class="fab" id="fab">＋ Reportar emergencia</button>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <button class="close" id="closeSheet">✕</button>
+    <h2>Nuevo reporte</h2>
+    <p class="h">Tu reporte aparece en el mapa para los equipos de rescate.</p>
+    <div class="typegrid" id="typegrid"></div>
+    <div id="formfields"></div>
+    <button class="submit" id="submitRep">Publicar reporte</button>
+  </div>
+</div>
+
+<script>
+const TYPES = {
+  crit:   {e:'🆘', t:'Emergencia crítica', c:'#ef4444'},
+  build:  {e:'🏚️', t:'Edificio/acceso dañado', c:'#f59e0b'},
+  road:   {e:'🛣️', t:'Estado de vía / vialidad', c:'#fb923c'},
+  miss:   {e:'🧍', t:'Persona desaparecida', c:'#a855f7'},
+  hosp:   {e:'🏥', t:'Persona en centro de salud', c:'#14b8a6'},
+  acopio: {e:'📦', t:'Centro de acopio', c:'#22c55e'},
+  dark:   {e:'🔌', t:'Zona sin luz', c:'#64748b'},
+  water:  {e:'💧', t:'Sin agua potable', c:'#06b6d4'},
+  safe:   {e:'✅', t:'Localizado a salvo', c:'#10b981'},
+};
+// Estados de paso para vialidad
+const ROAD_STATUS = {
+  closed:  {t:'Cerrada / intransitable', c:'#ef4444', e:'⛔'},
+  partial: {t:'Paso parcial', c:'#f59e0b', e:'⚠️'},
+  moto:    {t:'Solo motocicletas', c:'#eab308', e:'🏍️'},
+  foot:    {t:'Solo a pie', c:'#f97316', e:'🚶'},
+  open:    {t:'Despejada', c:'#22c55e', e:'✅'},
+};
+// Causa del bloqueo
+const ROAD_CAUSE = ['Derrumbe','Deslizamiento','Objetos/escombros','Grieta/hundimiento','Inundación','Vehículos varados','Otro'];
+// Estados afectados (resaltados en rojo)
+const HOT = ['Distrito Capital','Miranda','La Guaira','Aragua','Carabobo','Yaracuy','Falcón'];
+
+// Reportes iniciales basados en información pública del 25 jun 2026 (lon/lat reales)
+const SEED = [
+  {id:'r1', type:'crit', title:'Edif. Petunia colapsado', loc:'Los Palos Grandes, Chacao, Caracas', lon:-66.84, lat:10.50, need:'Maquinaria pesada, paramédicos', when:'hace 2 h'},
+  {id:'r2', type:'build', title:'Colapso parcial', loc:'Av. Los Próceres, San Bernardino', lon:-66.89, lat:10.51, need:'Evaluación estructural', when:'hace 3 h'},
+  {id:'r3', type:'build', title:'Edificio 14 plantas caído', loc:'Zona Este de Caracas', lon:-66.80, lat:10.49, need:'Rescate pesado', when:'hace 1 h'},
+  {id:'r4', type:'crit', title:'Edif. Ritasol Palace', loc:'Los Corales, La Guaira', lon:-66.93, lat:10.60, need:'Búsqueda de atrapados', when:'hace 2 h'},
+  {id:'r5', type:'water', title:'Falla crítica de agua', loc:'Sector residencial, Miranda', lon:-66.55, lat:10.40, need:'Cisternas de agua potable', when:'hace 4 h'},
+  {id:'r6', type:'dark', title:'Sector sin electricidad', loc:'Catia, Caracas', lon:-66.95, lat:10.50, need:'Iluminación / plantas', when:'hace 3 h'},
+  {id:'r7', type:'acopio', title:'Centro de acopio activo', loc:'Plaza Altamira, Chacao', lon:-66.85, lat:10.49, need:'Reciben agua, medicinas, alimentos', when:'hace 1 h'},
+  {id:'r8', type:'miss', title:'Familia Barone', loc:'Caraballeda, La Guaira', lon:-66.85, lat:10.61, need:'Contacto: +58 414-3925735', when:'hace 5 h'},
+  {id:'r9', type:'miss', title:'Familia Caicedo', loc:'Macuto, La Guaira', lon:-66.90, lat:10.60, need:'Esposa Lucena y bebé Luciano', when:'hace 4 h'},
+  {id:'r10', type:'water', title:'Sin suministro de agua', loc:'Maracay, Aragua', lon:-67.60, lat:10.25, need:'Agua potable / cisternas', when:'hace 3 h'},
+  {id:'r11', type:'build', title:'Daños en edificaciones', loc:'Valencia, Carabobo', lon:-68.00, lat:10.18, need:'Evaluación estructural', when:'hace 5 h'},
+  {id:'r12', type:'hosp', title:'Hombre adulto, ~40 años', loc:'Hospital Vargas de Caracas, San José', lon:-66.91, lat:10.50, need:'Estable, sin identificación. Tatuaje en antebrazo derecho', when:'hace 2 h'},
+  {id:'r13', type:'hosp', title:'Niña, ~6 años', loc:'Hospital J.M. de los Ríos, San Bernardino', lon:-66.89, lat:10.50, need:'Atendida y estable. Busca a sus padres', when:'hace 1 h'},
+];
+
+// ---- Conexión Supabase ----
+const SUPABASE_URL = 'https://lzhvyjgbwynyuwylxucu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6aHZ5amdid3lueXV3eWx4dWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNjc5OTksImV4cCI6MjA5Nzk0Mzk5OX0.D4B2jMLTrBgDg9VIojG1UBLDET10pfn76neJn6rm0ks';
+const SB_HEAD = { apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`, 'Content-Type':'application/json' };
+let cloudOK = false;
+
+async function sbFetch(){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/reports?status=eq.activo&select=*&order=created_at.desc`, { headers:SB_HEAD });
+  if(!r.ok) throw new Error('fetch '+r.status);
+  return await r.json();
+}
+async function sbInsert(rep){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/reports`, { method:'POST', headers:{...SB_HEAD, Prefer:'return=representation'}, body:JSON.stringify(rep) });
+  if(!r.ok) throw new Error('insert '+r.status);
+  return (await r.json())[0];
+}
+// Confirmación múltiple: llama a la función RPC que incrementa de forma atómica
+// y retira el reporte (status='atendido') al alcanzar el umbral. Devuelve el nº de confirmaciones.
+async function sbConfirm(id){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/confirm_report`, {
+    method:'POST', headers:SB_HEAD, body:JSON.stringify({ rid:id })
+  });
+  if(!r.ok) throw new Error('confirm '+r.status);
+  const v = await r.json();
+  return typeof v==='number' ? v : (v&&v.confirms!=null ? v.confirms : null);
+}
+function relTime(iso){
+  if(!iso) return 'ahora';
+  const diff=(Date.now()-new Date(iso))/3600000;
+  if(diff<1) return 'hace minutos';
+  if(diff<24) return 'hace '+Math.round(diff)+' h';
+  return 'hace '+Math.round(diff/24)+' d';
+}
+
+// ---- Geo: cargar GeoJSON de estados (pegado abajo) y proyectar ----
+let GEO=null, VB={w:600,h:420}, BOUNDS=null;
+let reports=[], selState=null;
+let zoom=1, panX=0, panY=0;
+let activeFilters=new Set(Object.keys(TYPES).filter(k=>k!=='safe'));
+let missQuery='', hospQuery='';
+
+// ---- Municipios (capa que aparece al enfocar un estado) ----
+let MUNIS=null;              // { estado: [ [nombre, tipo, coords], ... ] }
+let muniLoading=false, muniError=false;
+const CONFIRM_THRESHOLD=3;   // confirmaciones distintas para retirar un reporte
+let confirmedByMe=new Set(); // ids ya confirmados desde este navegador
+
+// Carga perezosa del archivo de municipios (1.2 MB) solo cuando hace falta
+async function loadMunis(){
+  if(MUNIS||muniLoading) return MUNIS;
+  muniLoading=true; muniError=false;
+  try{
+    const r=await fetch('municipios-ven.json',{cache:'force-cache'});
+    if(!r.ok) throw new Error('muni '+r.status);
+    const j=await r.json();
+    MUNIS=j.states||j;
+  }catch(e){ muniError=true; }
+  finally{ muniLoading=false; }
+  return MUNIS;
+}
+
+// Escape de HTML para todo contenido escrito por el público (anti-XSS)
+function esc(s){
+  return String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function shareLinks(rp){
+  const txt=`${TYPES[rp.type].e} ${TYPES[rp.type].t}\n${rp.title}\n📍 ${rp.loc}\nℹ️ ${rp.need}\n— vía App Emergencia Sísmica Venezuela`;
+  const enc=encodeURIComponent(txt);
+  return {
+    wa:`https://wa.me/?text=${enc}`,
+    txt
+  };
+}
+
+function computeBounds(features){
+  let minX=180,minY=90,maxX=-180,maxY=-90;
+  features.forEach(f=>{
+    const g=f.geometry; if(!g) return;
+    const polys = g.type==='Polygon'?[g.coordinates]:g.coordinates;
+    polys.forEach(poly=>poly.forEach(ring=>ring.forEach(([x,y])=>{
+      if(x<minX)minX=x; if(x>maxX)maxX=x; if(y<minY)minY=y; if(y>maxY)maxY=y;
+    })));
+  });
+  return {minX,minY,maxX,maxY};
+}
+function project(lon,lat){
+  const {minX,minY,maxX,maxY}=BOUNDS;
+  const pad=10;
+  const sx=(VB.w-2*pad)/(maxX-minX);
+  const sy=(VB.h-2*pad)/(maxY-minY);
+  const s=Math.min(sx,sy);
+  const ox=pad+((VB.w-2*pad)-(maxX-minX)*s)/2;
+  const oy=pad+((VB.h-2*pad)-(maxY-minY)*s)/2;
+  const px=ox+(lon-minX)*s;
+  const py=oy+(maxY-lat)*s; // invertir Y
+  return [px,py];
+}
+function ringToPath(ring){
+  return ring.map(([lon,lat],i)=>{
+    const [x,y]=project(lon,lat);
+    return (i===0?'M':'L')+x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ')+'Z';
+}
+function polyCentroid(coords){ // primer anillo del primer polígono
+  let ring = coords[0];
+  let a=0,cx=0,cy=0;
+  for(let i=0;i<ring.length-1;i++){
+    const [x0,y0]=ring[i], [x1,y1]=ring[i+1];
+    const f=x0*y1-x1*y0; a+=f; cx+=(x0+x1)*f; cy+=(y0+y1)*f;
+  }
+  a*=0.5; if(Math.abs(a)<1e-9){ return ring[0]; }
+  return [cx/(6*a), cy/(6*a)];
+}
+
+function buildMap(){
+  const svg=document.getElementById('svgmap');
+  svg.setAttribute('viewBox',`0 0 ${VB.w} ${VB.h}`);
+  if(!GEO){ svg.innerHTML='<text x="20" y="40" fill="#8b97a7" font-size="12">Cargando mapa…</text>'; return; }
+  let html=`<g id="vp" transform="translate(${panX},${panY}) scale(${zoom})">`;
+  GEO.features.forEach(f=>{
+    if(!f.geometry||!f.properties.NAME_1) return;
+    const name=f.properties.NAME_1;
+    const g=f.geometry;
+    const polys = g.type==='Polygon'?[g.coordinates]:g.coordinates;
+    let d='';
+    polys.forEach(poly=> poly.forEach(ring=> d+=ringToPath(ring)+' ' ));
+    const hot = HOT.includes(name)?'hot':'';
+    const sel = selState===name?'sel':'';
+    html+=`<path class="vstate ${hot} ${sel}" d="${d}" data-name="${name}"></path>`;
+  });
+  // Municipios del estado enfocado (capa que aparece al seleccionar/hacer zoom en un estado)
+  if(selState && MUNIS && MUNIS[selState]){
+    MUNIS[selState].forEach(m=>{
+      const [mname, mtype, coords]=m;
+      const polys = mtype===0?[coords]:coords;
+      let d='';
+      polys.forEach(poly=> poly.forEach(ring=> d+=ringToPath(ring)+' ' ));
+      html+=`<path class="vmuni" d="${d}" data-muni="${esc(mname)}"></path>`;
+    });
+    // etiquetas de municipio (tamaño que compensa el zoom)
+    if(zoom>=2.2){
+      MUNIS[selState].forEach(m=>{
+        const [mname, mtype, coords]=m;
+        const ring = mtype===0?coords[0]:coords[0][0];
+        const [clon,clat]=polyCentroid(mtype===0?coords:coords[0]);
+        const [x,y]=project(clon,clat);
+        html+=`<text class="munilabel" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" style="font-size:${(3.4/zoom).toFixed(2)}px">${esc(mname)}</text>`;
+      });
+    }
+  } else if(selState && muniLoading){
+    // sin bloque visual extra; el estado ya está resaltado
+  }
+  // etiquetas (solo estados afectados para no saturar)
+  GEO.features.forEach(f=>{
+    if(!f.geometry||!f.properties.NAME_1) return;
+    const name=f.properties.NAME_1;
+    if(!HOT.includes(name)) return;
+    const g=f.geometry;
+    const coords = g.type==='Polygon'?g.coordinates:g.coordinates[0];
+    const [clon,clat]=polyCentroid(coords);
+    const [x,y]=project(clon,clat);
+    html+=`<text class="mlabel" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle">${name}</text>`;
+  });
+  // markers de reportes (respeta filtros activos)
+  reports.forEach(rp=>{
+    if(rp.lon==null) return;
+    if(!activeFilters.has(rp.type)) return;
+    const c=TYPES[rp.type].c;
+    const [x,y]=project(rp.lon,rp.lat);
+    const r=(3.2/zoom).toFixed(2);
+    html+=`<g class="marker" data-id="${rp.id}" style="cursor:pointer">
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(5/zoom).toFixed(2)}" fill="none" stroke="${c}" stroke-width="${(1/zoom).toFixed(2)}" opacity="0.45"><animate attributeName="r" values="${(5/zoom).toFixed(2)};${(10/zoom).toFixed(2)};${(5/zoom).toFixed(2)}" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0;0.45" dur="2.6s" repeatCount="indefinite"/></circle>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${c}"/>
+    </g>`;
+  });
+  html+='</g>';
+  svg.innerHTML=html;
+  svg.querySelectorAll('.vstate').forEach(p=>{
+    p.addEventListener('click',()=>{
+      const name=p.dataset.name;
+      if(selState===name){ // segundo toque: salir del estado
+        selState=null; zoom=1; panX=0; panY=0; buildMap();
+      } else {
+        focusState(name);
+      }
+    });
+  });
+  svg.querySelectorAll('.marker').forEach(m=>{
+    m.addEventListener('click',()=>{
+      const rp=reports.find(r=>r.id===m.dataset.id);
+      if(rp) alert(`${TYPES[rp.type].e} ${rp.title}\n📍 ${rp.loc}\nℹ️ ${rp.need}\n🕓 ${rp.when}`);
+    });
+  });
+}
+
+// Calcular bbox proyectado de un estado y encuadrarlo; cargar municipios bajo demanda
+function stateBBoxProjected(name){
+  const f=GEO&&GEO.features.find(x=>x.properties.NAME_1===name);
+  if(!f) return null;
+  let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
+  const polys=f.geometry.type==='Polygon'?[f.geometry.coordinates]:f.geometry.coordinates;
+  polys.forEach(poly=>poly.forEach(ring=>ring.forEach(([lon,lat])=>{
+    const [x,y]=project(lon,lat);
+    if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y;
+  })));
+  return {minx,miny,maxx,maxy};
+}
+async function focusState(name){
+  selState=name;
+  const bb=stateBBoxProjected(name);
+  if(bb){
+    const bw=Math.max(bb.maxx-bb.minx,1), bh=Math.max(bb.maxy-bb.miny,1);
+    const s=Math.min(VB.w/bw, VB.h/bh)*0.82;
+    zoom=Math.min(Math.max(s,1),8);
+    const cx=(bb.minx+bb.maxx)/2, cy=(bb.miny+bb.maxy)/2;
+    panX=VB.w/2 - zoom*cx; panY=VB.h/2 - zoom*cy;
+  }
+  buildMap();                 // pinta ya el estado enfocado
+  if(!MUNIS && !muniError){    // trae municipios y repinta cuando lleguen
+    await loadMunis(); buildMap();
+  }
+}
+
+// zoom controls
+function clampPan(){
+  // suave: sin límites estrictos para no complicar
+}
+document.getElementById('zin').onclick=()=>{ zoom=Math.min(zoom*1.4,8); buildMap(); };
+document.getElementById('zout').onclick=()=>{ zoom=Math.max(zoom/1.4,1); if(zoom===1){panX=0;panY=0;} buildMap(); };
+document.getElementById('zfit').onclick=()=>{ zoom=1; panX=0; panY=0; selState=null; buildMap(); };
+document.getElementById('zreset').onclick=()=>{ zoom=1; panX=0; panY=0; selState=null; buildMap(); };
+document.getElementById('refresh').onclick=async()=>{
+  const btn=document.getElementById('refresh'); btn.textContent='…';
+  try{ const rows=await sbFetch(); cloudOK=true; reports=rows.map(r=>({id:r.id,type:r.type,title:r.title,loc:r.loc,need:r.need,lon:r.lon,lat:r.lat,confirms:r.confirms||0,when:relTime(r.created_at)})); }
+  catch(e){ cloudOK=false; }
+  updateCloudBadge(); render(); btn.textContent='🔄';
+};
+
+// pan + pinch básicos
+(function(){
+  const svg=document.getElementById('svgmap');
+  let dragging=false,lx=0,ly=0,pinchD=0;
+  function pt(e){ const t=e.touches?e.touches[0]:e; const r=svg.getBoundingClientRect(); return {x:(t.clientX-r.left)/r.width*VB.w,y:(t.clientY-r.top)/r.height*VB.h}; }
+  svg.addEventListener('pointerdown',e=>{ dragging=true; lx=e.clientX; ly=e.clientY; });
+  window.addEventListener('pointermove',e=>{ if(!dragging||zoom<=1)return; const r=svg.getBoundingClientRect(); panX+=(e.clientX-lx)/r.width*VB.w; panY+=(e.clientY-ly)/r.height*VB.h; lx=e.clientX; ly=e.clientY; const vp=document.getElementById('vp'); if(vp) vp.setAttribute('transform',`translate(${panX},${panY}) scale(${zoom})`); });
+  window.addEventListener('pointerup',()=>{ dragging=false; });
+  svg.addEventListener('touchmove',e=>{
+    if(e.touches.length===2){ e.preventDefault();
+      const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+      const d=Math.hypot(dx,dy);
+      if(pinchD){ zoom=Math.min(Math.max(zoom*(d/pinchD),1),8); buildMap(); }
+      pinchD=d;
+    }
+  },{passive:false});
+  svg.addEventListener('touchend',()=>{ pinchD=0; });
+})();
+
+// ---- datos ----
+async function load(){
+  // 1) intentar nube
+  try{
+    const rows = await sbFetch();
+    cloudOK = true;
+    reports = rows.map(r=>({ id:r.id, type:r.type, title:r.title, loc:r.loc, need:r.need, lon:r.lon, lat:r.lat, confirms:r.confirms||0, when:relTime(r.created_at) }));
+    if(reports.length===0){ reports = SEED.slice(); } // primera vez: muestra ejemplos locales
+  }catch(e){
+    // 2) respaldo local
+    cloudOK = false;
+    try{ const r=await window.storage.get('vzla_reports'); reports=r?JSON.parse(r.value):SEED.slice(); }
+    catch(_){ reports=SEED.slice(); }
+  }
+  // GeoJSON
+  if(!GEO && window.__GEO__) GEO=window.__GEO__;
+  if(GEO){ BOUNDS=computeBounds(GEO.features); }
+  // confirmaciones previas de este navegador
+  try{ const c=await window.storage.get('vzla_confirmed'); if(c&&c.value) confirmedByMe=new Set(JSON.parse(c.value)); }catch(e){}
+  updateCloudBadge();
+  render();
+}
+async function save(){ // solo respaldo local cuando no hay nube
+  if(cloudOK) return;
+  try{ await window.storage.set('vzla_reports',JSON.stringify(reports)); }catch(e){}
+}
+function updateCloudBadge(){
+  const el=document.getElementById('clock');
+  const base='Estado de Emergencia Nacional';
+  el.textContent = base + (cloudOK?' · 🟢 En línea':' · 🟡 Local (sin conexión)');
+}
+
+function fmtClock(){
+  const d=new Date();
+  document.getElementById('clock').textContent='Estado de Emergencia Nacional · '+d.toLocaleDateString('es-VE',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+}
+
+function buildFilters(){
+  const el=document.getElementById('filters');
+  const counts={}; reports.forEach(r=>counts[r.type]=(counts[r.type]||0)+1);
+  el.innerHTML=Object.entries(TYPES).filter(([k])=>k!=='safe').map(([k,v])=>{
+    const on=activeFilters.has(k);
+    return `<div class="fchip ${on?'on':''}" data-f="${k}" style="${on?`border-color:${v.c};background:${v.c}22`:''}">
+      <span class="fdot" style="background:${v.c}"></span>${v.e} ${counts[k]||0}</div>`;
+  }).join('');
+  el.querySelectorAll('.fchip').forEach(c=>c.addEventListener('click',()=>{
+    const k=c.dataset.f;
+    if(activeFilters.has(k)) activeFilters.delete(k); else activeFilters.add(k);
+    if(activeFilters.size===0) activeFilters=new Set(Object.keys(TYPES).filter(x=>x!=='safe'));
+    buildFilters(); buildMap();
+  }));
+}
+
+function card(rp){
+  const t=TYPES[rp.type];
+  const sh=shareLinks(rp);
+  const c=rp.confirms||0;
+  const mine=confirmedByMe.has(String(rp.id));
+  // Botón de confirmación: requiere CONFIRM_THRESHOLD confirmaciones distintas
+  const confBtn = mine
+    ? `<button class="btn-done sbtn" disabled style="color:var(--muted);opacity:.7">✓ Confirmaste (${c}/${CONFIRM_THRESHOLD})</button>`
+    : `<button class="btn-done sbtn" data-done="${esc(rp.id)}" style="color:var(--safe)">✓ Confirmar atendido (${c}/${CONFIRM_THRESHOLD})</button>`;
+  return `<div class="card"><div class="crow">
+    <div class="cicon" style="background:${t.c}22">${t.e}</div>
+    <div style="flex:1">
+      <div class="ctitle">${esc(rp.title)}</div>
+      <div class="cmeta">📍 ${esc(rp.loc)}<br>ℹ️ ${esc(rp.need)}</div>
+      <span class="ctag" style="background:${t.c}22;color:${t.c}">${t.t}</span>
+      <span style="font-size:10.5px;color:var(--muted);margin-left:6px">${esc(rp.when)}</span>
+      <div class="share-row">
+        <a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">↗ WhatsApp</a>
+        <button class="sbtn" data-copy="${esc(rp.id)}">⧉ Copiar</button>
+        ${confBtn}
+      </div>
+    </div></div></div>`;
+}
+function render(){
+  buildFilters();
+  buildMap();
+  document.getElementById('s-crit').textContent=reports.filter(r=>r.type==='crit').length;
+  document.getElementById('s-build').textContent=reports.filter(r=>['build','dark','water'].includes(r.type)).length;
+  document.getElementById('s-miss').textContent=reports.filter(r=>r.type==='miss').length;
+  const all=reports.filter(r=>!['miss','acopio','hosp'].includes(r.type));
+  document.getElementById('list-rep').innerHTML=all.length?all.map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
+  let miss=reports.filter(r=>r.type==='miss');
+  if(missQuery){ const q=missQuery.toLowerCase(); miss=miss.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
+  document.getElementById('list-miss').innerHTML=miss.length?miss.map(card).join(''):'<div class="empty">'+(missQuery?'Sin coincidencias para “'+esc(missQuery)+'”.':'No hay personas reportadas.')+'</div>';
+  let hosp=reports.filter(r=>r.type==='hosp');
+  if(hospQuery){ const q=hospQuery.toLowerCase(); hosp=hosp.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
+  document.getElementById('list-hosp').innerHTML=hosp.length?hosp.map(card).join(''):'<div class="empty">'+(hospQuery?'Sin coincidencias para “'+esc(hospQuery)+'”.':'Aún no hay personas reportadas en centros de salud.')+'</div>';
+  const aco=reports.filter(r=>r.type==='acopio');
+  document.getElementById('list-acopio').innerHTML=aco.length?aco.map(card).join(''):'<div class="empty">No hay centros de acopio reportados.</div>';
+  document.querySelectorAll('[data-done]').forEach(b=>{ b.addEventListener('click',async()=>{
+    const id=b.dataset.done;
+    if(confirmedByMe.has(String(id))) return;            // ya confirmado por este navegador
+    b.disabled=true; b.textContent='Confirmando…';
+    const isLocal = String(id).indexOf('u')===0 || String(id).indexOf('r')===0; // seed o reporte sin nube
+    let count=null;
+    if(cloudOK && !isLocal){
+      try{ count=await sbConfirm(id); }
+      catch(e){ b.disabled=false; b.textContent='✗ Reintentar'; return; }
+    }
+    // marcar como confirmado por mí (evita doble conteo desde el mismo dispositivo)
+    confirmedByMe.add(String(id));
+    try{ await window.storage.set('vzla_confirmed',JSON.stringify([...confirmedByMe])); }catch(e){}
+    const rp=reports.find(r=>r.id===id);
+    if(rp){ rp.confirms = (count!=null?count:(rp.confirms||0)+1); }
+    // retirar de la lista al alcanzar el umbral (local: cuenta propia; nube: cuenta global)
+    if(rp && rp.confirms>=CONFIRM_THRESHOLD){ reports=reports.filter(r=>r.id!==id); }
+    save(); render();
+  }); });
+  document.querySelectorAll('[data-copy]').forEach(b=>{ b.addEventListener('click',()=>{
+    const rp=reports.find(r=>r.id===b.dataset.copy); if(!rp)return;
+    const txt=shareLinks(rp).txt;
+    navigator.clipboard?.writeText(txt).then(()=>{ b.textContent='✓ Copiado'; setTimeout(()=>b.textContent='⧉ Copiar',1500); }).catch(()=>{ b.textContent='✗'; });
+  }); });
+}
+
+const ms=document.getElementById('missSearch');
+if(ms){ ms.addEventListener('input',e=>{ missQuery=e.target.value.trim(); render(); }); }
+document.getElementById('missClear').addEventListener('click',()=>{ missQuery=''; ms.value=''; render(); });
+const hs=document.getElementById('hospSearch');
+if(hs){ hs.addEventListener('input',e=>{ hospQuery=e.target.value.trim(); render(); }); }
+document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''; hs.value=''; render(); });
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    document.getElementById('v-'+t.dataset.v).classList.add('on');
+  });
+});
+
+let selType='crit';
+function buildSheet(){
+  const tg=document.getElementById('typegrid');
+  tg.innerHTML=Object.entries(TYPES).filter(([k])=>k!=='safe').map(([k,v])=>
+    `<div class="tcard ${k===selType?'sel':''}" data-t="${k}"><div class="te">${v.e}</div><div class="tt">${v.t}</div></div>`).join('');
+  tg.querySelectorAll('.tcard').forEach(c=>c.addEventListener('click',()=>{ selType=c.dataset.t; buildSheet(); }));
+  const states = GEO?GEO.features.filter(f=>f.properties.NAME_1).map(f=>f.properties.NAME_1):HOT;
+  const isPerson = (selType==='miss'||selType==='hosp');
+  document.getElementById('formfields').innerHTML=`
+    <label class="fl">${selType==='hosp'?'Hospital o centro de salud':'Ubicación / dirección'}</label>
+    <input id="f-loc" placeholder="${selType==='hosp'?'Ej.: Hospital Vargas, San José, Caracas':'Ej.: Av. Francisco de Miranda, Chacao'}">
+    <label class="fl">${isPerson?'Nombre y descripción de la persona':'Qué se necesita / detalle'}</label>
+    <textarea id="f-need" placeholder="${isPerson?'Nombre o descripción, edad aprox., estado, señas particulares':'Ej.: paramédicos, agua, maquinaria, cisterna...'}"></textarea>
+    <label class="fl">Estado</label>
+    <select id="f-state">${[...new Set(states)].sort().map(s=>`<option ${HOT.includes(s)?'selected':''}>${s}</option>`).join('')}</select>
+    <label class="fl">Municipio <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
+    <select id="f-muni"><option value="">— Selecciona un estado —</option></select>`;
+  const stateSel=document.getElementById('f-state');
+  const muniSel=document.getElementById('f-muni');
+  async function fillMunis(){
+    muniSel.innerHTML='<option value="">Cargando municipios…</option>';
+    await loadMunis();
+    const list=(MUNIS&&MUNIS[stateSel.value])?MUNIS[stateSel.value].map(m=>m[0]).sort():[];
+    if(muniError||!list.length){ muniSel.innerHTML='<option value="">(municipios no disponibles)</option>'; return; }
+    muniSel.innerHTML='<option value="">— Sin especificar —</option>'+list.map(n=>`<option>${esc(n)}</option>`).join('');
+  }
+  stateSel.addEventListener('change',fillMunis);
+  fillMunis();
+}
+const overlay=document.getElementById('overlay');
+document.getElementById('fab').addEventListener('click',()=>{ buildSheet(); overlay.classList.add('on'); anime({targets:'.sheet',translateY:['100%','0%'],duration:280,easing:'easeOutCubic'}); });
+document.getElementById('closeSheet').addEventListener('click',()=>overlay.classList.remove('on'));
+overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.classList.remove('on'); });
+
+// centroides por estado para ubicar el marcador del reporte nuevo
+function stateCentroidLonLat(name){
+  const f=GEO&&GEO.features.find(x=>x.properties.NAME_1===name);
+  if(!f) return [-66.9,10.5];
+  const coords=f.geometry.type==='Polygon'?f.geometry.coordinates:f.geometry.coordinates[0];
+  return polyCentroid(coords);
+}
+let lastSubmitTs=0;
+document.getElementById('submitRep').addEventListener('click',async()=>{
+  // Anti-flood en cliente: 1 reporte cada 20 s desde este navegador
+  const now=Date.now();
+  if(now-lastSubmitTs < 20000){
+    const seg=Math.ceil((20000-(now-lastSubmitTs))/1000);
+    alert('Espera '+seg+' s antes de enviar otro reporte. Esto ayuda a evitar saturación.');
+    return;
+  }
+  const loc0=document.getElementById('f-loc').value.trim();
+  const need=document.getElementById('f-need').value.trim();
+  const st=document.getElementById('f-state').value;
+  const muniEl=document.getElementById('f-muni');
+  const muni=muniEl?muniEl.value.trim():'';
+  if(!loc0){ alert('Indica la ubicación.'); return; }
+  // Componer ubicación con municipio si se eligió
+  const loc = muni ? `${loc0} — ${muni}, ${st}` : loc0;
+  const [clon,clat]=stateCentroidLonLat(st);
+  const jit=()=>(Math.random()-.5)*0.25;
+  const rep={ type:selType, title:TYPES[selType].t, loc, need:need||'(sin detalle)', lon:clon+jit(), lat:clat+jit() };
+  const btn=document.getElementById('submitRep');
+  btn.textContent='Publicando…'; btn.disabled=true;
+  if(cloudOK){
+    try{ const saved=await sbInsert(rep); reports.unshift({...rep, id:saved.id, confirms:0, when:'ahora'}); lastSubmitTs=Date.now(); }
+    catch(e){
+      // si el backend rechaza (p.ej. duplicado o límite), avisar y no duplicar local
+      const msg=(''+e).includes('429')||(''+e).includes('duplic')?'Reporte rechazado: posible duplicado o límite alcanzado. Revisa si ya existe.':'No se pudo publicar en la nube; se guardó localmente.';
+      if((''+e).includes('429')||(''+e).includes('409')){ alert(msg); btn.textContent='Publicar reporte'; btn.disabled=false; return; }
+      reports.unshift({...rep, id:'u'+Date.now(), confirms:0, when:'ahora'}); lastSubmitTs=Date.now();
+    }
+  } else {
+    reports.unshift({...rep, id:'u'+Date.now(), confirms:0, when:'ahora'}); save(); lastSubmitTs=Date.now();
+  }
+  btn.textContent='Publicar reporte'; btn.disabled=false;
+  render(); overlay.classList.remove('on');
+  anime({targets:'#pulse',scale:[1,2.2,1],duration:600,easing:'easeOutQuad'});
+});
+
+anime({targets:'#pulse',opacity:[1,.3,1],duration:1800,loop:true,easing:'easeInOutSine'});
+fmtClock();
+
+// Aviso de privacidad (una vez por sesión)
+(async function(){
+  let seen=false;
+  try{ const r=await window.storage.get('vzla_privacy'); seen=r&&r.value==='1'; }catch(e){}
+  const pv=document.getElementById('privacy');
+  if(!seen){ pv.style.display='flex'; }
+  document.getElementById('privacyOk').onclick=async()=>{ pv.style.display='none'; try{ await window.storage.set('vzla_privacy','1'); }catch(e){} };
+})();
+
+// GeoJSON de estados embebido (carga al final para no bloquear la UI)
+window.__GEO__ = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"NAME_1":"Delta Amacuro"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-60.02099,8.55801],[-59.81559,8.28776],[-59.82929,8.24511],[-59.84846,8.22774],[-59.93972,8.20844],[-59.99331,8.16852],[-60.01946,8.06031],[-60.04649,8.03292],[-60.12922,8.02881],[-60.18309,7.98267],[-60.23113,7.96411],[-60.268,7.92126],[-60.54441,7.91554],[-60.70681,7.81826],[-60.78463,7.75178],[-60.97098,7.94603],[-61.02446,7.94068],[-61.06572,7.90616],[-61.13042,7.89701],[-61.24292,7.83895],[-61.31263,7.82058],[-61.34243,7.83198],[-61.60921,8.11852],[-61.64339,8.20797],[-61.6352,8.28704],[-62.24718,8.31381],[-62.59765,8.44799],[-62.5153,8.51943],[-62.4359,8.51382],[-62.36637,8.54571],[-62.32324,8.58937],[-62.23953,8.598],[-62.18183,8.6804],[-62.0752,8.7344],[-62.06424,8.7992],[-62.00507,8.87284],[-62.00864,8.89545],[-62.05556,8.90512],[-62.08419,8.94483],[-62.05517,9.06371],[-62.08863,9.0718],[-62.12873,9.05645],[-62.14527,9.09758],[-62.20974,9.07237],[-62.2663,9.13187],[-62.32133,9.14055],[-62.30469,9.19665],[-62.32053,9.35734],[-62.38686,9.41723],[-62.39606,9.48139],[-62.4436,9.50929],[-62.44024,9.54102],[-62.37867,9.61564],[-62.32537,9.71885],[-62.31871,9.70624],[-62.2705,9.76667],[-62.24299,9.84284],[-62.25723,9.97435],[-62.22199,9.93838],[-62.1787,9.84614],[-62.17589,9.70498],[-62.18761,9.66267],[-62.21569,9.63793],[-62.18187,9.64887],[-62.15429,9.72614],[-62.16047,9.85025],[-62.19518,9.93281],[-62.11946,9.92145],[-62.08845,9.8793],[-62.02733,9.87442],[-62.08902,9.8981],[-62.13561,9.94062],[-62.22142,9.95181],[-62.23681,9.96695],[-62.19648,10.01968],[-62.02538,9.95736],[-61.83145,9.79194],[-61.81037,9.7482],[-61.84577,9.65103],[-61.79735,9.76089],[-61.7801,9.75922],[-61.74332,9.69941],[-61.74332,9.59638],[-61.73103,9.69404],[-61.76317,9.76089],[-61.79735,9.77456],[-61.82817,9.82716],[-61.7901,9.83067],[-61.59252,9.78197],[-61.5738,9.79458],[-61.57811,9.80882],[-61.67097,9.8965],[-61.63673,9.89877],[-61.4757,9.8017],[-61.42227,9.73626],[-61.45804,9.81246],[-61.5031,9.83957],[-61.43917,9.81841],[-61.23651,9.63217],[-61.20604,9.57738],[-61.19197,9.58332],[-61.20832,9.60383],[-61.18419,9.60407],[-61.13012,9.5725],[-61.05321,9.58128],[-60.97704,9.54963],[-60.95507,9.52131],[-60.96866,9.53498],[-60.96866,9.49396],[-60.87902,9.4689],[-60.79743,9.38471],[-60.7838,9.33861],[-60.79743,9.29475],[-60.81041,9.31586],[-60.82189,9.27277],[-60.92711,9.2333],[-61.06676,9.13231],[-61.08544,9.10244],[-61.11205,9.04149],[-60.95914,9.18252],[-61.00658,9.04877],[-61.07852,8.99746],[-61.09968,8.96035],[-61.11775,8.90371],[-61.11205,8.85712],[-61.18008,8.73583],[-61.20946,8.60904],[-61.23331,8.5893],[-61.34854,8.61009],[-61.52306,8.59663],[-61.62536,8.63019],[-61.65905,8.61652],[-61.65197,8.58584],[-61.53726,8.52757],[-61.49966,8.53437],[-61.43423,8.47915],[-61.35912,8.48656],[-61.33178,8.43818],[-61.28405,8.3972],[-61.18102,8.49339],[-61.0266,8.50092],[-61.04015,8.47285],[-61.07799,8.46646],[-61.08576,8.41559],[-61.07189,8.40331],[-61.06656,8.45628],[-61.02038,8.46882],[-60.97558,8.576],[-60.69245,8.60468],[-60.62609,8.55549],[-60.47891,8.53238],[-60.46158,8.53437],[-60.40372,8.6225],[-60.3719,8.6354],[-60.19782,8.62385],[-60.02099,8.55801]]],[[[-60.76033,8.71771],[-60.67606,8.76292],[-60.68723,8.71],[-60.66602,8.68642],[-60.61161,8.68377],[-60.61768,8.63672],[-60.80813,8.63289],[-60.76033,8.71771]]],[[[-61.05997,8.79816],[-60.88329,8.84049],[-60.8617,8.87025],[-60.77811,8.8701],[-60.73237,8.89215],[-60.7376,8.86661],[-60.68604,8.78901],[-60.76973,8.74151],[-60.8069,8.67259],[-60.84658,8.63772],[-61.09387,8.63374],[-61.16991,8.59531],[-61.16711,8.69939],[-61.12644,8.75648],[-61.05997,8.79816]]],[[[-60.81786,9.206],[-60.75792,9.23041],[-60.72851,9.19294],[-60.79743,9.17182],[-60.8238,9.1223],[-60.8452,9.1166],[-60.81786,9.206]]],[[[-60.92028,9.02847],[-60.87548,9.02798],[-60.83837,9.00056],[-60.86571,8.99433],[-60.85082,8.97065],[-60.86498,8.94123],[-60.93358,8.88394],[-61.09162,8.82241],[-61.01671,8.88032],[-60.92028,9.02847]]],[[[-60.84748,9.16303],[-60.88972,9.09858],[-60.96129,9.0694],[-60.93676,9.16462],[-60.85334,9.19404],[-60.84748,9.16303]]],[[[-61.08544,8.89069],[-61.09659,8.90058],[-61.06933,8.97883],[-61.00227,9.00056],[-60.93082,9.07563],[-60.85204,9.09614],[-60.87564,9.04365],[-60.94298,9.02582],[-61.02709,8.94868],[-61.04381,8.91177],[-61.08544,8.89069]]],[[[-61.09846,8.60269],[-60.996,8.60269],[-60.99254,8.57673],[-61.0277,8.54312],[-61.05065,8.55549],[-61.04157,8.51854],[-61.27038,8.51455],[-61.22761,8.5716],[-61.18025,8.56965],[-61.12637,8.53437],[-61.13785,8.55976],[-61.09846,8.60269]]],[[[-61.39027,8.58058],[-61.3146,8.57131],[-61.30274,8.51499],[-61.26026,8.48638],[-61.26369,8.45609],[-61.29344,8.45694],[-61.33844,8.50995],[-61.43369,8.51415],[-61.54012,8.56541],[-61.39027,8.58058]]],[[[-62.24083,10.0515],[-62.23534,10.01386],[-62.298,9.98371],[-62.28637,10.0244],[-62.24083,10.0515]]]]}},{"type":"Feature","properties":{"NAME_1":"Bolívar"},"geometry":{"type":"Polygon","coordinates":[[[-60.268,7.92126],[-60.37476,7.82361],[-60.52576,7.81337],[-60.58699,7.72713],[-60.60126,7.63385],[-60.63169,7.6246],[-60.67115,7.56605],[-60.7165,7.55158],[-60.73058,7.52543],[-60.70066,7.4535],[-60.66063,7.43614],[-60.65324,7.39846],[-60.62898,7.38436],[-60.60177,7.33015],[-60.60224,7.30653],[-60.64355,7.25067],[-60.62841,7.19114],[-60.548,7.12551],[-60.47532,7.1885],[-60.37202,7.17228],[-60.29993,7.12101],[-60.29159,7.0883],[-60.30358,7.05414],[-60.3597,7.0049],[-60.37734,6.93854],[-60.42096,6.94221],[-60.54873,6.8631],[-60.63955,6.83772],[-60.70035,6.76708],[-60.72153,6.75969],[-60.79352,6.79382],[-60.83763,6.78636],[-60.90757,6.81524],[-60.89948,6.76855],[-60.93382,6.73173],[-61.12983,6.71584],[-61.19019,6.63288],[-61.21197,6.56144],[-61.13975,6.44126],[-61.16091,6.34235],[-61.1467,6.29422],[-61.11479,6.26401],[-61.12156,6.18665],[-61.16112,6.18288],[-61.19448,6.13286],[-61.26938,6.10723],[-61.33809,5.98679],[-61.39671,5.94558],[-61.37961,5.9053],[-60.73985,5.20214],[-60.6643,5.17025],[-60.59867,4.99688],[-60.59193,4.94972],[-60.61263,4.90058],[-60.71815,4.78428],[-60.86003,4.71243],[-60.89581,4.70853],[-60.9478,4.5736],[-60.97728,4.53497],[-61.16859,4.49024],[-61.23807,4.51588],[-61.31558,4.52078],[-61.32294,4.50885],[-61.29305,4.44805],[-61.33323,4.42387],[-61.45818,4.41914],[-61.50187,4.40185],[-61.52673,4.2855],[-61.56727,4.24853],[-61.7378,4.25207],[-61.86689,4.15703],[-61.93149,4.14641],[-61.99019,4.16641],[-62.03505,4.15988],[-62.15359,4.09029],[-62.4281,4.18318],[-62.46298,4.17471],[-62.4837,4.13918],[-62.53698,4.12541],[-62.56096,4.03779],[-62.74436,4.03402],[-62.76622,4.02071],[-62.76627,3.96469],[-62.7888,3.8994],[-62.74043,3.74194],[-62.74958,3.66037],[-62.78632,3.60441],[-62.88941,3.56082],[-62.95106,3.57017],[-62.99705,3.59914],[-63.2512,3.88656],[-63.35171,3.95873],[-63.4254,3.96836],[-63.46886,3.86723],[-63.51067,3.85455],[-63.6228,3.93521],[-63.67159,3.94625],[-63.77101,3.92881],[-63.87514,3.94981],[-63.99642,3.8808],[-64.03766,3.8825],[-64.06381,3.9116],[-64.1251,4.08849],[-64.17269,4.12339],[-64.36498,4.15187],[-64.60822,4.12649],[-64.64802,4.2079],[-64.62685,4.32997],[-64.6677,4.55833],[-64.70222,4.58765],[-64.942,4.6252],[-65.08507,4.79922],[-65.1841,4.99977],[-65.22216,5.14392],[-65.28229,5.22601],[-65.27443,5.27676],[-65.15904,5.29368],[-65.11747,5.35544],[-65.12023,5.37841],[-65.18361,5.43404],[-65.14442,5.47305],[-65.13558,5.52597],[-65.24183,5.61317],[-65.26454,5.66175],[-65.22643,5.71955],[-65.22464,5.75856],[-65.26593,5.77394],[-65.4375,5.77518],[-65.47509,5.76549],[-65.55176,5.69053],[-65.58201,5.68937],[-65.60886,5.7149],[-65.63674,5.78921],[-65.63834,5.85432],[-65.58026,6.08064],[-65.59015,6.1212],[-65.61413,6.14061],[-65.76089,6.14154],[-65.82711,6.1102],[-65.97933,5.80931],[-66.02746,5.78223],[-66.1234,5.78463],[-66.19588,5.74105],[-66.24383,5.73335],[-66.27486,5.78146],[-66.29918,5.88969],[-66.34078,5.92421],[-66.55288,5.74275],[-66.69494,5.69906],[-66.81757,5.69425],[-67.00001,5.61906],[-67.03577,5.63227],[-67.05489,5.69433],[-67.0767,5.71397],[-67.17122,5.70503],[-67.20403,5.7228],[-67.20178,5.78215],[-67.14453,5.93432],[-67.17796,6.09978],[-67.19571,6.11299],[-67.28829,6.11663],[-67.33152,6.14627],[-67.38454,6.11996],[-67.4563,6.19322],[-67.41239,6.24058],[-67.33689,6.25419],[-67.28235,6.3622],[-67.13781,6.45862],[-67.14884,6.52854],[-67.12851,6.63825],[-67.10339,6.70145],[-67.04955,6.75527],[-67.04179,6.78256],[-67.04288,6.82201],[-67.0619,6.85149],[-67.03438,6.91307],[-67.08156,7.02324],[-67.08983,7.06567],[-67.07419,7.09383],[-66.99516,7.15682],[-66.93115,7.16974],[-66.79473,7.25896],[-66.61453,7.32294],[-66.42728,7.59845],[-66.37072,7.63979],[-66.23629,7.63612],[-66.13089,7.68382],[-65.95966,7.6715],[-65.83399,7.75715],[-65.76849,7.84107],[-65.64816,7.89991],[-65.54287,7.89996],[-65.44677,7.86146],[-65.27808,7.87427],[-65.1037,7.83438],[-64.99608,7.77069],[-64.87306,7.66607],[-64.83847,7.6602],[-64.63706,7.77175],[-64.55096,7.76529],[-64.49546,7.79079],[-64.47815,7.81469],[-64.48156,7.8435],[-64.54616,7.89665],[-64.55251,7.92525],[-64.53711,7.98393],[-64.50624,7.99918],[-64.45007,7.99062],[-64.3524,8.00897],[-64.31294,8.06545],[-64.28325,8.08142],[-64.23163,8.07145],[-64.12556,7.96587],[-64.0659,7.98127],[-63.97079,7.96946],[-63.88537,8.01819],[-63.8399,8.11041],[-63.81199,8.13098],[-63.76073,8.12118],[-63.66768,8.15976],[-63.47356,8.1502],[-63.40003,8.22193],[-63.33081,8.21389],[-63.24957,8.28554],[-63.17464,8.31345],[-62.9769,8.30952],[-62.93636,8.27027],[-62.8791,8.27412],[-62.77061,8.37525],[-62.69661,8.37998],[-62.59765,8.44799],[-62.24718,8.31381],[-61.6352,8.28704],[-61.64339,8.20797],[-61.60921,8.11852],[-61.39408,7.87753],[-61.3192,7.82058],[-61.209,7.85254],[-61.13042,7.89701],[-61.06572,7.90616],[-61.01922,7.94262],[-60.97098,7.94603],[-60.78463,7.75178],[-60.70681,7.81826],[-60.54441,7.91554],[-60.268,7.92126]]]}},{"type":"Feature","properties":{"NAME_1":"Amazonas"},"geometry":{"type":"Polygon","coordinates":[[[-64.64802,4.2079],[-64.69987,4.26416],[-64.74594,4.28762],[-64.79162,4.28442],[-64.81291,4.25279],[-64.80126,4.18853],[-64.7271,4.14078],[-64.6429,3.97296],[-64.53143,3.85351],[-64.43454,3.77848],[-64.32416,3.72411],[-64.20298,3.59472],[-64.19786,3.51508],[-64.24561,3.41894],[-64.21631,3.25143],[-64.22292,3.124],[-64.10595,2.94721],[-63.99756,2.71493],[-64.01219,2.60377],[-64.05782,2.51044],[-64.04797,2.47132],[-63.83132,2.42864],[-63.57382,2.43437],[-63.36489,2.41308],[-63.37264,2.26684],[-63.41176,2.14938],[-63.56198,2.12636],[-63.61753,2.10116],[-63.78321,1.975],[-63.92082,1.97433],[-63.99503,1.95802],[-64.03663,1.92727],[-64.0536,1.89371],[-64.07254,1.68458],[-64.09296,1.62262],[-64.12972,1.57807],[-64.30152,1.44666],[-64.35294,1.36584],[-64.38958,1.3693],[-64.39477,1.39219],[-64.36459,1.49709],[-64.40901,1.50751],[-64.5512,1.41953],[-64.60422,1.33129],[-64.73088,1.24757],[-64.83929,1.27083],[-64.8974,1.21967],[-64.96647,1.2006],[-65.01745,1.16298],[-65.02249,1.13998],[-65.13677,1.12691],[-65.16018,1.08019],[-65.17899,0.9554],[-65.20304,0.92382],[-65.3272,0.91028],[-65.40001,0.81654],[-65.41388,0.74161],[-65.45122,0.69014],[-65.49783,0.65872],[-65.54266,0.64932],[-65.58522,0.69148],[-65.58734,0.73913],[-65.53318,0.81633],[-65.5185,0.88651],[-65.55984,0.95798],[-65.60811,0.98526],[-65.74544,0.97415],[-65.89176,0.89561],[-65.97408,0.80698],[-66.07919,0.77758],[-66.13438,0.73112],[-66.20874,0.76311],[-66.28507,0.74585],[-66.3462,0.75939],[-66.87506,1.22251],[-66.9009,1.28897],[-66.88354,1.34994],[-66.93273,1.42464],[-66.93361,1.50169],[-66.97418,1.58003],[-66.98089,1.66595],[-67.0873,1.93882],[-67.13262,1.99081],[-67.11117,2.04884],[-67.11463,2.103],[-67.17783,2.15449],[-67.21726,2.26606],[-67.21768,2.28451],[-67.17375,2.33645],[-67.18972,2.39438],[-67.32542,2.47463],[-67.34061,2.51049],[-67.47089,2.62713],[-67.50029,2.67534],[-67.57559,2.6911],[-67.59429,2.77611],[-67.62659,2.81342],[-67.69041,2.80634],[-67.75103,2.8421],[-67.82332,2.82732],[-67.85593,2.78975],[-67.85526,2.85817],[-67.83862,2.88613],[-67.45218,3.24368],[-67.3958,3.26657],[-67.30945,3.38393],[-67.30465,3.42571],[-67.40392,3.50446],[-67.47141,3.68006],[-67.49983,3.71791],[-67.53745,3.73551],[-67.59481,3.73091],[-67.63176,3.76186],[-67.64442,3.83462],[-67.69387,3.9286],[-67.72064,4.07497],[-67.78622,4.17298],[-67.80493,4.26847],[-67.7794,4.35079],[-67.79986,4.39891],[-67.79309,4.42898],[-67.8135,4.44327],[-67.82906,4.49143],[-67.87505,4.53264],[-67.85516,4.56616],[-67.84565,4.68974],[-67.82286,4.74359],[-67.8135,4.84051],[-67.82637,4.89484],[-67.79309,5.06334],[-67.82663,5.12039],[-67.8135,5.18656],[-67.84368,5.29725],[-67.83459,5.33931],[-67.77258,5.40967],[-67.75211,5.40967],[-67.647,5.48336],[-67.61429,5.55367],[-67.636,5.57759],[-67.64907,5.65609],[-67.62514,5.78451],[-67.4852,5.94408],[-67.42247,5.97824],[-67.42857,6.03847],[-67.4912,6.11449],[-67.48696,6.16678],[-67.4563,6.19322],[-67.38454,6.11996],[-67.33152,6.14627],[-67.27509,6.11291],[-67.1839,6.1071],[-67.14962,6.00994],[-67.14453,5.93432],[-67.20178,5.78215],[-67.20403,5.7228],[-67.17122,5.70503],[-67.0767,5.71397],[-67.05489,5.69433],[-67.03577,5.63227],[-67.00001,5.61906],[-66.81757,5.69425],[-66.69494,5.69906],[-66.55288,5.74275],[-66.34078,5.92421],[-66.29918,5.88969],[-66.27486,5.78146],[-66.24383,5.73335],[-66.19588,5.74105],[-66.1234,5.78463],[-66.02746,5.78223],[-65.97933,5.80931],[-65.82711,6.1102],[-65.76089,6.14154],[-65.61413,6.14061],[-65.59015,6.1212],[-65.58026,6.08064],[-65.63834,5.85432],[-65.63674,5.78921],[-65.60886,5.7149],[-65.58201,5.68937],[-65.55176,5.69053],[-65.47509,5.76549],[-65.4375,5.77518],[-65.26593,5.77394],[-65.22464,5.75856],[-65.22643,5.71955],[-65.26454,5.66175],[-65.24183,5.61317],[-65.13558,5.52597],[-65.14442,5.47305],[-65.18361,5.43404],[-65.12023,5.37841],[-65.11747,5.35544],[-65.15904,5.29368],[-65.27443,5.27676],[-65.28229,5.22601],[-65.22216,5.14392],[-65.1841,4.99977],[-65.08507,4.79922],[-64.942,4.6252],[-64.70222,4.58765],[-64.6677,4.55833],[-64.62685,4.32997],[-64.64802,4.2079]]]}},{"type":"Feature","properties":{"NAME_1":"Zulia"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-71.06245,9.6174],[-71.03506,9.74038],[-71.08617,9.812],[-71.09024,9.83662],[-71.07282,9.84162],[-71.07242,9.85786],[-71.16246,9.97093],[-71.20694,9.98062],[-71.26781,10.15192],[-71.36388,10.21996],[-71.4226,10.34317],[-71.46935,10.4018],[-71.4663,10.50214],[-71.54157,10.56489],[-71.53746,10.59797],[-71.50011,10.628],[-71.53287,10.6765],[-71.53136,10.75267],[-71.58312,10.80923],[-71.51,10.81265],[-71.44591,10.79621],[-71.43529,10.81892],[-71.45336,10.87189],[-71.41246,10.91909],[-71.44766,10.9204],[-71.50113,10.96003],[-71.45832,10.97492],[-71.28201,10.99144],[-71.24601,10.90835],[-71.08046,10.75676],[-71.081,10.63858],[-71.03966,10.58956],[-71.01483,10.51887],[-70.95734,10.46029],[-70.90313,10.4429],[-70.7787,10.45363],[-70.74519,10.41513],[-70.72904,10.33198],[-70.65808,10.30477],[-70.71079,10.19416],[-70.825,10.12132],[-70.85815,10.07003],[-70.85482,10.04355],[-70.80681,9.98394],[-70.66116,9.90451],[-70.63633,9.83994],[-70.64129,9.79196],[-70.69493,9.74674],[-70.73769,9.7617],[-70.76154,9.71646],[-70.75689,9.69243],[-70.79405,9.67861],[-70.85135,9.6022],[-71.06245,9.6174]]],[[[-71.32751,11.85],[-71.34386,11.80752],[-71.33605,11.78925],[-71.37145,11.78311],[-71.37816,11.75845],[-71.46711,11.72163],[-71.67443,11.68472],[-71.90071,11.62132],[-71.96052,11.59125],[-71.97012,11.51138],[-71.93932,11.38076],[-71.85692,11.21699],[-71.76976,11.10635],[-71.62645,11.01496],[-71.62466,11.00096],[-71.67931,10.98798],[-71.67528,11.00361],[-71.69713,11.02558],[-71.74421,11.03596],[-71.76867,11.01529],[-71.71569,10.95775],[-71.71044,10.87861],[-71.67406,10.80239],[-71.57628,10.7211],[-71.61042,10.63788],[-71.60558,10.58185],[-71.63093,10.51846],[-71.62955,10.45401],[-71.75447,10.371],[-71.89769,10.13923],[-71.96906,10.1057],[-72.04369,9.92959],[-72.12438,9.82608],[-72.09024,9.75462],[-71.99893,9.65473],[-71.94685,9.54116],[-71.96483,9.55109],[-71.98786,9.61005],[-71.98786,9.58954],[-72.00829,9.57587],[-71.97789,9.55589],[-71.96052,9.51789],[-71.96752,9.49824],[-71.98371,9.49746],[-72.01513,9.52131],[-71.99523,9.45921],[-71.93639,9.50019],[-71.91893,9.48029],[-71.91893,9.50019],[-71.84439,9.43936],[-71.90075,9.43456],[-71.91381,9.41258],[-71.90526,9.38471],[-71.89159,9.42573],[-71.83357,9.42573],[-71.76085,9.36473],[-71.73453,9.38471],[-71.72802,9.34809],[-71.7482,9.34317],[-71.73998,9.28937],[-71.81652,9.2333],[-71.7447,9.23762],[-71.74938,9.21629],[-71.73453,9.206],[-71.75324,9.20425],[-71.75182,9.19074],[-71.73453,9.16503],[-71.76187,9.13085],[-71.70857,9.07673],[-71.6022,9.0423],[-71.5148,9.04898],[-71.27355,9.13508],[-71.21853,9.187],[-71.14738,9.12782],[-71.14862,9.03348],[-71.1871,8.99253],[-71.2256,9.04839],[-71.29634,9.01361],[-71.67353,8.7188],[-71.72603,8.61723],[-71.75853,8.6302],[-71.80807,8.61963],[-71.80871,8.66603],[-71.8568,8.66813],[-71.93757,8.62087],[-71.99384,8.53212],[-72.04219,8.48682],[-72.12983,8.4568],[-72.17272,8.45804],[-72.23533,8.39944],[-72.25318,8.52731],[-72.28119,8.54168],[-72.34196,8.4955],[-72.35297,8.45401],[-72.36909,8.43228],[-72.38811,8.43545],[-72.41561,8.38269],[-72.45627,8.40393],[-72.67543,8.65151],[-72.78307,9.05994],[-72.80002,9.07945],[-72.79103,9.11394],[-72.82669,9.14169],[-72.95531,9.10399],[-72.97319,9.12844],[-72.98006,9.21652],[-73.00972,9.29538],[-73.03267,9.2946],[-73.21224,9.17345],[-73.37782,9.16469],[-73.39084,9.1945],[-73.32438,9.25592],[-73.17845,9.52304],[-73.10765,9.578],[-72.98554,9.81217],[-72.97763,9.83806],[-72.99696,9.90071],[-72.98771,9.99942],[-72.93562,10.17519],[-72.9149,10.4329],[-72.84302,10.5606],[-72.75439,10.67485],[-72.68297,10.85562],[-72.57647,10.95737],[-72.49932,11.1208],[-72.34134,11.16211],[-72.26708,11.1549],[-72.00793,11.62461],[-71.97108,11.66192],[-71.44946,11.79546],[-71.35763,11.8508],[-71.32751,11.85]]]]}},{"type":"Feature","properties":{"NAME_1":"Táchira"},"geometry":{"type":"Polygon","coordinates":[[[-72.41561,8.38269],[-72.38811,8.43545],[-72.36909,8.43228],[-72.35297,8.45401],[-72.34196,8.4955],[-72.28119,8.54168],[-72.25318,8.52731],[-72.23533,8.39944],[-72.17272,8.45804],[-72.12983,8.4568],[-72.04219,8.48682],[-71.99384,8.53212],[-71.94493,8.61141],[-71.80946,8.58123],[-71.77225,8.46897],[-71.82964,8.39541],[-71.81078,8.33923],[-71.81853,8.31037],[-71.88646,8.23211],[-71.8971,8.17547],[-71.82132,8.17048],[-71.71135,8.04907],[-71.68076,8.06116],[-71.58885,8.05729],[-71.50772,8.0054],[-71.49995,7.96993],[-71.52224,7.9299],[-71.50609,7.82996],[-71.53279,7.75829],[-71.49121,7.71266],[-71.4909,7.62979],[-71.37796,7.52404],[-71.31978,7.49642],[-71.36068,7.48618],[-71.66756,7.54747],[-71.82672,7.53592],[-71.84582,7.52613],[-71.83964,7.49068],[-71.87501,7.42149],[-72.01087,7.36338],[-72.0688,7.375],[-72.18853,7.4498],[-72.31971,7.44841],[-72.39581,7.40749],[-72.45131,7.44022],[-72.4787,7.48445],[-72.4634,7.57075],[-72.48335,7.64935],[-72.45446,7.87616],[-72.4912,7.9375],[-72.43012,7.99052],[-72.40707,8.04377],[-72.35008,8.04259],[-72.33385,8.06548],[-72.35726,8.17214],[-72.39596,8.2566],[-72.38677,8.33861],[-72.41561,8.38269]]]}},{"type":"Feature","properties":{"NAME_1":"Apure"},"geometry":{"type":"Polygon","coordinates":[[[-72.39581,7.40749],[-72.31971,7.44841],[-72.18853,7.4498],[-72.0688,7.375],[-71.99028,7.36547],[-71.88116,7.41603],[-71.82987,7.4998],[-71.74877,7.47828],[-71.71585,7.44247],[-71.66035,7.43216],[-71.63958,7.43234],[-71.62756,7.4534],[-71.6072,7.43831],[-71.56312,7.45259],[-71.52093,7.43831],[-71.45442,7.46389],[-71.26769,7.44513],[-71.24885,7.45453],[-71.18916,7.40417],[-71.06137,7.37872],[-70.94678,7.30798],[-70.87417,7.28749],[-70.79534,7.3148],[-70.71286,7.28994],[-70.63085,7.29431],[-70.60354,7.32844],[-70.54783,7.33371],[-70.50052,7.38368],[-70.47184,7.3819],[-70.46024,7.42306],[-70.36833,7.45045],[-70.3209,7.51688],[-70.28888,7.60377],[-70.15719,7.61501],[-70.13352,7.62933],[-70.0866,7.71074],[-70.01389,7.75426],[-69.93549,7.75777],[-69.86299,7.81198],[-69.83514,7.80764],[-69.7337,7.84443],[-69.57704,7.95104],[-69.44095,8.07165],[-69.18869,8.07067],[-69.13345,8.04163],[-69.11265,8.00685],[-69.05431,7.98019],[-68.97028,7.99938],[-68.94506,7.93176],[-68.82347,7.90252],[-68.72983,7.91585],[-68.63387,7.96936],[-68.48514,7.93859],[-68.4259,7.97936],[-68.37471,7.99135],[-68.34174,7.9659],[-68.27559,7.97093],[-68.25658,7.95652],[-68.05437,8.04845],[-67.95443,8.05465],[-67.88482,8.02672],[-67.86257,8.03481],[-67.6053,7.99941],[-67.54618,7.96251],[-67.53812,7.91701],[-67.46812,7.90383],[-67.39583,7.91127],[-67.3379,7.88908],[-67.30454,7.84293],[-67.22649,7.79852],[-67.13969,7.77224],[-67.05675,7.79746],[-67.0157,7.76953],[-66.95079,7.78839],[-66.76478,7.75511],[-66.54609,7.79521],[-66.54555,7.81107],[-66.52751,7.81634],[-66.45653,7.74622],[-66.3948,7.72787],[-66.35261,7.73578],[-66.3246,7.68759],[-66.33052,7.64842],[-66.37072,7.63979],[-66.42728,7.59845],[-66.61453,7.32294],[-66.79473,7.25896],[-66.93115,7.16974],[-66.99516,7.15682],[-67.07419,7.09383],[-67.08983,7.06567],[-67.08156,7.02324],[-67.03438,6.91307],[-67.0619,6.85149],[-67.04288,6.82201],[-67.04179,6.78256],[-67.04955,6.75527],[-67.10339,6.70145],[-67.12851,6.63825],[-67.14884,6.52854],[-67.13114,6.47555],[-67.17024,6.42938],[-67.28235,6.3622],[-67.32235,6.27251],[-67.35586,6.24326],[-67.41239,6.24058],[-67.45097,6.19804],[-67.49048,6.20164],[-67.57398,6.26623],[-67.8272,6.31341],[-67.86813,6.27988],[-67.9043,6.27515],[-67.92414,6.23456],[-67.97799,6.21784],[-68.14651,6.22378],[-68.30417,6.17699],[-68.44902,6.195],[-68.58472,6.17001],[-68.63531,6.13588],[-68.80786,6.18433],[-68.89292,6.18433],[-69.06113,6.21784],[-69.2461,6.08066],[-69.3314,6.15637],[-69.44364,6.12224],[-70.1292,6.97255],[-70.19501,6.97756],[-70.28762,6.93694],[-70.31906,6.93829],[-70.45166,7.00769],[-70.5107,7.0097],[-70.57861,7.08582],[-70.63928,7.07347],[-70.7033,7.09993],[-70.89554,7.06851],[-70.96132,7.00944],[-71.01127,6.99089],[-71.13604,6.99213],[-71.18405,6.96257],[-71.27552,6.98438],[-71.29252,7.02577],[-71.4139,7.03099],[-71.4677,7.01244],[-71.50992,7.03461],[-71.59472,7.03011],[-71.6204,7.05213],[-71.6543,7.05337],[-71.67353,7.04422],[-71.6696,7.02774],[-71.77404,7.02893],[-71.77776,7.00753],[-71.88101,6.9866],[-71.99382,7.01285],[-72.09826,7.08675],[-72.16414,7.2208],[-72.17422,7.27961],[-72.16404,7.32886],[-72.20621,7.38188],[-72.39581,7.40749]]]}},{"type":"Feature","properties":{"NAME_1":"Mérida"},"geometry":{"type":"Polygon","coordinates":[[[-71.21853,9.187],[-71.20641,9.23216],[-71.15172,9.28852],[-71.07282,9.31354],[-71.03318,9.3525],[-70.9736,9.35126],[-70.91773,9.30287],[-70.86306,9.139],[-70.78906,9.0912],[-70.77663,9.06676],[-70.73149,9.0535],[-70.70247,8.9916],[-70.67726,8.98586],[-70.58003,9.04022],[-70.54186,9.00532],[-70.53468,8.95535],[-70.57747,8.85667],[-70.68695,8.82362],[-70.72769,8.76474],[-70.76857,8.78148],[-70.83771,8.72546],[-70.91006,8.62413],[-70.92995,8.62927],[-70.96967,8.59193],[-70.98044,8.50666],[-71.02736,8.46532],[-71.03837,8.42434],[-71.07754,8.37634],[-71.06514,8.30781],[-71.0315,8.27895],[-71.01184,8.21976],[-71.05995,8.11005],[-71.25378,7.92277],[-71.42967,7.80226],[-71.46214,7.76953],[-71.45669,7.70242],[-71.48356,7.68449],[-71.49648,7.7247],[-71.53279,7.75829],[-71.50609,7.82996],[-71.52224,7.9299],[-71.49995,7.96993],[-71.50772,8.0054],[-71.58885,8.05729],[-71.68076,8.06116],[-71.71135,8.04907],[-71.82132,8.17048],[-71.8971,8.17547],[-71.88646,8.23211],[-71.81853,8.31037],[-71.81078,8.33923],[-71.82964,8.39541],[-71.77107,8.48093],[-71.81714,8.58705],[-71.94493,8.61141],[-71.83331,8.67317],[-71.80264,8.65828],[-71.80807,8.61963],[-71.75853,8.6302],[-71.72603,8.61723],[-71.67353,8.7188],[-71.29634,9.01361],[-71.2256,9.04839],[-71.19456,8.99625],[-71.1573,9.01113],[-71.14738,9.12782],[-71.21853,9.187]]]}},{"type":"Feature","properties":{"NAME_1":"Trujillo"},"geometry":{"type":"Polygon","coordinates":[[[-71.05867,9.33793],[-71.09081,9.54409],[-71.06245,9.6174],[-70.85135,9.6022],[-70.79405,9.67861],[-70.75689,9.69243],[-70.76154,9.71646],[-70.73769,9.7617],[-70.69493,9.74674],[-70.65617,9.77708],[-70.63633,9.83994],[-70.66116,9.90451],[-70.66201,9.95583],[-70.60863,10.03156],[-70.56641,10.03032],[-70.56145,9.98934],[-70.51675,9.92852],[-70.45469,9.89624],[-70.35164,9.92604],[-70.32932,9.88632],[-70.27966,9.87389],[-70.24739,9.82674],[-70.21333,9.84581],[-70.16075,9.78529],[-70.09414,9.77584],[-70.01585,9.69894],[-70.03283,9.66845],[-70.07471,9.66605],[-70.13481,9.61073],[-70.10928,9.51715],[-70.06215,9.49265],[-70.03298,9.43033],[-70.06458,9.35633],[-70.13783,9.25801],[-70.09233,9.23923],[-70.06536,9.25228],[-70.05936,9.23683],[-70.06272,9.14365],[-70.12411,9.02007],[-70.18245,9.00787],[-70.27131,9.0234],[-70.42673,9.02247],[-70.49608,8.99927],[-70.53468,8.95535],[-70.54186,9.00532],[-70.58003,9.04022],[-70.69516,8.98506],[-70.73149,9.0535],[-70.77663,9.06676],[-70.78906,9.0912],[-70.86306,9.139],[-70.92765,9.31279],[-70.9736,9.35126],[-71.03318,9.3525],[-71.05867,9.33793]]]}},{"type":"Feature","properties":{"NAME_1":"Falcón"},"geometry":{"type":"Polygon","coordinates":[[[-71.28201,10.99144],[-70.8697,11.19628],[-70.68562,11.24803],[-70.62975,11.2392],[-70.51391,11.25316],[-70.48013,11.28901],[-70.50744,11.26166],[-70.51061,11.28636],[-70.48644,11.29511],[-70.43395,11.2876],[-70.28795,11.35708],[-70.23107,11.35159],[-70.15901,11.40143],[-70.14517,11.42894],[-70.146,11.45441],[-70.1644,11.46293],[-70.15447,11.46997],[-70.09937,11.42955],[-70.07901,11.45734],[-70.03653,11.4409],[-70.05391,11.50648],[-70.11986,11.52241],[-70.0963,11.53107],[-70.1616,11.56855],[-70.02437,11.51407],[-69.97562,11.5029],[-69.94598,11.51977],[-69.9259,11.51306],[-69.8446,11.43623],[-69.81408,11.4256],[-69.76,11.46809],[-69.74364,11.50336],[-69.81603,11.69367],[-69.82502,11.67524],[-69.84952,11.69367],[-69.92772,11.65843],[-69.95006,11.65668],[-69.94514,11.67324],[-70.18651,11.60269],[-70.22989,11.62788],[-70.23314,11.65274],[-70.21239,11.6872],[-70.23314,11.74836],[-70.2058,11.73469],[-70.20592,11.76252],[-70.22395,11.7884],[-70.24059,11.76195],[-70.28454,11.85733],[-70.30199,11.85814],[-70.28356,11.93964],[-70.21325,12.05679],[-70.2058,12.11201],[-70.14428,12.11799],[-70.06456,12.18146],[-70.01773,12.19892],[-69.92536,12.15961],[-69.83532,12.0152],[-69.80858,11.80362],[-69.74714,11.63227],[-69.66584,11.49775],[-69.62361,11.46776],[-69.58869,11.46304],[-69.50007,11.50873],[-69.3767,11.49405],[-69.27042,11.53604],[-69.10904,11.49136],[-69.06188,11.45352],[-68.84439,11.44741],[-68.75438,11.37409],[-68.65567,11.34789],[-68.61522,11.30341],[-68.51797,11.24934],[-68.48351,11.20694],[-68.41759,11.17914],[-68.40331,11.20026],[-68.38866,11.12824],[-68.27843,10.92548],[-68.28726,10.91283],[-68.33507,10.9396],[-68.37662,10.91909],[-68.26268,10.90314],[-68.23884,10.88496],[-68.26618,10.8581],[-68.32657,10.84927],[-68.33194,10.82958],[-68.31835,10.74518],[-68.27375,10.63422],[-68.51938,10.63858],[-68.59139,10.67831],[-68.59635,10.72051],[-68.63358,10.73294],[-68.76921,10.73247],[-68.80928,10.68622],[-68.88551,10.65953],[-68.92411,10.69733],[-69.12627,10.68126],[-69.42609,10.7119],[-69.49859,10.69514],[-69.5372,10.74201],[-69.66393,10.76467],[-69.78987,10.70144],[-69.82124,10.70175],[-69.80607,10.72035],[-69.82379,10.7303],[-69.86658,10.698],[-69.96932,10.69048],[-70.04722,10.64527],[-70.1575,10.6517],[-70.24718,10.55837],[-70.33028,10.55806],[-70.41453,10.4838],[-70.49231,10.44742],[-70.53538,10.36301],[-70.61318,10.34146],[-70.65808,10.30477],[-70.72904,10.33198],[-70.74519,10.41513],[-70.7787,10.45363],[-70.90313,10.4429],[-70.95734,10.46029],[-71.01483,10.51887],[-71.03966,10.58956],[-71.081,10.63858],[-71.08046,10.75676],[-71.24601,10.90835],[-71.28201,10.99144]]]}},{"type":"Feature","properties":{"NAME_1":"Yaracuy"},"geometry":{"type":"Polygon","coordinates":[[[-68.27375,10.63422],[-68.25174,10.59512],[-68.28169,10.55858],[-68.31435,10.53943],[-68.36267,10.54858],[-68.38954,10.49349],[-68.39411,10.35818],[-68.36161,10.2609],[-68.42318,10.17292],[-68.41515,10.07391],[-68.3705,9.99004],[-68.52256,9.89586],[-68.54297,9.90438],[-68.52829,9.92301],[-68.58211,9.95211],[-68.58224,10.00502],[-68.62994,10.01037],[-68.6697,9.9688],[-68.80432,9.96087],[-68.85179,9.86002],[-68.88501,9.85108],[-68.97772,9.85728],[-68.92447,9.93503],[-68.95881,10.00022],[-68.97912,10.00983],[-69.07195,9.95815],[-69.07947,9.88601],[-69.10531,9.88203],[-69.13921,9.9334],[-69.14151,10.00533],[-69.22747,10.11013],[-69.23755,10.14708],[-69.21957,10.17183],[-69.16208,10.12806],[-69.118,10.20271],[-69.01498,10.24842],[-69.02718,10.42306],[-69.06056,10.41926],[-69.07208,10.43794],[-69.0201,10.55478],[-68.96439,10.55688],[-68.90114,10.59801],[-68.88551,10.65953],[-68.80928,10.68622],[-68.76921,10.73247],[-68.61371,10.72798],[-68.59635,10.72051],[-68.59139,10.67831],[-68.51938,10.63858],[-68.27375,10.63422]]]}},{"type":"Feature","properties":{"NAME_1":"Carabobo"},"geometry":{"type":"Polygon","coordinates":[[[-68.25174,10.59512],[-68.20958,10.53726],[-68.12955,10.48774],[-68.00646,10.48847],[-67.94123,10.46646],[-67.87328,10.47647],[-67.87422,10.37944],[-67.81875,10.32242],[-67.75764,10.34361],[-67.67196,10.32436],[-67.65411,10.29984],[-67.67005,10.24444],[-67.6545,10.10393],[-67.68736,10.06329],[-67.69018,10.02435],[-67.66217,10.03288],[-67.55324,9.99399],[-67.52903,9.90679],[-67.5667,9.91689],[-67.59726,9.86017],[-67.62734,9.87157],[-67.69907,9.84232],[-67.70441,9.88296],[-67.73658,9.89299],[-67.76537,9.92627],[-67.79919,9.93045],[-67.81407,9.91759],[-67.78883,9.82705],[-67.86725,9.81966],[-67.98789,9.83519],[-68.00285,9.85395],[-67.98657,9.8787],[-67.99533,9.88934],[-68.07209,9.85676],[-68.24167,9.98701],[-68.2535,10.02146],[-68.20521,10.0629],[-68.24167,10.12868],[-68.30272,10.0698],[-68.33892,10.00316],[-68.3705,9.99004],[-68.39055,10.00681],[-68.41515,10.07391],[-68.42318,10.17292],[-68.36161,10.2609],[-68.39411,10.35818],[-68.38954,10.49349],[-68.36267,10.54858],[-68.3096,10.54036],[-68.25174,10.59512]]]}},{"type":"Feature","properties":{"NAME_1":"Aragua"},"geometry":{"type":"Polygon","coordinates":[[[-67.86921,10.46128],[-67.77758,10.496],[-67.39175,10.54308],[-67.40513,10.5153],[-67.33961,10.3959],[-67.28945,10.4281],[-67.23866,10.43058],[-67.17432,10.35485],[-67.18646,10.31304],[-67.10874,10.26485],[-67.13417,10.15452],[-67.1191,10.11148],[-67.08828,10.08285],[-67.04161,10.05313],[-67.00293,10.07492],[-66.97865,10.07158],[-66.92371,10.00998],[-66.87852,9.99983],[-66.79142,10.01277],[-66.74817,9.99112],[-66.61275,9.96645],[-66.58376,9.79878],[-66.62275,9.75481],[-66.62107,9.72098],[-66.54306,9.62275],[-66.5742,9.52771],[-66.55658,9.47092],[-66.58056,9.40193],[-66.6797,9.39348],[-66.88165,9.45989],[-66.99733,9.45229],[-66.98051,9.50932],[-66.89899,9.53655],[-66.87638,9.56177],[-66.85586,9.60456],[-66.85873,9.67225],[-66.94854,9.69173],[-66.98622,9.75],[-67.10161,9.79951],[-67.18135,9.91983],[-67.26385,9.91113],[-67.28558,9.93138],[-67.34061,9.92642],[-67.42813,9.9874],[-67.53412,9.95149],[-67.56584,10.00184],[-67.66217,10.03288],[-67.68731,10.02138],[-67.68736,10.06329],[-67.6545,10.10393],[-67.67005,10.24444],[-67.65628,10.30614],[-67.68119,10.32971],[-67.75147,10.3433],[-67.81875,10.32242],[-67.87422,10.37944],[-67.86921,10.46128]]]}},{"type":"Feature","properties":{"NAME_1":"La Guaira"},"geometry":{"type":"Polygon","coordinates":[[[-67.39175,10.54308],[-67.17003,10.55598],[-67.01236,10.61123],[-66.54157,10.63272],[-66.33397,10.61123],[-66.31361,10.62949],[-66.30799,10.59282],[-66.31163,10.54029],[-66.32507,10.53068],[-66.35432,10.54533],[-66.43974,10.53711],[-66.57795,10.56047],[-66.60254,10.54416],[-66.94903,10.54928],[-67.00683,10.57512],[-67.0158,10.54432],[-67.05324,10.52546],[-67.05334,10.47877],[-67.22015,10.41668],[-67.23866,10.43058],[-67.28945,10.4281],[-67.33961,10.3959],[-67.40513,10.5153],[-67.39175,10.54308]]]}},{"type":"Feature","properties":{"NAME_1":"Miranda"},"geometry":{"type":"Polygon","coordinates":[[[-66.31361,10.62949],[-66.29516,10.64671],[-66.25178,10.64859],[-66.1044,10.58442],[-66.04654,10.57648],[-66.07616,10.5489],[-66.12169,10.54295],[-66.12222,10.50703],[-65.95287,10.35163],[-65.88207,10.30956],[-65.92992,10.32319],[-65.94416,10.30956],[-65.923,10.28221],[-65.89696,10.28799],[-65.80211,10.22565],[-65.71764,10.22016],[-65.84732,10.2814],[-65.86848,10.30956],[-65.58043,10.18545],[-65.42577,10.14342],[-65.43856,10.09533],[-65.6333,9.97221],[-65.66454,9.97942],[-65.74541,9.93924],[-65.86179,9.95683],[-65.97103,9.9289],[-66.06183,9.95645],[-66.1117,9.94777],[-66.13268,9.9666],[-66.19048,9.9487],[-66.39248,10.01944],[-66.45012,9.98198],[-66.52782,9.96838],[-66.66593,9.97322],[-66.79142,10.01277],[-66.87852,9.99983],[-66.92989,10.01308],[-66.97865,10.07158],[-67.00293,10.07492],[-67.04161,10.05313],[-67.1191,10.11148],[-67.13411,10.16212],[-67.10874,10.26485],[-67.18646,10.31304],[-67.17432,10.35485],[-67.22015,10.41668],[-67.15318,10.44073],[-67.05148,10.39451],[-66.94369,10.42143],[-66.89744,10.41621],[-66.88103,10.4814],[-66.85429,10.5115],[-66.87377,10.54703],[-66.8632,10.55284],[-66.60254,10.54416],[-66.57795,10.56047],[-66.43974,10.53711],[-66.35432,10.54533],[-66.32507,10.53068],[-66.31163,10.54029],[-66.31361,10.62949]]]}},{"type":"Feature","properties":{"NAME_1":"Anzoátegui"},"geometry":{"type":"Polygon","coordinates":[[[-65.42577,10.14342],[-65.16955,10.09732],[-65.08019,10.06257],[-65.17569,10.08364],[-65.14892,10.05842],[-65.07335,10.0489],[-64.96349,10.09732],[-64.7766,10.0904],[-64.72863,10.13605],[-64.71703,10.22761],[-64.6761,10.21332],[-64.6966,10.19969],[-64.66763,10.18732],[-64.65762,10.19668],[-64.66861,10.2071],[-64.63142,10.24811],[-64.57242,10.2617],[-64.5799,10.24811],[-64.53608,10.25231],[-64.51474,10.22351],[-64.44575,10.19323],[-64.43583,10.14623],[-64.34731,10.09463],[-64.30571,10.10137],[-64.24695,10.07096],[-64.15383,10.07928],[-64.04531,10.1283],[-63.97916,10.11512],[-63.94883,10.08261],[-64.05575,10.05381],[-64.06167,9.96864],[-64.03417,9.93565],[-63.98839,9.93526],[-63.99007,9.91619],[-63.92255,9.86979],[-63.94557,9.84085],[-63.96446,9.76217],[-63.94299,9.70204],[-63.84664,9.55061],[-63.96909,9.41103],[-63.97322,9.32388],[-63.92036,9.26515],[-63.9063,9.20548],[-63.77189,9.23628],[-63.63363,9.16748],[-63.59759,9.11797],[-63.41806,9.00826],[-63.37135,8.91865],[-63.33845,8.80538],[-63.30094,8.77791],[-62.94928,8.79391],[-62.96326,8.75936],[-63.02426,8.76006],[-63.0554,8.70911],[-63.04072,8.59591],[-62.98832,8.5526],[-62.74275,8.47338],[-62.74694,8.43235],[-62.68583,8.38572],[-62.77061,8.37525],[-62.84554,8.29394],[-62.90693,8.26689],[-62.96171,8.28443],[-62.9769,8.30952],[-63.17464,8.31345],[-63.24957,8.28554],[-63.33081,8.21389],[-63.40003,8.22193],[-63.47356,8.1502],[-63.66768,8.15976],[-63.76073,8.12118],[-63.81199,8.13098],[-63.8399,8.11041],[-63.88537,8.01819],[-63.98113,7.96745],[-64.0659,7.98127],[-64.12556,7.96587],[-64.23163,8.07145],[-64.28325,8.08142],[-64.31294,8.06545],[-64.3524,8.00897],[-64.45007,7.99062],[-64.50624,7.99918],[-64.53711,7.98393],[-64.55251,7.92525],[-64.54616,7.89665],[-64.48156,7.8435],[-64.47815,7.81469],[-64.49546,7.79079],[-64.55096,7.76529],[-64.63706,7.77175],[-64.83847,7.6602],[-64.87306,7.66607],[-64.99608,7.77069],[-65.1037,7.83438],[-65.27808,7.87427],[-65.35665,7.86942],[-65.38921,7.9206],[-65.4845,7.93099],[-65.49607,7.97964],[-65.48047,8.02393],[-65.3951,8.11299],[-65.36593,8.18493],[-65.20663,8.36936],[-65.1501,8.55664],[-65.17077,8.64663],[-65.1455,8.73112],[-65.07995,8.75688],[-65.00884,8.73882],[-64.86407,8.74099],[-64.84596,8.77311],[-64.84627,8.82959],[-64.78994,8.87809],[-64.8096,8.91493],[-64.88575,8.98242],[-64.93735,9.00377],[-64.94515,9.06281],[-64.9776,9.11154],[-65.07315,9.17383],[-65.16488,9.17864],[-65.25829,9.27719],[-65.28459,9.37656],[-65.20674,9.43431],[-65.21821,9.50684],[-65.36957,9.55479],[-65.4306,9.65052],[-65.48884,9.56921],[-65.70038,9.68582],[-65.66495,9.77398],[-65.70262,9.84627],[-65.6966,9.95342],[-65.66454,9.97942],[-65.63829,9.97074],[-65.56219,10.00626],[-65.44895,10.07964],[-65.42577,10.14342]]]}},{"type":"Feature","properties":{"NAME_1":"Sucre"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-64.53608,10.25231],[-64.49055,10.24067],[-64.3767,10.30077],[-64.38223,10.31696],[-64.43277,10.30598],[-64.47004,10.32319],[-64.3806,10.3437],[-64.3806,10.371],[-64.40241,10.371],[-64.38126,10.38622],[-64.35741,10.33869],[-64.33918,10.39069],[-64.21056,10.43928],[-64.18855,10.47761],[-64.12767,10.47761],[-64.05183,10.44794],[-63.94302,10.46039],[-63.86364,10.44611],[-63.65502,10.49453],[-63.72973,10.4975],[-63.82315,10.54938],[-63.92374,10.56029],[-63.96666,10.58137],[-64.04548,10.57026],[-64.03185,10.59007],[-64.08617,10.56712],[-64.16906,10.57026],[-64.23388,10.51504],[-64.24913,10.52045],[-64.29768,10.61986],[-64.27074,10.67267],[-64.24079,10.64606],[-64.14476,10.61742],[-64.0489,10.65217],[-64.03185,10.63788],[-63.91511,10.63105],[-63.84683,10.65217],[-63.81212,10.71361],[-63.75695,10.66559],[-63.55333,10.62914],[-63.46618,10.66763],[-63.4049,10.66584],[-63.38756,10.69937],[-63.33975,10.67267],[-63.33153,10.68537],[-63.25129,10.68057],[-63.16161,10.73469],[-63.13744,10.70677],[-63.01423,10.7211],[-62.92821,10.69937],[-62.70568,10.76203],[-62.63805,10.74262],[-62.1542,10.68635],[-62.10241,10.71361],[-62.03624,10.71402],[-61.98233,10.73469],[-61.93517,10.7211],[-61.84577,10.74095],[-61.87686,10.72272],[-61.88671,10.68012],[-61.89769,10.69038],[-61.96247,10.65217],[-62.08894,10.63129],[-62.17447,10.64228],[-62.25267,10.63239],[-62.33495,10.53022],[-62.66234,10.56704],[-62.92333,10.53083],[-63.01081,10.45356],[-62.89411,10.52928],[-62.857,10.53156],[-62.84118,10.51179],[-62.83113,10.40681],[-62.86612,10.39151],[-62.89782,10.41201],[-62.99519,10.40786],[-63.00398,10.38467],[-62.97598,10.39834],[-62.95617,10.35737],[-62.99714,10.32319],[-62.97859,10.31098],[-63.00398,10.27538],[-62.93163,10.28563],[-62.9571,10.38378],[-62.94249,10.40518],[-62.87979,10.371],[-62.80163,10.40518],[-62.76448,10.39533],[-62.67496,10.29336],[-62.67496,10.21332],[-62.62658,10.1308],[-62.65661,10.08218],[-62.71255,10.06932],[-62.77746,10.08649],[-62.82274,10.04206],[-62.85139,10.08039],[-62.89411,10.06932],[-62.90152,10.10346],[-62.93513,10.08364],[-62.963,10.1103],[-62.98933,10.09626],[-63.03049,10.10587],[-63.06354,10.18726],[-63.10242,10.184],[-63.11276,10.21868],[-63.19198,10.16765],[-63.22061,10.19385],[-63.37982,10.24467],[-63.40277,10.25795],[-63.4077,10.28371],[-63.46338,10.31467],[-63.53234,10.2817],[-63.55503,10.22963],[-63.73024,10.20535],[-63.80078,10.12775],[-63.94883,10.08261],[-63.97916,10.11512],[-64.03735,10.12915],[-64.15383,10.07928],[-64.24695,10.07096],[-64.30571,10.10137],[-64.34731,10.09463],[-64.43583,10.14623],[-64.44575,10.19323],[-64.51474,10.22351],[-64.53608,10.25231]]],[[[-62.78112,10.49291],[-62.6494,10.34492],[-62.65982,10.31],[-62.71032,10.37202],[-62.78759,10.43012],[-62.78112,10.49291]]]]}},{"type":"Feature","properties":{"NAME_1":"Monagas"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-63.04377,10.11993],[-62.98217,10.06908],[-62.95299,10.08808],[-62.93602,10.00825],[-62.92077,10.00796],[-62.93171,10.06501],[-62.91462,10.08364],[-62.9112,10.05231],[-62.89558,10.04401],[-62.85314,10.05565],[-62.79792,10.029],[-62.8011,9.996],[-62.77741,10.01846],[-62.78498,10.06977],[-62.76431,10.07616],[-62.7167,10.04841],[-62.66356,10.06086],[-62.61852,10.09162],[-62.60595,10.13325],[-62.62658,10.19628],[-62.61954,10.22443],[-62.57995,10.22443],[-62.51757,10.18415],[-62.42943,9.98086],[-62.44164,9.93281],[-62.39696,9.91144],[-62.31871,9.7683],[-62.32363,9.70228],[-62.44613,9.52541],[-62.43086,9.49684],[-62.39606,9.48139],[-62.37435,9.39961],[-62.32053,9.35734],[-62.30469,9.19665],[-62.32133,9.14055],[-62.2663,9.13187],[-62.20974,9.07237],[-62.14527,9.09758],[-62.12873,9.05645],[-62.08863,9.0718],[-62.05517,9.06371],[-62.08419,8.94483],[-62.05556,8.90512],[-62.00864,8.89545],[-62.00755,8.8638],[-62.06424,8.7992],[-62.0752,8.7344],[-62.18183,8.6804],[-62.23953,8.598],[-62.32324,8.58937],[-62.36637,8.54571],[-62.4359,8.51382],[-62.5153,8.51943],[-62.68583,8.38572],[-62.74694,8.43235],[-62.74275,8.47338],[-62.98832,8.5526],[-63.04072,8.59591],[-63.0554,8.70911],[-63.02426,8.76006],[-62.96326,8.75936],[-62.94928,8.79391],[-63.30094,8.77791],[-63.33845,8.80538],[-63.37135,8.91865],[-63.41806,9.00826],[-63.59759,9.11797],[-63.63363,9.16748],[-63.76013,9.23179],[-63.83966,9.23008],[-63.90258,9.20293],[-63.92036,9.26515],[-63.97322,9.32388],[-63.96663,9.41669],[-63.84664,9.55061],[-63.94299,9.70204],[-63.96446,9.76217],[-63.94557,9.84085],[-63.92255,9.86979],[-63.99007,9.91619],[-63.98839,9.93526],[-64.03417,9.93565],[-64.05453,9.95218],[-64.05575,10.05381],[-63.98312,10.0636],[-63.80078,10.12775],[-63.73024,10.20535],[-63.55503,10.22963],[-63.53234,10.2817],[-63.46338,10.31467],[-63.4077,10.28371],[-63.40277,10.25795],[-63.37982,10.24467],[-63.22061,10.19385],[-63.19198,10.16765],[-63.11276,10.21868],[-63.10242,10.184],[-63.06354,10.18726],[-63.04377,10.11993]]],[[[-62.33113,9.92056],[-62.3164,9.88565],[-62.32575,9.84418],[-62.34935,9.8723],[-62.34878,9.91372],[-62.33113,9.92056]]],[[[-62.43619,10.04658],[-62.3911,9.99335],[-62.40892,9.97256],[-62.43619,10.04658]]]]}},{"type":"Feature","properties":{"NAME_1":"Nueva Esparta"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-63.84683,11.1354],[-63.78767,10.97378],[-63.81957,10.98054],[-63.81957,10.9538],[-63.84293,10.96776],[-63.89806,10.88496],[-63.97655,10.8911],[-64.05972,10.85761],[-64.05687,10.88711],[-64.0961,10.89094],[-64.11636,10.92862],[-64.17585,10.96747],[-64.22435,10.93936],[-64.40856,10.96747],[-64.37059,11.06249],[-64.22008,11.09154],[-64.18883,11.07364],[-64.18163,11.03408],[-64.11071,11.00019],[-64.04906,10.99071],[-64.01757,11.01529],[-64.01757,11.05622],[-63.97655,11.11831],[-63.93562,11.12515],[-63.88097,11.17914],[-63.84683,11.1354]]],[[[-63.97655,10.80923],[-63.90364,10.77729],[-63.89464,10.75458],[-63.90917,10.73554],[-63.93554,10.73371],[-63.95678,10.74413],[-63.95613,10.76203],[-64.00451,10.7757],[-63.99889,10.79926],[-63.97655,10.80923]]],[[[-64.16861,10.82795],[-64.15587,10.81196],[-64.17479,10.79922],[-64.22094,10.80646],[-64.20344,10.8273],[-64.16861,10.82795]]]]}},{"type":"Feature","properties":{"NAME_1":"Guárico"},"geometry":{"type":"Polygon","coordinates":[[[-65.6966,9.95342],[-65.70262,9.84627],[-65.66495,9.77398],[-65.70038,9.68582],[-65.48884,9.56921],[-65.4306,9.65052],[-65.36957,9.55479],[-65.21821,9.50684],[-65.20674,9.43431],[-65.28459,9.37656],[-65.25829,9.27719],[-65.16488,9.17864],[-65.07315,9.17383],[-64.9776,9.11154],[-64.94515,9.06281],[-64.93735,9.00377],[-64.88575,8.98242],[-64.8096,8.91493],[-64.78994,8.87809],[-64.84627,8.82959],[-64.84596,8.77311],[-64.86407,8.74099],[-65.00884,8.73882],[-65.07995,8.75688],[-65.14938,8.72469],[-65.17077,8.64663],[-65.1501,8.55664],[-65.20663,8.36936],[-65.36593,8.18493],[-65.3951,8.11299],[-65.49434,7.99166],[-65.4845,7.93099],[-65.38921,7.9206],[-65.35665,7.86942],[-65.44677,7.86146],[-65.54287,7.89996],[-65.64816,7.89991],[-65.76849,7.84107],[-65.83399,7.75715],[-65.93946,7.67917],[-65.9838,7.66951],[-66.13089,7.68382],[-66.23629,7.63612],[-66.33052,7.64842],[-66.3246,7.68759],[-66.35261,7.73578],[-66.3948,7.72787],[-66.45653,7.74622],[-66.52751,7.81634],[-66.54555,7.81107],[-66.54609,7.79521],[-66.76478,7.75511],[-66.95079,7.78839],[-67.0157,7.76953],[-67.05675,7.79746],[-67.13969,7.77224],[-67.22649,7.79852],[-67.30454,7.84293],[-67.3379,7.88908],[-67.39583,7.91127],[-67.46812,7.90383],[-67.53812,7.91701],[-67.54422,7.95877],[-67.51673,7.9813],[-67.53362,7.99321],[-67.55274,7.98468],[-67.59509,8.04731],[-67.57458,8.04845],[-67.57458,8.08258],[-67.62238,8.09625],[-67.67741,8.20953],[-67.70806,8.23694],[-67.76787,8.23908],[-67.78002,8.29487],[-67.79369,8.27438],[-67.82141,8.29154],[-67.821,8.31536],[-67.86257,8.329],[-67.85575,8.3768],[-67.88306,8.36998],[-67.91037,8.40411],[-67.94458,8.40435],[-67.97964,8.44894],[-67.97466,8.47563],[-68.03649,8.5385],[-67.99602,8.55547],[-68.01334,8.59986],[-67.99863,8.65464],[-68.01272,8.7496],[-67.96698,8.9078],[-67.90327,8.96739],[-67.855,9.07257],[-67.87105,9.18259],[-67.94218,9.31],[-67.91934,9.3786],[-67.91673,9.44973],[-67.93164,9.5042],[-67.96406,9.54182],[-67.9314,9.56859],[-67.93096,9.59637],[-67.89916,9.63011],[-67.84833,9.62716],[-67.7563,9.68272],[-67.80715,9.87165],[-67.80748,9.92542],[-67.76537,9.92627],[-67.73658,9.89299],[-67.70441,9.88296],[-67.69907,9.84232],[-67.62734,9.87157],[-67.59726,9.86017],[-67.5667,9.91689],[-67.52903,9.90679],[-67.53412,9.95149],[-67.44283,9.98585],[-67.34061,9.92642],[-67.28558,9.93138],[-67.26385,9.91113],[-67.18135,9.91983],[-67.10161,9.79951],[-66.98622,9.75],[-66.94854,9.69173],[-66.85873,9.67225],[-66.85586,9.60456],[-66.87638,9.56177],[-66.89899,9.53655],[-66.98051,9.50932],[-66.99733,9.45229],[-66.85945,9.45694],[-66.68582,9.3948],[-66.62319,9.39162],[-66.57549,9.40948],[-66.55658,9.47092],[-66.5742,9.52771],[-66.54306,9.62275],[-66.62107,9.72098],[-66.62275,9.75481],[-66.58376,9.79878],[-66.61275,9.96645],[-66.45012,9.98198],[-66.39248,10.01944],[-66.19048,9.9487],[-66.13268,9.9666],[-66.1117,9.94777],[-66.06183,9.95645],[-65.97103,9.9289],[-65.87055,9.95606],[-65.76603,9.93673],[-65.6966,9.95342]]]}},{"type":"Feature","properties":{"NAME_1":"Cojedes"},"geometry":{"type":"Polygon","coordinates":[[[-67.78883,9.82705],[-67.7563,9.68272],[-67.84833,9.62716],[-67.89916,9.63011],[-67.93096,9.59637],[-67.9314,9.56859],[-67.96406,9.54182],[-67.93164,9.5042],[-67.91673,9.44973],[-67.91934,9.3786],[-67.94218,9.31],[-67.87105,9.18259],[-67.85397,9.08516],[-67.90327,8.96739],[-67.96344,8.91509],[-67.99272,8.83114],[-68.01372,8.73611],[-67.99863,8.65464],[-68.01334,8.59986],[-67.99789,8.55074],[-68.0244,8.53281],[-68.06336,8.57542],[-68.16539,8.60893],[-68.23795,8.5994],[-68.3867,8.61785],[-68.42305,8.60374],[-68.50232,8.61258],[-68.63172,8.66921],[-68.6828,8.71461],[-68.70399,8.76908],[-68.75032,8.79218],[-68.68454,8.81298],[-68.66368,8.80461],[-68.5824,8.85279],[-68.63619,8.89747],[-68.65211,8.94545],[-68.60524,9.22517],[-68.64216,9.27768],[-68.82104,9.41966],[-68.87212,9.43953],[-68.9924,9.72835],[-68.97772,9.85728],[-68.85889,9.85317],[-68.80432,9.96087],[-68.6697,9.9688],[-68.62302,10.01138],[-68.58224,10.00502],[-68.5794,9.94784],[-68.52829,9.92301],[-68.54064,9.9002],[-68.50395,9.90051],[-68.33892,10.00316],[-68.30272,10.0698],[-68.24167,10.12868],[-68.20521,10.0629],[-68.2535,10.02146],[-68.24167,9.98701],[-68.08119,9.8625],[-68.06535,9.85537],[-67.99533,9.88934],[-67.98657,9.8787],[-68.00285,9.85395],[-67.97758,9.83193],[-67.8798,9.81912],[-67.78883,9.82705]]]}},{"type":"Feature","properties":{"NAME_1":"Distrito Capital"},"geometry":{"type":"Polygon","coordinates":[[[-66.87377,10.54703],[-66.85364,10.5146],[-66.88103,10.4814],[-66.89744,10.41621],[-66.94369,10.42143],[-67.02973,10.39304],[-67.15181,10.43143],[-67.11675,10.46378],[-67.05334,10.47877],[-67.05324,10.52546],[-67.0158,10.54432],[-67.00683,10.57512],[-66.95149,10.54951],[-66.87377,10.54703]]]}},{"type":"Feature","properties":{"NAME_1":"Barinas"},"geometry":{"type":"Polygon","coordinates":[[[-68.06336,8.57542],[-67.97466,8.47563],[-67.97964,8.44894],[-67.94458,8.40435],[-67.91037,8.40411],[-67.88306,8.36998],[-67.85575,8.3768],[-67.86257,8.329],[-67.821,8.31536],[-67.81759,8.28805],[-67.79369,8.27438],[-67.78002,8.29487],[-67.76787,8.23908],[-67.71516,8.24025],[-67.67741,8.20953],[-67.62238,8.09625],[-67.57458,8.08258],[-67.57458,8.04845],[-67.59688,8.05455],[-67.56357,7.9952],[-67.53362,7.99321],[-67.519,7.97161],[-67.54422,7.95877],[-67.6053,7.99941],[-67.86257,8.03481],[-67.88482,8.02672],[-67.95443,8.05465],[-68.05437,8.04845],[-68.25658,7.95652],[-68.27559,7.97093],[-68.34174,7.9659],[-68.37471,7.99135],[-68.4259,7.97936],[-68.48514,7.93859],[-68.63387,7.96936],[-68.72983,7.91585],[-68.82347,7.90252],[-68.94506,7.93176],[-68.97028,7.99938],[-69.05431,7.98019],[-69.11265,8.00685],[-69.13345,8.04163],[-69.18869,8.07067],[-69.44095,8.07165],[-69.57704,7.95104],[-69.7337,7.84443],[-69.83514,7.80764],[-69.86299,7.81198],[-69.93549,7.75777],[-70.01389,7.75426],[-70.0866,7.71074],[-70.13352,7.62933],[-70.15719,7.61501],[-70.28888,7.60377],[-70.3209,7.51688],[-70.36833,7.45045],[-70.46024,7.42306],[-70.48003,7.37624],[-70.50052,7.38368],[-70.54783,7.33371],[-70.60354,7.32844],[-70.63085,7.29431],[-70.6669,7.28741],[-70.79534,7.3148],[-70.87417,7.28749],[-70.94678,7.30798],[-71.06137,7.37872],[-71.18916,7.40417],[-71.24885,7.45453],[-71.26769,7.44513],[-71.45442,7.46389],[-71.52093,7.43831],[-71.56312,7.45259],[-71.6072,7.43831],[-71.62756,7.4534],[-71.63958,7.43234],[-71.66035,7.43216],[-71.71585,7.44247],[-71.74877,7.47828],[-71.84155,7.49476],[-71.84711,7.50931],[-71.83791,7.53321],[-71.692,7.54933],[-71.36068,7.48618],[-71.31978,7.49642],[-71.37796,7.52404],[-71.4909,7.62979],[-71.48356,7.68449],[-71.45669,7.70242],[-71.46214,7.76953],[-71.25378,7.92277],[-71.05995,8.11005],[-71.01184,8.21976],[-71.0315,8.27895],[-71.06514,8.30781],[-71.07754,8.37634],[-71.03837,8.42434],[-71.02736,8.46532],[-70.98044,8.50666],[-70.96238,8.60141],[-70.92995,8.62927],[-70.91006,8.62413],[-70.83771,8.72546],[-70.76857,8.78148],[-70.72769,8.76474],[-70.68695,8.82362],[-70.57747,8.85667],[-70.55558,8.92563],[-70.51246,8.98366],[-70.44373,9.0196],[-70.27131,9.0234],[-70.18245,9.00787],[-70.00407,8.84706],[-69.81961,8.7513],[-69.77108,8.75006],[-69.70538,8.72383],[-69.62311,8.77791],[-69.6027,8.74657],[-69.46687,8.67038],[-69.29184,8.64322],[-69.25874,8.58426],[-69.17557,8.50046],[-69.16247,8.44173],[-69.11441,8.43189],[-69.13934,8.37882],[-69.12764,8.35104],[-69.07632,8.29285],[-68.98615,8.23939],[-68.9484,8.18601],[-68.8537,8.1123],[-68.82104,8.12674],[-68.82845,8.20053],[-68.7922,8.31714],[-68.65423,8.42287],[-68.60364,8.49984],[-68.57353,8.63539],[-68.42305,8.60374],[-68.39564,8.61777],[-68.32624,8.60196],[-68.16539,8.60893],[-68.06336,8.57542]]]}},{"type":"Feature","properties":{"NAME_1":"Lara"},"geometry":{"type":"Polygon","coordinates":[[[-68.97772,9.85728],[-68.9808,9.78227],[-69.01379,9.74953],[-69.06679,9.70995],[-69.17399,9.6867],[-69.22321,9.69204],[-69.26398,9.72912],[-69.27856,9.84426],[-69.33718,9.7686],[-69.37842,9.65789],[-69.43056,9.63058],[-69.59195,9.61817],[-69.60435,9.60577],[-69.62523,9.56812],[-69.61564,9.51056],[-69.62794,9.42653],[-69.64375,9.41475],[-69.70688,9.39565],[-69.72806,9.4318],[-69.76341,9.41746],[-69.86733,9.41506],[-69.85912,9.46167],[-69.78868,9.5589],[-69.84108,9.56774],[-69.89898,9.55239],[-69.92653,9.57402],[-70.00675,9.49761],[-70.03298,9.43033],[-70.06215,9.49265],[-70.10928,9.51715],[-70.13398,9.59815],[-70.11894,9.63517],[-70.06939,9.66807],[-70.03724,9.66582],[-70.01306,9.69049],[-70.08988,9.77305],[-70.16075,9.78529],[-70.21333,9.84581],[-70.24739,9.82674],[-70.27966,9.87389],[-70.32932,9.88632],[-70.35164,9.92604],[-70.45469,9.89624],[-70.51675,9.92852],[-70.58008,10.03652],[-70.62351,10.02285],[-70.66201,9.95583],[-70.66116,9.90451],[-70.681,9.90779],[-70.80681,9.98394],[-70.85482,10.04355],[-70.85815,10.07003],[-70.825,10.12132],[-70.71079,10.19416],[-70.67604,10.2786],[-70.63798,10.32658],[-70.53538,10.36301],[-70.47084,10.46394],[-70.41453,10.4838],[-70.32307,10.5624],[-70.24718,10.55837],[-70.1575,10.6517],[-70.04722,10.64527],[-69.96932,10.69048],[-69.86658,10.698],[-69.82379,10.7303],[-69.80607,10.72035],[-69.82124,10.70175],[-69.78987,10.70144],[-69.66393,10.76467],[-69.5372,10.74201],[-69.49859,10.69514],[-69.42609,10.7119],[-69.12627,10.68126],[-68.92411,10.69733],[-68.88551,10.65953],[-68.89246,10.60615],[-68.96439,10.55688],[-69.0201,10.55478],[-69.04857,10.47768],[-69.07022,10.46145],[-69.06841,10.42461],[-69.02718,10.42306],[-69.01498,10.24842],[-69.118,10.20271],[-69.16208,10.12806],[-69.21957,10.17183],[-69.23755,10.14708],[-69.22747,10.11013],[-69.14151,10.00533],[-69.13921,9.9334],[-69.09782,9.87668],[-69.07343,9.89996],[-69.07195,9.95815],[-68.97912,10.00983],[-68.95881,10.00022],[-68.92488,9.93076],[-68.97772,9.85728]]]}},{"type":"Feature","properties":{"NAME_1":"Portuguesa"},"geometry":{"type":"Polygon","coordinates":[[[-68.9808,9.78227],[-68.9924,9.72835],[-68.87212,9.43953],[-68.82104,9.41966],[-68.64216,9.27768],[-68.60524,9.22517],[-68.65211,8.94545],[-68.63619,8.89747],[-68.5824,8.85279],[-68.66368,8.80461],[-68.68454,8.81298],[-68.75032,8.79218],[-68.70399,8.76908],[-68.6828,8.71461],[-68.64803,8.68211],[-68.57353,8.63539],[-68.57467,8.60351],[-68.60364,8.49984],[-68.65423,8.42287],[-68.7922,8.31714],[-68.82845,8.20053],[-68.816,8.14503],[-68.84145,8.11245],[-68.86972,8.1178],[-68.88936,8.15258],[-68.94168,8.17997],[-68.98615,8.23939],[-69.07632,8.29285],[-69.12764,8.35104],[-69.13934,8.37882],[-69.11441,8.43189],[-69.16247,8.44173],[-69.17557,8.50046],[-69.25874,8.58426],[-69.29184,8.64322],[-69.46687,8.67038],[-69.6027,8.74657],[-69.62311,8.77791],[-69.70538,8.72383],[-69.77108,8.75006],[-69.81961,8.7513],[-70.00407,8.84706],[-70.18245,9.00787],[-70.11827,9.0241],[-70.06272,9.14365],[-70.06536,9.25228],[-70.09233,9.23923],[-70.13328,9.24933],[-70.13584,9.26564],[-70.05466,9.37299],[-70.00675,9.49761],[-69.93405,9.57161],[-69.89898,9.55239],[-69.84108,9.56774],[-69.78868,9.5589],[-69.85912,9.46167],[-69.86733,9.41506],[-69.76341,9.41746],[-69.72806,9.4318],[-69.70688,9.39565],[-69.62794,9.42653],[-69.61564,9.51056],[-69.62523,9.56812],[-69.60435,9.60577],[-69.59195,9.61817],[-69.43056,9.63058],[-69.37842,9.65789],[-69.33718,9.7686],[-69.27856,9.84426],[-69.26166,9.78204],[-69.26758,9.73734],[-69.21218,9.68923],[-69.06679,9.70995],[-68.9808,9.78227]]]}}]};
+load();
+</script>
+</body>
+</html>
