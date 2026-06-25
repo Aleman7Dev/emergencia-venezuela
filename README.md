@@ -46,6 +46,9 @@ puntos de ayuda humanitaria, todo sobre un mapa interactivo.
   opcional (cada 60 s, se pausa con la pestaña oculta) y memoria de filtros y
   última pestaña.
 - **🌗 Modo claro/oscuro** con preferencia recordada.
+- **🌐 Bilingüe (Español / English)**: toggle de idioma en el encabezado; la
+  interfaz se traduce por completo (el contenido escrito por la gente se respeta
+  en su idioma original). Preferencia recordada.
 - **🔋 Modo bajo consumo**: el mapa abre sin descargar calles para ahorrar datos;
   las calles se activan a demanda.
 - **📱 Diseño responsivo**: una sola columna optimizada para móvil y un layout

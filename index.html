@@ -288,6 +288,7 @@
       </svg>
       <small>Venezuela</small>
     </div>
+    <button class="theme-toggle" id="langToggle" title="Idioma / Language" aria-label="Cambiar idioma">EN</button>
     <button class="theme-toggle" id="themeToggle" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema claro u oscuro">🌙</button>
   </div>
 </header>
@@ -296,23 +297,23 @@
 <div id="privacy" style="display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.75);align-items:center;justify-content:center;padding:20px;">
   <div style="background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:420px;padding:22px;">
     <div style="font-size:30px;text-align:center;margin-bottom:8px">🔒</div>
-    <h2 style="font-size:17px;text-align:center;margin-bottom:12px">Aviso de privacidad</h2>
-    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Esta es una herramienta comunitaria. <b>Todo lo que publiques será visible públicamente</b> para cualquier persona que use la app.</p>
-    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">No incluyas información sensible innecesaria (datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.</p>
-    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Al reportar personas <b>sí se solicita la cédula</b>: sirve para verificar si la persona aparece a la vez como desaparecida y en un centro de salud. <b>La cédula no se muestra públicamente</b> — se guarda de forma cifrada y solo se usa para cruzar coincidencias.</p>
-    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.</p>
-    <button id="privacyOk" style="width:100%;background:var(--acc);color:#fff;border:none;padding:13px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer">Entiendo y acepto</button>
+    <h2 data-i18n="priv.title" style="font-size:17px;text-align:center;margin-bottom:12px">Aviso de privacidad</h2>
+    <p data-i18n-html="priv.1" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Esta es una herramienta comunitaria. <b>Todo lo que publiques será visible públicamente</b> para cualquier persona que use la app.</p>
+    <p data-i18n-html="priv.2" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">No incluyas información sensible innecesaria (datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.</p>
+    <p data-i18n-html="priv.3" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Al reportar personas <b>sí se solicita la cédula</b>: sirve para verificar si la persona aparece a la vez como desaparecida y en un centro de salud. <b>La cédula no se muestra públicamente</b> — se guarda de forma cifrada y solo se usa para cruzar coincidencias.</p>
+    <p data-i18n-html="priv.4" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.</p>
+    <button id="privacyOk" data-i18n="priv.ok" style="width:100%;background:var(--acc);color:#fff;border:none;padding:13px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer">Entiendo y acepto</button>
   </div>
 </div>
 
 <nav role="tablist" aria-label="Secciones de la aplicación">
-  <button class="tab on" role="tab" aria-selected="true" data-v="mapa">🗺️ Mapa</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="reportes">📋 Reportes</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="desap">🧍 Desaparecidos</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="hosp">🏥 Hospitales</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="acopio">📦 Acopio y ayuda</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="volun">🙋 Buscadores</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="tel">📞 Teléfonos</button>
+  <button class="tab on" role="tab" aria-selected="true" data-v="mapa" data-i18n="nav.mapa">🗺️ Mapa</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="reportes" data-i18n="nav.reportes">📋 Reportes</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="desap" data-i18n="nav.desap">🧍 Desaparecidos</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="hosp" data-i18n="nav.hosp">🏥 Hospitales</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="acopio" data-i18n="nav.acopio">📦 Acopio y ayuda</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="volun" data-i18n="nav.volun">🙋 Buscadores</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="tel" data-i18n="nav.tel">📞 Teléfonos</button>
 </nav>
 
 <main>
@@ -329,84 +330,84 @@
             <button id="refresh" title="Refrescar desde la nube" aria-label="Refrescar reportes desde la nube">🔄</button>
             <button id="autoref" title="Actualización automática cada 60 s" aria-label="Activar o desactivar actualización automática" aria-pressed="false">⏱️</button>
           </div>
-          <button id="tiletoggle" class="tiletoggle" title="Mostrar/ocultar calles y carreteras">🛣️ Calles</button>
+          <button id="tiletoggle" class="tiletoggle" title="Mostrar/ocultar calles y carreteras" data-i18n="tiletoggle">🛣️ Calles</button>
         </div>
         <div class="legend">
-          <span class="lg"><span class="dot" style="background:var(--crit)"></span>Emergencia crítica</span>
-          <span class="lg"><span class="dot" style="background:var(--build)"></span>Edificio/acceso dañado</span>
-          <span class="lg"><span class="dot" style="background:var(--miss)"></span>Desaparecido</span>
-          <span class="lg"><span class="dot" style="background:var(--acopio)"></span>Centro de acopio</span>
-          <span class="lg"><span class="dot" style="background:var(--aid)"></span>Ayuda humanitaria</span>
-          <span class="lg"><span class="dot" style="background:var(--dark)"></span>Zona sin luz</span>
-          <span class="lg"><span class="dot" style="background:var(--water)"></span>Sin agua potable</span>
-          <span class="lg"><span class="dot" style="background:#0ea5e9"></span>Buscador voluntario</span>
+          <span class="lg"><span class="dot" style="background:var(--crit)"></span><span data-i18n="legend.crit">Emergencia crítica</span></span>
+          <span class="lg"><span class="dot" style="background:var(--build)"></span><span data-i18n="legend.build">Edificio/acceso dañado</span></span>
+          <span class="lg"><span class="dot" style="background:var(--miss)"></span><span data-i18n="legend.miss">Desaparecido</span></span>
+          <span class="lg"><span class="dot" style="background:var(--acopio)"></span><span data-i18n="legend.acopio">Centro de acopio</span></span>
+          <span class="lg"><span class="dot" style="background:var(--aid)"></span><span data-i18n="legend.aid">Ayuda humanitaria</span></span>
+          <span class="lg"><span class="dot" style="background:var(--dark)"></span><span data-i18n="legend.dark">Zona sin luz</span></span>
+          <span class="lg"><span class="dot" style="background:var(--water)"></span><span data-i18n="legend.water">Sin agua potable</span></span>
+          <span class="lg"><span class="dot" style="background:#0ea5e9"></span><span data-i18n="legend.volun">Buscador voluntario</span></span>
         </div>
-        <div class="note">🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Usa <b>🔄</b> para refrescar, o <b>⏱️</b> para activar la actualización automática (cada 60 s).</div>
+        <div class="note" data-i18n-html="note.map">🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Usa <b>🔄</b> para refrescar, o <b>⏱️</b> para activar la actualización automática (cada 60 s).</div>
       </div>
       <aside class="map-side">
         <div class="stats">
-          <div class="stat"><div class="n" id="s-crit" style="color:var(--crit)">0</div><div class="l">Críticas</div></div>
-          <div class="stat"><div class="n" id="s-build" style="color:var(--build)">0</div><div class="l">Daños/servicios</div></div>
-          <div class="stat"><div class="n" id="s-miss" style="color:var(--miss)">0</div><div class="l">Buscados</div></div>
+          <div class="stat"><div class="n" id="s-crit" style="color:var(--crit)">0</div><div class="l" data-i18n="stat.crit">Críticas</div></div>
+          <div class="stat"><div class="n" id="s-build" style="color:var(--build)">0</div><div class="l" data-i18n="stat.build">Daños/servicios</div></div>
+          <div class="stat"><div class="n" id="s-miss" style="color:var(--miss)">0</div><div class="l" data-i18n="stat.miss">Buscados</div></div>
         </div>
         <div class="chart-card">
-          <h3>📊 Estadísticas de reportes</h3>
-          <div class="chart-sub">Distribución en vivo de los reportes activos por categoría y zona.</div>
-          <div id="chart-body"><div class="chart-empty">Cargando estadísticas…</div></div>
+          <h3 data-i18n="chart.title">📊 Estadísticas de reportes</h3>
+          <div class="chart-sub" data-i18n="chart.sub">Distribución en vivo de los reportes activos por categoría y zona.</div>
+          <div id="chart-body"><div class="chart-empty" data-i18n="chart.loading">Cargando estadísticas…</div></div>
         </div>
       </aside>
     </div>
   </section>
 
   <section class="view" id="v-reportes">
-    <div class="sectitle">Reportes activos</div>
-    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
+    <div class="sectitle" data-i18n="sect.reportes">Reportes activos</div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-rep" class="list-grid"></div>
   </section>
 
   <section class="view" id="v-desap">
-    <div class="sectitle">Personas desaparecidas</div>
+    <div class="sectitle" data-i18n="sect.desap">Personas desaparecidas</div>
     <div id="match-banner-desap" class="match-banner" style="display:none" role="status"></div>
     <div class="searchbar">
-      <input id="missSearch" placeholder="Buscar por nombre, zona o estado…">
-      <button class="sclear" id="missClear">Limpiar</button>
+      <input id="missSearch" data-i18n-ph="search.miss" placeholder="Buscar por nombre, zona o estado…">
+      <button class="sclear" id="missClear" data-i18n="search.clear">Limpiar</button>
     </div>
-    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-miss" class="list-grid"></div>
-    <div class="note">Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.</div>
+    <div class="note" data-i18n="note.desap">Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.</div>
   </section>
 
   <section class="view" id="v-hosp">
-    <div class="sectitle">Personas ubicadas en centros de salud</div>
+    <div class="sectitle" data-i18n="sect.hosp">Personas ubicadas en centros de salud</div>
     <div id="match-banner-hosp" class="match-banner" style="display:none" role="status"></div>
     <div class="searchbar">
-      <input id="hospSearch" placeholder="Buscar por nombre, hospital o estado…">
-      <button class="sclear" id="hospClear">Limpiar</button>
+      <input id="hospSearch" data-i18n-ph="search.hosp" placeholder="Buscar por nombre, hospital o estado…">
+      <button class="sclear" id="hospClear" data-i18n="search.clear">Limpiar</button>
     </div>
-    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-hosp" class="list-grid"></div>
-    <div class="note">🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.</div>
+    <div class="note" data-i18n-html="note.hosp">🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.</div>
   </section>
 
   <section class="view" id="v-acopio">
-    <div class="sectitle">Centros de acopio y puntos de ayuda humanitaria</div>
-    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
+    <div class="sectitle" data-i18n="sect.acopio">Centros de acopio y puntos de ayuda humanitaria</div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-acopio" class="list-grid"></div>
   </section>
 
   <section class="view" id="v-volun">
-    <div class="sectitle">Buscadores voluntarios</div>
+    <div class="sectitle" data-i18n="sect.volun">Buscadores voluntarios</div>
     <div class="searchbar">
-      <input id="volunSearch" placeholder="Buscar por zona o estado…" aria-label="Buscar buscadores voluntarios por zona o estado">
-      <button class="sclear" id="volunClear">Limpiar</button>
+      <input id="volunSearch" data-i18n-ph="search.volun" placeholder="Buscar por zona o estado…" aria-label="Buscar buscadores voluntarios por zona o estado">
+      <button class="sclear" id="volunClear" data-i18n="search.clear">Limpiar</button>
     </div>
-    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-volun" class="list-grid"></div>
-    <div class="note">🙋 ¿Puedes recorrer tu zona o acercarte a verificar por un familiar de alguien? Ofrécete como <b>buscador voluntario</b> con el botón <b>＋ Reportar</b> → <b>Buscador voluntario</b>. Indica la zona que puedes cubrir y cómo contactarte. <b>No compartas datos sensibles</b> y actúa siempre de buena fe.</div>
+    <div class="note" data-i18n-html="note.volun">🙋 ¿Puedes recorrer tu zona o acercarte a verificar por un familiar de alguien? Ofrécete como <b>buscador voluntario</b> con el botón <b>＋ Reportar</b> → <b>Buscador voluntario</b>. Indica la zona que puedes cubrir y cómo contactarte. <b>No compartas datos sensibles</b> y actúa siempre de buena fe.</div>
   </section>
 
   <section class="view" id="v-tel">
-    <div class="sectitle">Teléfonos de emergencia oficiales</div>
+    <div class="sectitle" data-i18n="sect.tel">Teléfonos de emergencia oficiales</div>
     <div class="list-grid">
       <a class="phone" href="tel:171"><div><div class="pl">Emergencias 171 (VEN911)</div><div class="ps">Atención integrada nacional</div></div><div class="pn">171</div></a>
       <a class="phone" href="tel:171"><div><div class="pl">Bomberos</div><div class="ps">Rescate e incendios</div></div><div class="pn">171</div></a>
@@ -415,7 +416,7 @@
       <a class="phone" href="tel:0212"><div><div class="pl">FUNVISIS — Reporte sísmico</div><div class="ps">Información de sismos y réplicas</div></div><div class="pn">0212</div></a>
     </div>
 
-    <div class="tel-sub">📡 Líneas de emergencia por operadora · Caracas</div>
+    <div class="tel-sub" data-i18n="tel.sub.op">📡 Líneas de emergencia por operadora · Caracas</div>
     <div class="list-grid">
       <a class="phone" href="tel:171"><div><div class="pl">CANTV (teléfono fijo)</div><div class="ps">Emergencias</div></div><div class="pn">171</div></a>
       <a class="phone" href="tel:*1"><div><div class="pl">Movilnet</div><div class="ps">Emergencias</div></div><div class="pn">*1</div></a>
@@ -423,38 +424,38 @@
       <a class="phone" href="tel:911"><div><div class="pl">Movistar</div><div class="ps">Emergencias</div></div><div class="pn">911</div></a>
     </div>
 
-    <div class="tel-sub">🚑 Ambulancias · Caracas</div>
+    <div class="tel-sub" data-i18n="tel.sub.ambu">🚑 Ambulancias · Caracas</div>
     <div class="list-grid">
       <div class="tel-ambu"><div class="pl">Aeroambulancias</div><div class="nums"><a href="tel:02129932541">(0212) 993.25.41</a> · <a href="tel:02129928980">992.89.80</a> · <a href="tel:02129928990">992.89.90</a> · <a href="tel:02129917940">991.79.40</a></div></div>
       <div class="tel-ambu"><div class="pl">Rescarven</div><div class="nums"><a href="tel:02129936911">(0212) 993.69.11</a> · <a href="tel:02129936991">993.69.91</a> · <a href="tel:02129931310">993.13.10</a> · <a href="tel:02129933367">993.33.67</a></div></div>
       <div class="tel-ambu"><div class="pl">Ambulancia Metropolitano</div><div class="nums"><a href="tel:02125454545">(0212) 545.45.45</a> · <a href="tel:02125454655">545.46.55</a> · <a href="tel:02125779209">577.92.09</a></div></div>
     </div>
 
-    <div class="note">📌 El <b>171</b> es la línea integrada nacional. Las líneas por operadora y las ambulancias son referenciales para Caracas: <b>verifica</b> los números regionales con tu alcaldía. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
+    <div class="note" data-i18n-html="note.tel">📌 El <b>171</b> es la línea integrada nacional. Las líneas por operadora y las ambulancias son referenciales para Caracas: <b>verifica</b> los números regionales con tu alcaldía. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
   </section>
 
   <footer class="appfoot">
-    <p>Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b></p>
-    <p class="appfoot-sub">Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.</p>
-    <p class="appfoot-sub">¿Encontraste un problema en el sitio? Escríbenos a <a href="mailto:alemandev@outlook.com">alemandev@outlook.com</a></p>
+    <p data-i18n-html="footer.1">Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b></p>
+    <p class="appfoot-sub" data-i18n="footer.2">Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.</p>
+    <p class="appfoot-sub"><span data-i18n="footer.3">¿Encontraste un problema en el sitio? Escríbenos a </span><a href="mailto:alemandev@outlook.com">alemandev@outlook.com</a></p>
   </footer>
 </main>
 
-<button class="fab" id="fab" aria-label="Crear un nuevo reporte">＋ Reportar</button>
+<button class="fab" id="fab" aria-label="Crear un nuevo reporte" data-i18n="fab">＋ Reportar</button>
 
 <div id="pickbanner" style="display:none;">
-  <span>🗺️ Toca el mapa donde está el edificio o la persona</span>
-  <button id="pickCancel">Cancelar</button>
+  <span data-i18n="pick.banner">🗺️ Toca el mapa donde está el edificio o la persona</span>
+  <button id="pickCancel" data-i18n="pick.cancel">Cancelar</button>
 </div>
 
 <div class="overlay" id="overlay">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <button class="close" id="closeSheet" aria-label="Cerrar">✕</button>
-    <h2 id="sheetTitle">Nuevo reporte</h2>
-    <p class="h">Tu reporte aparece en el mapa para los equipos de rescate.</p>
+    <h2 id="sheetTitle" data-i18n="sheet.title">Nuevo reporte</h2>
+    <p class="h" data-i18n="sheet.sub">Tu reporte aparece en el mapa para los equipos de rescate.</p>
     <div class="typegrid" id="typegrid"></div>
     <div id="formfields"></div>
-    <button class="submit" id="submitRep">Publicar reporte</button>
+    <button class="submit" id="submitRep" data-i18n="sheet.submit">Publicar reporte</button>
   </div>
 </div>
 
@@ -464,6 +465,113 @@
 if(typeof anime==='undefined'){ window.anime=function(){ return { finished:Promise.resolve() }; }; }
 // Tema (claro/oscuro): aplicar cuanto antes para evitar parpadeo
 (function(){ try{ var t=localStorage.getItem('vzla_theme'); if(t) document.documentElement.setAttribute('data-theme',t); }catch(e){} })();
+
+// ===================== i18n (es / en) =====================
+let lang='es';
+try{ const sl=localStorage.getItem('vzla_lang'); if(sl==='en'||sl==='es') lang=sl; }catch(e){}
+const I18N={
+ es:{
+  'status.base':'Estado de Emergencia Nacional','status.online':' · 🟢 En línea','status.local':' · 🟡 Local (sin conexión)',
+  'nav.reportes':'📋 Reportes','nav.desap':'🧍 Desaparecidos','nav.hosp':'🏥 Hospitales','nav.acopio':'📦 Acopio y ayuda','nav.volun':'🙋 Buscadores','nav.tel':'📞 Teléfonos','nav.mapa':'🗺️ Mapa',
+  'sect.reportes':'Reportes activos','sect.desap':'Personas desaparecidas','sect.hosp':'Personas ubicadas en centros de salud','sect.acopio':'Centros de acopio y puntos de ayuda humanitaria','sect.volun':'Buscadores voluntarios','sect.tel':'Teléfonos de emergencia oficiales',
+  'search.miss':'Buscar por nombre, zona o estado…','search.hosp':'Buscar por nombre, hospital o estado…','search.volun':'Buscar por zona o estado…','search.clear':'Limpiar',
+  'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','fab':'＋ Reportar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
+  'legend.crit':'Emergencia crítica','legend.build':'Edificio/acceso dañado','legend.miss':'Desaparecido','legend.acopio':'Centro de acopio','legend.aid':'Ayuda humanitaria','legend.dark':'Zona sin luz','legend.water':'Sin agua potable','legend.volun':'Buscador voluntario',
+  'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.miss':'Buscados',
+  'chart.title':'📊 Estadísticas de reportes','chart.sub':'Distribución en vivo de los reportes activos por categoría y zona.','chart.total':'reportes activos en total','chart.byCat':'Por categoría','chart.byZone':'Zonas más afectadas','chart.loading':'Cargando estadísticas…','chart.empty':'Aún no hay reportes activos para graficar.',
+  'tel.sub.op':'📡 Líneas de emergencia por operadora · Caracas','tel.sub.ambu':'🚑 Ambulancias · Caracas',
+  'note.map':'🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Usa <b>🔄</b> para refrescar, o <b>⏱️</b> para la actualización automática (cada 60 s).',
+  'note.desap':'Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.',
+  'note.hosp':'🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.',
+  'note.volun':'🙋 ¿Puedes recorrer tu zona o acercarte a verificar por un familiar de alguien? Ofrécete como <b>buscador voluntario</b> con el botón <b>＋ Reportar</b>. Indica la zona que puedes cubrir y cómo contactarte. <b>No compartas datos sensibles</b> y actúa siempre de buena fe.',
+  'note.tel':'📌 El <b>171</b> es la línea integrada nacional. Las líneas por operadora y las ambulancias son referenciales para Caracas: <b>verifica</b> los números regionales con tu alcaldía. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.',
+  'footer.1':'Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b>',
+  'footer.2':'Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.',
+  'footer.3':'¿Encontraste un problema en el sitio? Escríbenos a ',
+  'pick.banner':'🗺️ Toca el mapa donde está el edificio o la persona','pick.cancel':'Cancelar','close':'Cerrar',
+  'priv.title':'Aviso de privacidad','priv.ok':'Entiendo y acepto',
+  'priv.1':'Esta es una herramienta comunitaria. <b>Todo lo que publiques será visible públicamente</b> para cualquier persona que use la app.',
+  'priv.2':'No incluyas información sensible innecesaria (datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.',
+  'priv.3':'Al reportar personas <b>sí se solicita la cédula</b>: sirve para verificar si la persona aparece a la vez como desaparecida y en un centro de salud. <b>La cédula no se muestra públicamente</b> — se guarda de forma cifrada y solo se usa para cruzar coincidencias.',
+  'priv.4':'Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.',
+  'sheet.title':'Nuevo reporte','sheet.sub':'Tu reporte aparece en el mapa para los equipos de rescate.','sheet.submit':'Publicar reporte','sheet.publishing':'Publicando…',
+  'f.loc.hosp':'Hospital o centro de salud','f.loc.volun':'Zona que puedes cubrir','f.loc.def':'Ubicación / dirección',
+  'fph.loc.hosp':'Ej.: Hospital Vargas, San José, Caracas','fph.loc.volun':'Ej.: Municipio Chacao y este de Caracas','fph.loc.def':'Ej.: Av. Francisco de Miranda, Chacao',
+  'f.need.volun':'Cómo puedes ayudar y cómo contactarte','f.need.person':'Nombre y descripción de la persona','f.need.offer':'Qué se ofrece / horario','f.need.def':'Qué se necesita / detalle',
+  'fph.need.volun':'Ej.: puedo recorrer mi sector y verificar direcciones. Contacto: +58 4xx-xxxxxxx (WhatsApp).','fph.need.person':'Nombre o descripción, edad aprox., estado, señas particulares','fph.need.aid':'Ej.: agua, comida, atención médica, refugio. Horario y a quién atiende.','fph.need.acopio':'Ej.: reciben agua, medicinas, alimentos. Horario de recepción.','fph.need.def':'Ej.: paramédicos, agua, maquinaria, cisterna...',
+  'f.name':'Nombre y apellido','f.name.hint':'(si se conoce)','f.opt':'(opcional)','f.ci':'Cédula','f.ci.req':'*&nbsp;obligatoria','f.ci.opt':'(si está identificada)',
+  'f.ci.hint':'🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.','f.ci.hintReq':' Es <b>obligatoria</b> para cruzar la búsqueda con los centros de salud.',
+  'f.ficha':'Ficha en desaparecidosterremotovenezuela.com','f.ficha.hint':'🔒 Solo se aceptan enlaces de <b>desaparecidosterremotovenezuela.com</b> (por seguridad).',
+  'f.roadStatus':'Estado del paso','f.cause':'Causa','f.cause.none':'— Sin especificar —',
+  'f.mapLabel':'Ubicación en el mapa','f.mapRec':'(recomendado para rescate)','f.gps':'📍 Usar mi ubicación (GPS)','f.mapBtn':'🗺️ Marcar en el mapa',
+  'f.state':'Estado','f.muni':'Municipio','f.muni.pick':'— Selecciona un estado —','f.muni.loading':'Cargando municipios…','f.muni.none':'— Sin especificar —','f.muni.na':'(municipios no disponibles)',
+  'f.remove':'quitar','f.locWarn':'Sin ubicación precisa. Si no marcas una, el reporte se ubicará de forma <b>aproximada</b> al centro del estado.','prec.gps':'Ubicación exacta (GPS)','prec.map':'Ubicación marcada en el mapa','prec.approx':'Ubicación aproximada (centro del estado)','fph.name':'Ej.: Juan Pérez','fph.ci':'Ej.: 12345678',
+  'type.crit':'Emergencia crítica','type.build':'Edificio/acceso dañado','type.road':'Estado de vía / vialidad','type.miss':'Persona desaparecida','type.hosp':'Persona en centro de salud','type.acopio':'Centro de acopio','type.aid':'Punto de ayuda humanitaria','type.dark':'Zona sin luz','type.water':'Sin agua potable','type.volunteer':'Buscador voluntario','type.safe':'Localizado a salvo',
+  'short.crit':'Críticas','short.build':'Edif. dañados','short.road':'Vialidad','short.miss':'Desaparecidos','short.hosp':'En hospital','short.acopio':'Acopio','short.aid':'Ayuda human.','short.dark':'Sin luz','short.water':'Sin agua','short.volunteer':'Voluntarios','short.safe':'A salvo',
+  'road.closed':'Cerrada / intransitable','road.partial':'Paso parcial','road.moto':'Solo motocicletas','road.foot':'Solo a pie','road.open':'Despejada',
+  'btn.wa':'💬 WhatsApp','btn.share':'↗ Compartir','btn.copy':'⧉ Copiar','btn.copied':'✓ Copiado','btn.ficha':'🔗 Ver ficha oficial ↗','btn.clear':'✅ Marcar despejada','btn.clearing':'Actualizando…','btn.confirm':'Confirmar','btn.confirmMiss':'Confirmar encontrado','btn.confirmed':'✓ Confirmaste','btn.confirming':'Confirmando…','btn.retry':'✗ Reintentar',
+  'tag.exact':'✓ exacta','tag.approx':'≈ aprox.',
+  'empty.rep':'Sin reportes activos.','empty.miss':'No hay personas reportadas.','empty.hosp':'Aún no hay personas reportadas en centros de salud.','empty.acopio':'No hay centros de acopio ni puntos de ayuda reportados.','empty.volun':'Aún no hay buscadores voluntarios. ¡Ofrécete con ＋ Reportar!','empty.nomatch':'Sin coincidencias para',
+  'match.badge':'Posible coincidencia','match.inHosp':'en un centro de salud','match.inMiss':'en la lista de desaparecidos','match.sameCI':' · misma cédula','match.verify':'Verifíquenlo antes de actuar.','match.banner1':'posible(s) coincidencia(s) entre','match.banner2':'hospital','match.banner3':'desaparecidos','match.banner4':'. Revisa las tarjetas marcadas.','match.notif':'🔔 Avisarme','match.notifTitle':'⚠️ Posible coincidencia','match.notifBody':'un reporte en hospital podría coincidir con un desaparecido. Revísalo en la app.',
+ },
+ en:{
+  'status.base':'National State of Emergency','status.online':' · 🟢 Online','status.local':' · 🟡 Local (offline)',
+  'nav.reportes':'📋 Reports','nav.desap':'🧍 Missing','nav.hosp':'🏥 Hospitals','nav.acopio':'📦 Aid & supplies','nav.volun':'🙋 Searchers','nav.tel':'📞 Phones','nav.mapa':'🗺️ Map',
+  'sect.reportes':'Active reports','sect.desap':'Missing persons','sect.hosp':'People located in health centers','sect.acopio':'Collection centers and humanitarian aid points','sect.volun':'Volunteer searchers','sect.tel':'Official emergency phone numbers',
+  'search.miss':'Search by name, area or state…','search.hosp':'Search by name, hospital or state…','search.volun':'Search by area or state…','search.clear':'Clear',
+  'near':'📍 Near me','near.on':'📍 Near me ✓','fab':'＋ Report','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
+  'legend.crit':'Critical emergency','legend.build':'Damaged building/access','legend.miss':'Missing person','legend.acopio':'Collection center','legend.aid':'Humanitarian aid','legend.dark':'No power','legend.water':'No drinking water','legend.volun':'Volunteer searcher',
+  'stat.crit':'Critical','stat.build':'Damage/utilities','stat.miss':'Searched',
+  'chart.title':'📊 Report statistics','chart.sub':'Live distribution of active reports by category and area.','chart.total':'active reports in total','chart.byCat':'By category','chart.byZone':'Most affected areas','chart.loading':'Loading statistics…','chart.empty':'No active reports to chart yet.',
+  'tel.sub.op':'📡 Emergency lines by carrier · Caracas','tel.sub.ambu':'🚑 Ambulances · Caracas',
+  'note.map':'🔋 <b>Low-data mode by default.</b> The map opens without downloading streets (dark theme, markers and borders). Tap <b>🛣️ Streets</b> to see real streets and roads when you need them; tap again to save data. Use <b>🔄</b> to refresh, or <b>⏱️</b> for auto-refresh (every 60 s).',
+  'note.desap':'If you find someone safe, report it to remove them from the list and focus the search.',
+  'note.hosp':'🏥 Report here people who are alive and being treated at a hospital or health center. This helps families locate their loved ones and clear the missing list.',
+  'note.volun':'🙋 Can you cover your area or go verify on behalf of someone\'s relative? Volunteer as a <b>searcher</b> using the <b>＋ Report</b> button. Indicate the area you can cover and how to reach you. <b>Do not share sensitive data</b> and always act in good faith.',
+  'note.tel':'📌 <b>171</b> is the national integrated line. Carrier lines and ambulances are for reference in Caracas: <b>verify</b> regional numbers with your municipality. This app coordinates citizen reports and <b>does not replace</b> the authorities.',
+  'footer.1':'This is a <b>citizen, non-partisan</b> tool. In a medical emergency, call the rescue services. <b>Always verify information before sharing it.</b>',
+  'footer.2':'Made voluntarily to support locating people. We do not request or handle money, donations or aid of any kind.',
+  'footer.3':'Found a problem on the site? Email us at ',
+  'pick.banner':'🗺️ Tap the map where the building or person is','pick.cancel':'Cancel','close':'Close',
+  'priv.title':'Privacy notice','priv.ok':'I understand and accept',
+  'priv.1':'This is a community tool. <b>Everything you post will be publicly visible</b> to anyone who uses the app.',
+  'priv.2':'Do not include unnecessary sensitive information (detailed medical data, exact home addresses). Share only what is essential to help with rescue or location.',
+  'priv.3':'When reporting people, <b>the ID number (cédula) is requested</b>: it is used to check whether the person appears both as missing and in a health center. <b>The ID is not shown publicly</b> — it is stored encrypted and only used to cross-match.',
+  'priv.4':'When reporting people, do so in good faith and with their interest in mind. False reports can cost lives by diverting resources.',
+  'sheet.title':'New report','sheet.sub':'Your report appears on the map for rescue teams.','sheet.submit':'Publish report','sheet.publishing':'Publishing…',
+  'f.loc.hosp':'Hospital or health center','f.loc.volun':'Area you can cover','f.loc.def':'Location / address',
+  'fph.loc.hosp':'e.g. Vargas Hospital, San José, Caracas','fph.loc.volun':'e.g. Chacao municipality and east Caracas','fph.loc.def':'e.g. Francisco de Miranda Ave., Chacao',
+  'f.need.volun':'How you can help and how to reach you','f.need.person':'Name and description of the person','f.need.offer':'What is offered / schedule','f.need.def':'What is needed / details',
+  'fph.need.volun':'e.g. I can walk my area and verify addresses. Contact: +58 4xx-xxxxxxx (WhatsApp).','fph.need.person':'Name or description, approx. age, condition, distinguishing marks','fph.need.aid':'e.g. water, food, medical care, shelter. Schedule and who is served.','fph.need.acopio':'e.g. they receive water, medicine, food. Drop-off hours.','fph.need.def':'e.g. paramedics, water, machinery, water truck...',
+  'f.name':'First and last name','f.name.hint':'(if known)','f.opt':'(optional)','f.ci':'ID number','f.ci.req':'*&nbsp;required','f.ci.opt':'(if identified)',
+  'f.ci.hint':'🔒 The ID is <b>not shown or published</b>: it is only used, encrypted, to detect whether the person appears both in hospital and missing.','f.ci.hintReq':' It is <b>required</b> to cross-check the search with health centers.',
+  'f.ficha':'Profile on desaparecidosterremotovenezuela.com','f.ficha.hint':'🔒 Only links from <b>desaparecidosterremotovenezuela.com</b> are accepted (for security).',
+  'f.roadStatus':'Passage status','f.cause':'Cause','f.cause.none':'— Unspecified —',
+  'f.mapLabel':'Location on the map','f.mapRec':'(recommended for rescue)','f.gps':'📍 Use my location (GPS)','f.mapBtn':'🗺️ Mark on the map',
+  'f.state':'State','f.muni':'Municipality','f.muni.pick':'— Select a state —','f.muni.loading':'Loading municipalities…','f.muni.none':'— Unspecified —','f.muni.na':'(municipalities unavailable)',
+  'f.remove':'remove','f.locWarn':'No precise location. If you don\'t mark one, the report will be placed <b>approximately</b> at the state center.','prec.gps':'Exact location (GPS)','prec.map':'Location marked on the map','prec.approx':'Approximate location (state center)','fph.name':'e.g. John Doe','fph.ci':'e.g. 12345678',
+  'type.crit':'Critical emergency','type.build':'Damaged building/access','type.road':'Road condition','type.miss':'Missing person','type.hosp':'Person in health center','type.acopio':'Collection center','type.aid':'Humanitarian aid point','type.dark':'No power','type.water':'No drinking water','type.volunteer':'Volunteer searcher','type.safe':'Located safe',
+  'short.crit':'Critical','short.build':'Damaged bldg.','short.road':'Roads','short.miss':'Missing','short.hosp':'In hospital','short.acopio':'Supplies','short.aid':'Aid','short.dark':'No power','short.water':'No water','short.volunteer':'Volunteers','short.safe':'Safe',
+  'road.closed':'Closed / impassable','road.partial':'Partial passage','road.moto':'Motorcycles only','road.foot':'On foot only','road.open':'Clear',
+  'btn.wa':'💬 WhatsApp','btn.share':'↗ Share','btn.copy':'⧉ Copy','btn.copied':'✓ Copied','btn.ficha':'🔗 Official profile ↗','btn.clear':'✅ Mark as clear','btn.clearing':'Updating…','btn.confirm':'Confirm','btn.confirmMiss':'Confirm found','btn.confirmed':'✓ You confirmed','btn.confirming':'Confirming…','btn.retry':'✗ Retry',
+  'tag.exact':'✓ exact','tag.approx':'≈ approx.',
+  'empty.rep':'No active reports.','empty.miss':'No people reported.','empty.hosp':'No people reported in health centers yet.','empty.acopio':'No collection centers or aid points reported.','empty.volun':'No volunteer searchers yet. Offer to help with ＋ Report!','empty.nomatch':'No matches for',
+  'match.badge':'Possible match','match.inHosp':'in a health center','match.inMiss':'in the missing list','match.sameCI':' · same ID','match.verify':'Please verify before acting.','match.banner1':'possible match(es) between','match.banner2':'hospital','match.banner3':'missing','match.banner4':'. Check the marked cards.','match.notif':'🔔 Notify me','match.notifTitle':'⚠️ Possible match','match.notifBody':'a hospital report may match a missing person. Check it in the app.',
+ }
+};
+function t(k){ const d=I18N[lang]||I18N.es; return d[k]!=null?d[k]:(I18N.es[k]!=null?I18N.es[k]:k); }
+function applyI18n(){
+  const d=I18N[lang]||I18N.es;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); if(d[k]!=null) el.textContent=d[k]; });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const k=el.getAttribute('data-i18n-html'); if(d[k]!=null) el.innerHTML=d[k]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ const k=el.getAttribute('data-i18n-ph'); if(d[k]!=null) el.setAttribute('placeholder',d[k]); });
+  document.documentElement.lang=lang;
+}
+// Traduce títulos GENÉRICOS (los que la app pone por defecto); el contenido escrito
+// por la gente (nombres, descripciones) se respeta tal cual se publicó.
+const ES_TYPE_LABELS={};
+Object.keys(I18N.es).forEach(k=>{ if(k.indexOf('type.')===0) ES_TYPE_LABELS[I18N.es[k]]=k.slice(5); });
+function displayTitle(rp){ const k=ES_TYPE_LABELS[rp.title]; return k ? t('type.'+k) : rp.title; }
 const TYPES = {
   crit:   {e:'🆘', t:'Emergencia crítica', c:'#ef4444'},
   build:  {e:'🏚️', t:'Edificio/acceso dañado', c:'#f59e0b'},
@@ -848,9 +956,9 @@ function updateMuniVisibility(){
 }
 
 function precLabel(p){
-  if(p==='gps') return {t:'Ubicación exacta (GPS)', exact:true};
-  if(p==='map') return {t:'Ubicación marcada en el mapa', exact:true};
-  return {t:'Ubicación aproximada (centro del estado)', exact:false};
+  if(p==='gps') return {t:t('prec.gps'), exact:true};
+  if(p==='map') return {t:t('prec.map'), exact:true};
+  return {t:t('prec.approx'), exact:false};
 }
 function refreshMarkers(){
   if(!markersLayer) return;
@@ -890,10 +998,10 @@ function setTiles(on){
   if(on){
     if(!tileLayer) tileLayer=L.tileLayer(TILE_URL,{ attribution:TILE_ATTR, subdomains:'abcd', maxZoom:20, maxNativeZoom:20 });
     tileLayer.addTo(map); tileLayer.bringToBack();
-    btn.classList.add('on'); btn.textContent='🛣️ Calles ON';
+    btn.classList.add('on'); btn.textContent=t('tiletoggle.on');
   } else {
     if(tileLayer && map.hasLayer(tileLayer)) map.removeLayer(tileLayer);
-    btn.classList.remove('on'); btn.textContent='🛣️ Calles';
+    btn.classList.remove('on'); btn.textContent=t('tiletoggle');
   }
   buildMap();  // reajusta opacidad de polígonos según haya o no tiles
 }
@@ -963,13 +1071,13 @@ async function save(){ // solo respaldo local cuando no hay nube
 }
 function updateCloudBadge(){
   const el=document.getElementById('clock');
-  const base='Estado de Emergencia Nacional';
-  el.textContent = base + (cloudOK?' · 🟢 En línea':' · 🟡 Local (sin conexión)');
+  el.textContent = t('status.base') + (cloudOK?t('status.online'):t('status.local'));
 }
 
 function fmtClock(){
   const d=new Date();
-  document.getElementById('clock').textContent='Estado de Emergencia Nacional · '+d.toLocaleDateString('es-VE',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+  const loc=lang==='en'?'en-US':'es-VE';
+  document.getElementById('clock').textContent=t('status.base')+' · '+d.toLocaleDateString(loc,{day:'numeric',month:'short'})+' '+d.toLocaleTimeString(loc,{hour:'2-digit',minute:'2-digit'});
 }
 
 function buildFilters(){
@@ -990,57 +1098,55 @@ function buildFilters(){
 }
 
 function card(rp){
-  const t=TYPES[rp.type];
+  const ty=TYPES[rp.type];
   const sh=shareLinks(rp);
   const c=rp.confirms||0;
   const mine=confirmedByMe.has(String(rp.id));
-  // Etiqueta según el tipo: desaparecidos -> "encontrado"; resto -> "confirmar"
-  const verbo = rp.type==='miss' ? 'Confirmar encontrado' : 'Confirmar';
+  const verbo = rp.type==='miss' ? t('btn.confirmMiss') : t('btn.confirm');
   // Vialidad: estado de paso (badge) y acción para marcar despejada
   const rs=roadStatus(rp);
-  const roadBadge = rs ? `<span class="roadbadge" style="background:${ROAD_STATUS[rs].c}22;color:${ROAD_STATUS[rs].c}">${ROAD_STATUS[rs].e} ${ROAD_STATUS[rs].t}</span>` : '';
-  const clearBtn = (rs && rs!=='open') ? `<button class="sbtn" data-clear="${esc(rp.id)}" style="color:var(--acopio)">✅ Marcar despejada</button>` : '';
+  const roadBadge = rs ? `<span class="roadbadge" style="background:${ROAD_STATUS[rs].c}22;color:${ROAD_STATUS[rs].c}">${ROAD_STATUS[rs].e} ${t('road.'+rs)}</span>` : '';
+  const clearBtn = (rs && rs!=='open') ? `<button class="sbtn" data-clear="${esc(rp.id)}" style="color:var(--acopio)">${t('btn.clear')}</button>` : '';
   // Botón de confirmación (no aplica a voluntarios ni a vialidad)
   const confBtn = (rp.type==='volunteer'||rp.type==='road') ? '' : (mine
-    ? `<button class="btn-done sbtn" disabled style="color:var(--muted);opacity:.7">✓ Confirmaste (${c}/${CONFIRM_THRESHOLD})</button>`
+    ? `<button class="btn-done sbtn" disabled style="color:var(--muted);opacity:.7">${t('btn.confirmed')} (${c}/${CONFIRM_THRESHOLD})</button>`
     : `<button class="btn-done sbtn" data-done="${esc(rp.id)}" style="color:var(--safe)">✓ ${verbo} (${c}/${CONFIRM_THRESHOLD})</button>`);
   const pl=precLabel(rp.precision);
-  const precBadge=`<span class="precbadge ${pl.exact?'pexact':'papprox'}">${pl.exact?'✓ exacta':'≈ aprox.'}</span>`;
-  // Ficha oficial (solo enlaces validados de desaparecidosterremotovenezuela.com)
+  const precBadge=`<span class="precbadge ${pl.exact?'pexact':'papprox'}">${pl.exact?t('tag.exact'):t('tag.approx')}</span>`;
   const prof=extractProfile(rp);
-  const fichaBtn = prof ? `<a class="sbtn ficha" href="${esc(prof)}" target="_blank" rel="noopener noreferrer">🔗 Ver ficha oficial ↗</a>` : '';
+  const fichaBtn = prof ? `<a class="sbtn ficha" href="${esc(prof)}" target="_blank" rel="noopener noreferrer">${t('btn.ficha')}</a>` : '';
   // WhatsApp: si el reporte incluye un móvil, contactar directamente; si no, compartir
   const phone = waPhone((rp.need||'')+' '+(rp.loc||''));
   const waMsg = rp.type==='volunteer'
-    ? 'Hola, te contacto por la app Emergencia Sísmica Venezuela por tu ofrecimiento como buscador voluntario.'
-    : `Hola, te contacto por la app Emergencia Sísmica Venezuela sobre el reporte: ${rp.title}.`;
+    ? (lang==='en'?'Hello, I\'m contacting you via the Emergencia Sísmica Venezuela app about your volunteer searcher offer.':'Hola, te contacto por la app Emergencia Sísmica Venezuela por tu ofrecimiento como buscador voluntario.')
+    : (lang==='en'?`Hello, I\'m contacting you via the Emergencia Sísmica Venezuela app about the report: ${rp.title}.`:`Hola, te contacto por la app Emergencia Sísmica Venezuela sobre el reporte: ${rp.title}.`);
   const waBtn = phone
-    ? `<a class="sbtn wa" href="https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}" target="_blank" rel="noopener">💬 WhatsApp</a>`
-    : `<a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">↗ Compartir</a>`;
+    ? `<a class="sbtn wa" href="https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}" target="_blank" rel="noopener">${t('btn.wa')}</a>`
+    : `<a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">${t('btn.share')}</a>`;
   const dispLoc = esc(stripProfile(rp.loc));
-  const dispNeed = esc(stripProfile(rp.need)) || '(sin detalle)';
+  const dispNeed = esc(stripProfile(rp.need)) || (lang==='en'?'(no details)':'(sin detalle)');
   // Aviso de posible coincidencia hospital ↔ desaparecido
   const mlist = currentMatches[rp.id];
   let matchBadge='';
   if(mlist && mlist.length){
     const strong = mlist.some(x=>x.strong);
     const other = mlist[0].rp;
-    const where = rp.type==='miss' ? 'en un centro de salud' : 'en la lista de desaparecidos';
-    matchBadge = `<div class="match-badge ${strong?'strong':''}">⚠️ <b>Posible coincidencia</b> ${where}${strong?' · misma cédula':''}: ${esc(stripProfile(other.title))} — ${esc(stripProfile(other.loc))}. <span class="mb-verify">Verifíquenlo antes de actuar.</span></div>`;
+    const where = rp.type==='miss' ? t('match.inHosp') : t('match.inMiss');
+    matchBadge = `<div class="match-badge ${strong?'strong':''}">⚠️ <b>${t('match.badge')}</b> ${where}${strong?t('match.sameCI'):''}: ${esc(displayTitle(other))} — ${esc(stripProfile(other.loc))}. <span class="mb-verify">${t('match.verify')}</span></div>`;
   }
   return `<div class="card"><div class="crow">
-    <div class="cicon" style="background:${t.c}22">${t.e}</div>
+    <div class="cicon" style="background:${ty.c}22">${ty.e}</div>
     <div style="flex:1">
-      <div class="ctitle">${esc(rp.title)}</div>
+      <div class="ctitle">${esc(displayTitle(rp))}</div>
       <div class="cmeta">📍 ${dispLoc}<br>ℹ️ ${dispNeed}</div>
-      <span class="ctag" style="background:${t.c}22;color:${t.c}">${t.t}</span>
+      <span class="ctag" style="background:${ty.c}22;color:${ty.c}">${t('type.'+rp.type)}</span>
       ${roadBadge}
       ${precBadge}
       <span style="font-size:10.5px;color:var(--muted);margin-left:6px">${esc(rp.when)}</span>
       ${matchBadge}
       <div class="share-row">
         ${waBtn}
-        <button class="sbtn" data-copy="${esc(rp.id)}">⧉ Copiar</button>
+        <button class="sbtn" data-copy="${esc(rp.id)}">${t('btn.copy')}</button>
         ${fichaBtn}
         ${clearBtn}
         ${confBtn}
@@ -1062,7 +1168,7 @@ function renderChart(){
   // 1) Reportes por categoría
   const counts={}; reports.forEach(r=>counts[r.type]=(counts[r.type]||0)+1);
   const cats=Object.keys(TYPES).filter(k=>k!=='safe'&&counts[k])
-    .map(k=>({n:counts[k], c:TYPES[k].c, e:TYPES[k].e, l:TYPE_SHORT[k]||TYPES[k].t}))
+    .map(k=>({n:counts[k], c:TYPES[k].c, e:TYPES[k].e, l:t('short.'+k)}))
     .sort((a,b)=>b.n-a.n);
   const maxCat=Math.max(1,...cats.map(c=>c.n));
 
@@ -1079,17 +1185,17 @@ function renderChart(){
   const zonas=Object.entries(stCount).map(([s,n])=>({s,n})).sort((a,b)=>b.n-a.n).slice(0,6);
   const maxZ=Math.max(1,...zonas.map(z=>z.n));
 
-  if(!total){ wrap.innerHTML='<div class="chart-empty">Aún no hay reportes activos para graficar.</div>'; return; }
+  if(!total){ wrap.innerHTML='<div class="chart-empty">'+t('chart.empty')+'</div>'; return; }
 
-  let html=`<div class="chart-total"><span class="ct-n">${total}</span><span class="ct-l">reportes activos en total</span></div>`;
-  html+=`<div class="chart-h">Por categoría</div>`;
+  let html=`<div class="chart-total"><span class="ct-n">${total}</span><span class="ct-l">${t('chart.total')}</span></div>`;
+  html+=`<div class="chart-h">${t('chart.byCat')}</div>`;
   html+=cats.map(c=>`<div class="bar-row">
       <span class="bl" title="${esc(c.l)}">${c.e} ${esc(c.l)}</span>
       <span class="bar-track"><span class="bar-fill" style="width:${Math.round(c.n/maxCat*100)}%;background:${c.c}"></span></span>
       <span class="bar-val">${c.n}</span>
     </div>`).join('');
   if(zonas.length){
-    html+=`<div class="chart-h">Zonas más afectadas</div>`;
+    html+=`<div class="chart-h">${t('chart.byZone')}</div>`;
     html+=zonas.map(z=>`<div class="bar-row">
         <span class="bl" title="${esc(z.s)}">${esc(z.s)}</span>
         <span class="bar-track"><span class="bar-fill" style="width:${Math.round(z.n/maxZ*100)}%;background:var(--crit)"></span></span>
@@ -1108,28 +1214,29 @@ function render(){
   document.getElementById('s-miss').textContent=reports.filter(r=>r.type==='miss').length;
   renderChart();
   const all=reports.filter(r=>!['miss','acopio','hosp','aid','volunteer'].includes(r.type));
-  document.getElementById('list-rep').innerHTML=all.length?sortNear(all).map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
+  const nm=(q)=>t('empty.nomatch')+' “'+esc(q)+'”.';
+  document.getElementById('list-rep').innerHTML=all.length?sortNear(all).map(card).join(''):'<div class="empty">'+t('empty.rep')+'</div>';
   let miss=reports.filter(r=>r.type==='miss');
   if(missQuery){ const q=normName(missQuery); miss=miss.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
-  document.getElementById('list-miss').innerHTML=miss.length?sortNear(miss).map(card).join(''):'<div class="empty">'+(missQuery?'Sin coincidencias para “'+esc(missQuery)+'”.':'No hay personas reportadas.')+'</div>';
+  document.getElementById('list-miss').innerHTML=miss.length?sortNear(miss).map(card).join(''):'<div class="empty">'+(missQuery?nm(missQuery):t('empty.miss'))+'</div>';
   let hosp=reports.filter(r=>r.type==='hosp');
   if(hospQuery){ const q=normName(hospQuery); hosp=hosp.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
-  document.getElementById('list-hosp').innerHTML=hosp.length?sortNear(hosp).map(card).join(''):'<div class="empty">'+(hospQuery?'Sin coincidencias para “'+esc(hospQuery)+'”.':'Aún no hay personas reportadas en centros de salud.')+'</div>';
+  document.getElementById('list-hosp').innerHTML=hosp.length?sortNear(hosp).map(card).join(''):'<div class="empty">'+(hospQuery?nm(hospQuery):t('empty.hosp'))+'</div>';
   const aco=reports.filter(r=>r.type==='acopio'||r.type==='aid');
-  document.getElementById('list-acopio').innerHTML=aco.length?sortNear(aco).map(card).join(''):'<div class="empty">No hay centros de acopio ni puntos de ayuda reportados.</div>';
+  document.getElementById('list-acopio').innerHTML=aco.length?sortNear(aco).map(card).join(''):'<div class="empty">'+t('empty.acopio')+'</div>';
   let volun=reports.filter(r=>r.type==='volunteer');
   if(volunQuery){ const q=normName(volunQuery); volun=volun.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
-  document.getElementById('list-volun').innerHTML=volun.length?sortNear(volun).map(card).join(''):'<div class="empty">'+(volunQuery?'Sin coincidencias para “'+esc(volunQuery)+'”.':'Aún no hay buscadores voluntarios. ¡Ofrécete con ＋ Reportar!')+'</div>';
+  document.getElementById('list-volun').innerHTML=volun.length?sortNear(volun).map(card).join(''):'<div class="empty">'+(volunQuery?nm(volunQuery):t('empty.volun'))+'</div>';
   updateMatchUI();
   document.querySelectorAll('[data-done]').forEach(b=>{ b.addEventListener('click',async()=>{
     const id=b.dataset.done;
     if(confirmedByMe.has(String(id))) return;            // ya confirmado por este navegador
-    b.disabled=true; b.textContent='Confirmando…';
+    b.disabled=true; b.textContent=t('btn.confirming');
     const isLocal = String(id).indexOf('u')===0 || String(id).indexOf('r')===0; // seed o reporte sin nube
     let count=null;
     if(cloudOK && !isLocal){
       try{ count=await sbConfirm(id); }
-      catch(e){ b.disabled=false; b.textContent='✗ Reintentar'; return; }
+      catch(e){ b.disabled=false; b.textContent=t('btn.retry'); return; }
     }
     // marcar como confirmado por mí (evita doble conteo desde el mismo dispositivo)
     confirmedByMe.add(String(id));
@@ -1143,12 +1250,12 @@ function render(){
   document.querySelectorAll('[data-copy]').forEach(b=>{ b.addEventListener('click',()=>{
     const rp=reports.find(r=>r.id===b.dataset.copy); if(!rp)return;
     const txt=shareLinks(rp).txt;
-    navigator.clipboard?.writeText(txt).then(()=>{ b.textContent='✓ Copiado'; setTimeout(()=>b.textContent='⧉ Copiar',1500); }).catch(()=>{ b.textContent='✗'; });
+    navigator.clipboard?.writeText(txt).then(()=>{ b.textContent=t('btn.copied'); setTimeout(()=>b.textContent=t('btn.copy'),1500); }).catch(()=>{ b.textContent='✗'; });
   }); });
   // Vialidad: marcar una vía como despejada (ya se puede circular)
   document.querySelectorAll('[data-clear]').forEach(b=>{ b.addEventListener('click',async()=>{
     const id=b.dataset.clear; const rp=reports.find(r=>String(r.id)===String(id)); if(!rp) return;
-    b.disabled=true; b.textContent='Actualizando…';
+    b.disabled=true; b.textContent=t('btn.clearing');
     const cur=String(rp.need||'');
     const newNeed = /\bRS:(closed|partial|moto|foot|open)\b/i.test(cur) ? cur.replace(/\bRS:(closed|partial|moto|foot|open)\b/i,'RS:open') : (cur+' RS:open');
     const isLocal = String(id).indexOf('u')===0 || String(id).indexOf('r')===0; // seed o reporte local
@@ -1181,10 +1288,23 @@ if(themeBtn){
   applyThemeIcon();
 }
 
+// ---- Idioma (es/en) ----
+const langBtn=document.getElementById('langToggle');
+function updateLangBtn(){ if(langBtn){ langBtn.textContent = lang==='es' ? 'EN' : 'ES'; } }
+function setLang(l){
+  lang=(l==='en')?'en':'es';
+  try{ localStorage.setItem('vzla_lang',lang); }catch(e){}
+  applyI18n(); updateLangBtn();
+  if(typeof updateNearBtns==='function') updateNearBtns();
+  if(typeof render==='function') render();
+}
+if(langBtn){ langBtn.addEventListener('click',()=>setLang(lang==='es'?'en':'es')); updateLangBtn(); }
+applyI18n();   // traduce el HTML estático según el idioma guardado
+
 // ---- Ordenar listas por cercanía (GPS) ----
 function distKm(lat1,lon1,lat2,lon2){ const R=6371,toR=x=>x*Math.PI/180; const dLat=toR(lat2-lat1),dLon=toR(lon2-lon1); const a=Math.sin(dLat/2)**2+Math.cos(toR(lat1))*Math.cos(toR(lat2))*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(a)); }
 function sortNear(arr){ if(!nearMode||!userLoc) return arr; return arr.slice().sort((a,b)=>{ const da=a.lat!=null?distKm(userLoc.lat,userLoc.lon,a.lat,a.lon):1e9; const db=b.lat!=null?distKm(userLoc.lat,userLoc.lon,b.lat,b.lon):1e9; return da-db; }); }
-function updateNearBtns(){ document.querySelectorAll('.sortnear').forEach(b=>{ b.classList.toggle('on',nearMode); b.setAttribute('aria-pressed',nearMode?'true':'false'); b.textContent=nearMode?'📍 Cerca de mí ✓':'📍 Cerca de mí'; }); }
+function updateNearBtns(){ document.querySelectorAll('.sortnear').forEach(b=>{ b.classList.toggle('on',nearMode); b.setAttribute('aria-pressed',nearMode?'true':'false'); b.textContent=nearMode?t('near.on'):t('near'); }); }
 function setNear(on){ nearMode=on; updateNearBtns(); render(); }
 document.querySelectorAll('.sortnear').forEach(b=>b.addEventListener('click',()=>{
   if(nearMode){ setNear(false); return; }
@@ -1221,20 +1341,20 @@ function maybeNotify(pairs){
   if(!('Notification' in window) || Notification.permission!=='granted') return;
   let changed=false;
   pairs.forEach(p=>{ if(notifiedMatches.has(p.key)) return; notifiedMatches.add(p.key); changed=true;
-    const who = !isGenericTitle(p.miss)?p.miss.title : (!isGenericTitle(p.hosp)?p.hosp.title : 'Una persona');
-    try{ new Notification('⚠️ Posible coincidencia', { body:`${who}: un reporte en hospital podría coincidir con un desaparecido. Revísalo en la app.`, icon:'icon-192.png', tag:p.key }); }catch(e){}
+    const who = !isGenericTitle(p.miss)?p.miss.title : (!isGenericTitle(p.hosp)?p.hosp.title : (lang==='en'?'A person':'Una persona'));
+    try{ new Notification(t('match.notifTitle'), { body:`${who}: ${t('match.notifBody')}`, icon:'icon-192.png', tag:p.key }); }catch(e){}
   });
   if(changed) saveNotified();
 }
 function updateMatchUI(){
   const pairs=matchPairs();
   const canNotify=('Notification' in window);
-  [['miss','match-banner-desap'],['hosp','match-banner-hosp']].forEach(([t,bid])=>{
+  [['miss','match-banner-desap'],['hosp','match-banner-hosp']].forEach(([ty,bid])=>{
     const el=document.getElementById(bid); if(!el) return;
     if(!pairs.length){ el.style.display='none'; el.innerHTML=''; return; }
     el.style.display='block';
-    const notifBtn = canNotify && Notification.permission==='default' ? ` <button class="match-notif" data-notif>🔔 Avisarme</button>` : '';
-    el.innerHTML=`⚠️ <b>${pairs.length}</b> posible(s) coincidencia(s) entre <b>hospital</b> y <b>desaparecidos</b>. Revisa las tarjetas marcadas.${notifBtn}`;
+    const notifBtn = canNotify && Notification.permission==='default' ? ` <button class="match-notif" data-notif>${t('match.notif')}</button>` : '';
+    el.innerHTML=`⚠️ <b>${pairs.length}</b> ${t('match.banner1')} <b>${t('match.banner2')}</b> ${lang==='en'?'and':'y'} <b>${t('match.banner3')}</b>${t('match.banner4')}${notifBtn}`;
   });
   document.querySelectorAll('.tab[data-v="desap"], .tab[data-v="hosp"]').forEach(tb=>{
     const old=tb.querySelector('.tabbadge'); if(old) old.remove();
@@ -1260,44 +1380,38 @@ let selType='crit';
 function buildSheet(){
   const tg=document.getElementById('typegrid');
   tg.innerHTML=Object.entries(TYPES).filter(([k])=>k!=='safe').map(([k,v])=>
-    `<div class="tcard ${k===selType?'sel':''}" data-t="${k}"><div class="te">${v.e}</div><div class="tt">${v.t}</div></div>`).join('');
+    `<div class="tcard ${k===selType?'sel':''}" data-t="${k}"><div class="te">${v.e}</div><div class="tt">${t('type.'+k)}</div></div>`).join('');
   tg.querySelectorAll('.tcard').forEach(c=>c.addEventListener('click',()=>{ selType=c.dataset.t; buildSheet(); }));
   const states = GEO?GEO.features.filter(f=>f.properties.NAME_1).map(f=>f.properties.NAME_1):HOT;
   const isPerson = (selType==='miss'||selType==='hosp');
   const isVolun = (selType==='volunteer');
   const pl=precLabel(pickedSrc);
   const locStatus = pickedLat!=null
-    ? `<div class="loc-ok">${pl.exact?'✓':'≈'} ${pl.t}<br><span style="color:var(--muted)">lat ${pickedLat.toFixed(5)}, lon ${pickedLon.toFixed(5)}</span> · <button type="button" class="loc-clear" id="locClear">quitar</button></div>`
-    : `<div class="loc-warn">Sin ubicación precisa. Si no marcas una, el reporte se ubicará de forma <b>aproximada</b> al centro del estado.</div>`;
+    ? `<div class="loc-ok">${pl.exact?'✓':'≈'} ${pl.t}<br><span style="color:var(--muted)">lat ${pickedLat.toFixed(5)}, lon ${pickedLon.toFixed(5)}</span> · <button type="button" class="loc-clear" id="locClear">${t('f.remove')}</button></div>`
+    : `<div class="loc-warn">${t('f.locWarn')}</div>`;
   const isOffer = (selType==='aid'||selType==='acopio');
-  const locLabel = selType==='hosp' ? 'Hospital o centro de salud' : (isVolun ? 'Zona que puedes cubrir' : 'Ubicación / dirección');
-  const locPh = selType==='hosp' ? 'Ej.: Hospital Vargas, San José, Caracas' : (isVolun ? 'Ej.: Municipio Chacao y este de Caracas' : 'Ej.: Av. Francisco de Miranda, Chacao');
-  const needLabel = isVolun ? 'Cómo puedes ayudar y cómo contactarte'
-    : (isPerson ? 'Nombre y descripción de la persona' : (isOffer ? 'Qué se ofrece / horario' : 'Qué se necesita / detalle'));
-  const needPh = isVolun ? 'Ej.: puedo recorrer mi sector y verificar direcciones. Contacto: +58 4xx-xxxxxxx (WhatsApp).'
-    : (isPerson ? 'Nombre o descripción, edad aprox., estado, señas particulares'
-    : (isOffer ? (selType==='aid' ? 'Ej.: agua, comida, atención médica, refugio. Horario y a quién atiende.' : 'Ej.: reciben agua, medicinas, alimentos. Horario de recepción.')
-                : 'Ej.: paramédicos, agua, maquinaria, cisterna...'));
-  // Campo opcional de ficha oficial (solo para personas: desaparecidos / hospital)
-  // Identidad (solo personas): nombre -> título; cédula -> hash para cruzar coincidencias
+  const locLabel = selType==='hosp' ? t('f.loc.hosp') : (isVolun ? t('f.loc.volun') : t('f.loc.def'));
+  const locPh = selType==='hosp' ? t('fph.loc.hosp') : (isVolun ? t('fph.loc.volun') : t('fph.loc.def'));
+  const needLabel = isVolun ? t('f.need.volun') : (isPerson ? t('f.need.person') : (isOffer ? t('f.need.offer') : t('f.need.def')));
+  const needPh = isVolun ? t('fph.need.volun') : (isPerson ? t('fph.need.person') : (isOffer ? (selType==='aid' ? t('fph.need.aid') : t('fph.need.acopio')) : t('fph.need.def')));
   const ciRequired = (selType==='miss');   // obligatoria al reportar un desaparecido
   const personFields = isPerson ? `
-    <label class="fl">Nombre y apellido <span style="font-weight:400;color:var(--muted)">(si se conoce)</span></label>
-    <input id="f-name" placeholder="Ej.: Juan Pérez">
-    <label class="fl">Cédula ${ciRequired ? '<span style="color:var(--crit)">*&nbsp;obligatoria</span>' : '<span style="font-weight:400;color:var(--muted)">(si está identificada)</span>'}</label>
-    <input id="f-ci" inputmode="numeric" placeholder="Ej.: 12345678" ${ciRequired ? 'required' : ''}>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.${ciRequired ? ' Es <b>obligatoria</b> para cruzar la búsqueda con los centros de salud.' : ''}</div>` : '';
+    <label class="fl">${t('f.name')} <span style="font-weight:400;color:var(--muted)">${t('f.name.hint')}</span></label>
+    <input id="f-name" placeholder="${t('fph.name')}">
+    <label class="fl">${t('f.ci')} ${ciRequired ? `<span style="color:var(--crit)">${t('f.ci.req')}</span>` : `<span style="font-weight:400;color:var(--muted)">${t('f.ci.opt')}</span>`}</label>
+    <input id="f-ci" inputmode="numeric" placeholder="${t('fph.ci')}" ${ciRequired ? 'required' : ''}>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">${t('f.ci.hint')}${ciRequired ? t('f.ci.hintReq') : ''}</div>` : '';
   const fichaField = isPerson ? `
-    <label class="fl">Ficha en desaparecidosterremotovenezuela.com <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
+    <label class="fl">${t('f.ficha')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
     <input id="f-link" type="url" inputmode="url" placeholder="https://desaparecidosterremotovenezuela.com/?persona=...">
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 Solo se aceptan enlaces de <b>desaparecidosterremotovenezuela.com</b> (por seguridad).</div>` : '';
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">${t('f.ficha.hint')}</div>` : '';
   // Vialidad: estado de paso + causa (estructurados)
   const isRoad = (selType==='road');
   const roadFields = isRoad ? `
-    <label class="fl">Estado del paso</label>
-    <select id="f-rstatus">${Object.entries(ROAD_STATUS).map(([k,v])=>`<option value="${k}" ${k==='closed'?'selected':''}>${v.e} ${v.t}</option>`).join('')}</select>
-    <label class="fl">Causa <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
-    <select id="f-rcause"><option value="">— Sin especificar —</option>${ROAD_CAUSE.map(c=>`<option>${esc(c)}</option>`).join('')}</select>` : '';
+    <label class="fl">${t('f.roadStatus')}</label>
+    <select id="f-rstatus">${Object.entries(ROAD_STATUS).map(([k,v])=>`<option value="${k}" ${k==='closed'?'selected':''}>${v.e} ${t('road.'+k)}</option>`).join('')}</select>
+    <label class="fl">${t('f.cause')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
+    <select id="f-rcause"><option value="">${t('f.cause.none')}</option>${ROAD_CAUSE.map(c=>`<option>${esc(c)}</option>`).join('')}</select>` : '';
   document.getElementById('formfields').innerHTML=`
     ${personFields}
     <label class="fl">${locLabel}</label>
@@ -1306,28 +1420,28 @@ function buildSheet(){
     <textarea id="f-need" placeholder="${needPh}"></textarea>
     ${roadFields}
     ${fichaField}
-    <label class="fl">Ubicación en el mapa <span style="font-weight:400;color:var(--muted)">(recomendado para rescate)</span></label>
+    <label class="fl">${t('f.mapLabel')} <span style="font-weight:400;color:var(--muted)">${t('f.mapRec')}</span></label>
     <div class="loc-btns">
-      <button type="button" class="loc-btn" id="gpsBtn">📍 Usar mi ubicación (GPS)</button>
-      <button type="button" class="loc-btn" id="mapBtn">🗺️ Marcar en el mapa</button>
+      <button type="button" class="loc-btn" id="gpsBtn">${t('f.gps')}</button>
+      <button type="button" class="loc-btn" id="mapBtn">${t('f.mapBtn')}</button>
     </div>
     <div id="gpsStatus" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
     ${locStatus}
-    <label class="fl">Estado</label>
+    <label class="fl">${t('f.state')}</label>
     <select id="f-state">${[...new Set(states)].sort().map(s=>`<option ${HOT.includes(s)?'selected':''}>${s}</option>`).join('')}</select>
-    <label class="fl">Municipio <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
-    <select id="f-muni"><option value="">— Selecciona un estado —</option></select>`;
+    <label class="fl">${t('f.muni')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
+    <select id="f-muni"><option value="">${t('f.muni.pick')}</option></select>`;
   document.getElementById('gpsBtn').addEventListener('click',useGPS);
   document.getElementById('mapBtn').addEventListener('click',enterPickMode);
   const lc=document.getElementById('locClear'); if(lc) lc.addEventListener('click',()=>{ clearPicked(); buildSheet(); });
   const stateSel=document.getElementById('f-state');
   const muniSel=document.getElementById('f-muni');
   async function fillMunis(){
-    muniSel.innerHTML='<option value="">Cargando municipios…</option>';
+    muniSel.innerHTML='<option value="">'+t('f.muni.loading')+'</option>';
     await loadMunis();
     const list=(MUNIS&&MUNIS[stateSel.value])?MUNIS[stateSel.value].map(m=>m[0]).sort():[];
-    if(muniError||!list.length){ muniSel.innerHTML='<option value="">(municipios no disponibles)</option>'; return; }
-    muniSel.innerHTML='<option value="">— Sin especificar —</option>'+list.map(n=>`<option>${esc(n)}</option>`).join('');
+    if(muniError||!list.length){ muniSel.innerHTML='<option value="">'+t('f.muni.na')+'</option>'; return; }
+    muniSel.innerHTML='<option value="">'+t('f.muni.none')+'</option>'+list.map(n=>`<option>${esc(n)}</option>`).join('');
   }
   stateSel.addEventListener('change',fillMunis);
   fillMunis();
