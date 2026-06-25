@@ -33,8 +33,12 @@ puntos de ayuda humanitaria, todo sobre un mapa interactivo.
   **marcarla como despejada** cuando ya se puede circular.
 - **🙋 Buscadores voluntarios**: sección para que las personas se ofrezcan a
   recorrer o verificar su zona por un familiar de alguien, indicando su contacto.
-- **📞 Teléfonos oficiales** de emergencia (171, Bomberos, Protección Civil,
-  Cruz Roja, FUNVISIS) y líneas por operadora / ambulancias en Caracas.
+- **📞 Directorio de emergencia** (referencial para Caracas): líneas oficiales
+  (171, operadoras), **hospitales y clínicas con emergencia, bomberos, protección
+  civil, policía, rescate, ambulancias y tránsito**, todos como enlaces tocables.
+- **🔗 Enlaces a directorios aliados** de personas (`desaparecidosterremotovenezuela.com`
+  y `afectadosporelterremotovenezuela.com`): se pueden enlazar fichas en los
+  reportes (validadas) y aparecen en el pie de página.
 - **➕ Reporte ciudadano** con ubicación por **GPS** o marcando un punto en el
   mapa, y precisión indicada (exacta / aproximada).
 - **✅ Confirmación múltiple**: un reporte se retira al ser confirmado por varias

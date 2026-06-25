@@ -192,7 +192,7 @@
 
     /* Listas en grilla de tarjetas */
     .list-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:13px; align-items:start; }
-    .list-grid .card, .list-grid .phone{ margin-bottom:0; }
+    .list-grid .card, .list-grid .phone, .list-grid .tel-ambu{ margin-bottom:0; }
     .list-grid .empty{ grid-column:1/-1; }
 
     /* FAB a la esquina; formulario como diálogo centrado */
@@ -430,12 +430,98 @@
       <div class="tel-ambu"><div class="pl">Ambulancia Metropolitano</div><div class="nums"><a href="tel:02125454545">(0212) 545.45.45</a> · <a href="tel:02125454655">545.46.55</a> · <a href="tel:02125779209">577.92.09</a></div></div>
     </div>
 
-    <div class="note" data-i18n-html="note.tel">📌 El <b>171</b> es la línea integrada nacional. Las líneas por operadora y las ambulancias son referenciales para Caracas: <b>verifica</b> los números regionales con tu alcaldía. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
+    <div class="tel-sub" data-i18n="tel.sub.hosp">🏥 Hospitales y clínicas con emergencia · Caracas</div>
+    <div class="list-grid">
+      <div class="tel-ambu"><div class="pl">Hospital Andrés Herrera Vegas <span style="font-weight:400;color:var(--muted)">· El Algodonal</span></div><div class="nums"><a href="tel:02124723138">(0212) 472.31.38</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital Centro Médico IVSS <span style="font-weight:400;color:var(--muted)">· Caricuao</span></div><div class="nums"><a href="tel:02124325511">(0212) 432.55.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital Clínico Universitario <span style="font-weight:400;color:var(--muted)">· Chaguaramos</span></div><div class="nums"><a href="tel:02126067111">(0212) 606.71.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital de Clínicas Caracas <span style="font-weight:400;color:var(--muted)">· San Bernardino</span></div><div class="nums"><a href="tel:02125086111">(0212) 508.61.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital de Niños J.M. de Los Ríos <span style="font-weight:400;color:var(--muted)">· San Bernardino</span></div><div class="nums"><a href="tel:02125743511">(0212) 574.35.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital Dr. Domingo Luciani <span style="font-weight:400;color:var(--muted)">· El Llanito</span></div><div class="nums"><a href="tel:02122578712">(0212) 257.87.12</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital El Algodonal <span style="font-weight:400;color:var(--muted)">· Antímano</span></div><div class="nums"><a href="tel:02124725410">(0212) 472.54.10</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital El Manicomio</div><div class="nums"><a href="tel:02128601313">(0212) 860.13.13</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital José Gregorio Hernández <span style="font-weight:400;color:var(--muted)">· Los Magallanes</span></div><div class="nums"><a href="tel:02128707897">(0212) 870.78.97</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital Miguel Pérez Carreño <span style="font-weight:400;color:var(--muted)">· Bella Vista</span></div><div class="nums"><a href="tel:02124728472">(0212) 472.84.72</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital Militar <span style="font-weight:400;color:var(--muted)">· San Martín</span></div><div class="nums"><a href="tel:02124061241">(0212) 406.12.41</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital Periférico de Catia</div><div class="nums"><a href="tel:02128702771">(0212) 870.27.71</a></div></div>
+      <div class="tel-ambu"><div class="pl">Hospital Periférico de Coche</div><div class="nums"><a href="tel:02126811133">(0212) 681.11.33</a></div></div>
+      <div class="tel-ambu"><div class="pl">Policlínica David Lobo <span style="font-weight:400;color:var(--muted)">· Santa Rosalía</span></div><div class="nums"><a href="tel:02125415465">(0212) 541.54.65</a></div></div>
+      <div class="tel-ambu"><div class="pl">Policlínica La Arboleda <span style="font-weight:400;color:var(--muted)">· San Bernardino</span></div><div class="nums"><a href="tel:02125501811">(0212) 550.18.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">Policlínica Las Mercedes</div><div class="nums"><a href="tel:02129932323">(0212) 993.23.23</a></div></div>
+      <div class="tel-ambu"><div class="pl">Policlínica Santiago de León <span style="font-weight:400;color:var(--muted)">· Sabana Grande</span></div><div class="nums"><a href="tel:02127629025">(0212) 762.90.25</a></div></div>
+      <div class="tel-ambu"><div class="pl">Centro Clínico / Clínica Razetti <span style="font-weight:400;color:var(--muted)">· La Candelaria</span></div><div class="nums"><a href="tel:02125970248">(0212) 597.02.48</a></div></div>
+      <div class="tel-ambu"><div class="pl">Centro Médico de Caracas <span style="font-weight:400;color:var(--muted)">· San Bernardino</span></div><div class="nums"><a href="tel:02125559111">(0212) 555.91.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">Clínica La Floresta <span style="font-weight:400;color:var(--muted)">· Los Palos Grandes</span></div><div class="nums"><a href="tel:02122856058">(0212) 285.60.58</a></div></div>
+      <div class="tel-ambu"><div class="pl">Clínica Leopoldo Aguerrevere <span style="font-weight:400;color:var(--muted)">· Prados del Este</span></div><div class="nums"><a href="tel:02129070811">(0212) 907.08.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">Clínica Rescarven <span style="font-weight:400;color:var(--muted)">· Santa Cecilia</span></div><div class="nums"><a href="tel:02122395686">(0212) 239.56.86</a></div></div>
+    </div>
+
+    <div class="tel-sub" data-i18n="tel.sub.bomberos">🚒 Bomberos · Caracas</div>
+    <div class="list-grid">
+      <div class="tel-ambu"><div class="pl">Bomberos Antímano</div><div class="nums"><a href="tel:02124722054">(0212) 472.20.54</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos Catia la Mar</div><div class="nums"><a href="tel:02123519966">(0212) 351.99.66</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos Chacao</div><div class="nums"><a href="tel:02122653261">(0212) 265.32.61</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos del Este <span style="font-weight:400;color:var(--muted)">· Cafetal</span></div><div class="nums"><a href="tel:02129874334">(0212) 987.43.34</a> · <a href="tel:02129855060">985.50.60</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos Sucre</div><div class="nums"><a href="tel:02129853640">(0212) 985.36.40</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos El Cafetal</div><div class="nums"><a href="tel:02129853640">(0212) 985.36.40</a> · <a href="tel:02129852977">985.29.77</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos El Paraíso</div><div class="nums"><a href="tel:02124810961">(0212) 481.09.61</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos El Valle</div><div class="nums"><a href="tel:02126720175">(0212) 672.01.75</a> · <a href="tel:02126720636">672.06.36</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos La Guaira</div><div class="nums"><a href="tel:02123327620">(0212) 332.76.20</a> · <a href="tel:02123310445">331.04.45</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos La Trinidad</div><div class="nums"><a href="tel:02129434361">(0212) 943.43.61</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos La Urbina</div><div class="nums"><a href="tel:02122416641">(0212) 241.66.41</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos Metropolitanos</div><div class="nums"><a href="tel:02125454545">(0212) 545.45.45</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos Miranda</div><div class="nums"><a href="tel:02122356967">(0212) 235.69.67</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos Plaza Venezuela</div><div class="nums"><a href="tel:02127930039">(0212) 793.00.39</a> · <a href="tel:02127936457">793.64.57</a></div></div>
+      <div class="tel-ambu"><div class="pl">Bomberos San Bernardino</div><div class="nums"><a href="tel:02125779209">(0212) 577.92.09</a></div></div>
+    </div>
+
+    <div class="tel-sub" data-i18n="tel.sub.pc">🛡️ Protección Civil</div>
+    <div class="list-grid">
+      <div class="tel-ambu"><div class="pl">Protección Civil</div><div class="nums"><a href="tel:08005588427">0800-558.84.27</a> · <a href="tel:08002668446">0800-266.84.46</a> · <a href="tel:08002624368">0800-262.43.68</a></div></div>
+      <div class="tel-ambu"><div class="pl">Instituto de Protección Civil</div><div class="nums"><a href="tel:02126318662">(0212) 631.86.62</a> · <a href="tel:02126319058">631.90.58</a> · <a href="tel:02126628476">662.84.76</a> · <a href="tel:02126623205">662.32.05</a> · <a href="tel:02125459391">545.93.91</a></div></div>
+      <div class="tel-ambu"><div class="pl">Defensa Civil · Alcaldía Mayor</div><div class="nums"><a href="tel:02126626759">(0212) 662.67.59</a> · <a href="tel:02126623205">662.32.05</a></div></div>
+      <div class="tel-ambu"><div class="pl">Defensa Civil Nacional</div><div class="nums"><a href="tel:080028326">0800-28326</a> · <a href="tel:080024845">0800-24845</a> · <a href="tel:02124839805">(0212) 483.98.05</a> · <a href="tel:02126622252">662.22.52</a> · <a href="tel:02126626619">662.66.19</a></div></div>
+    </div>
+
+    <div class="tel-sub" data-i18n="tel.sub.policia">👮 Policía</div>
+    <div class="list-grid">
+      <div class="tel-ambu"><div class="pl">CICPC <span style="font-weight:400;color:var(--muted)">· antigua PTJ</span></div><div class="nums"><a href="tel:02125713533">(0212) 571.35.33</a> · <a href="tel:02125713844">571.38.44</a> · <a href="tel:02125713266">571.32.66</a></div></div>
+      <div class="tel-ambu"><div class="pl">Policía Metropolitana</div><div class="nums"><a href="tel:02128625871">(0212) 862.58.71</a> · <a href="tel:02128625872">862.58.72</a></div></div>
+      <div class="tel-ambu"><div class="pl">PoliChacao</div><div class="nums"><a href="tel:02122641256">(0212) 264.12.56</a> · <a href="tel:02122640050">264.00.50</a></div></div>
+      <div class="tel-ambu"><div class="pl">PoliBaruta</div><div class="nums"><a href="tel:02129432855">(0212) 943.28.55</a> · <a href="tel:02129436277">943.62.77</a></div></div>
+      <div class="tel-ambu"><div class="pl">PoliSucre</div><div class="nums"><a href="tel:02122422111">(0212) 242.21.11</a> · <a href="tel:02122422211">242.22.11</a></div></div>
+      <div class="tel-ambu"><div class="pl">PoliHatillo</div><div class="nums"><a href="tel:02129611682">(0212) 961.16.82</a></div></div>
+    </div>
+
+    <div class="tel-sub" data-i18n="tel.sub.rescate">⛑️ Rescate</div>
+    <div class="list-grid">
+      <div class="tel-ambu"><div class="pl">Emergencias, Rescate y Transmisiones</div><div class="nums"><a href="tel:02125454747">(0212) 545.47.47</a></div></div>
+      <div class="tel-ambu"><div class="pl">Grupo de Rescate Caracas <span style="font-weight:400;color:var(--muted)">· El Ávila</span></div><div class="nums"><a href="tel:02126156386">(0212) 615.63.86</a> · <a href="tel:02124154661">415.46.61</a></div></div>
+      <div class="tel-ambu"><div class="pl">Grupo de Rescate Venezuela</div><div class="nums"><a href="tel:02129774710">(0212) 977.47.10</a></div></div>
+      <div class="tel-ambu"><div class="pl">Organización de Rescate Humboldt</div><div class="nums"><a href="tel:04143056868">0414-305.68.68</a> · <a href="tel:02122342234">(0212) 234.22.34</a> · <a href="tel:04149262139">0414-926.21.39</a></div></div>
+      <div class="tel-ambu"><div class="pl">Socorristas Cruz Roja</div><div class="nums"><a href="tel:02125714713">(0212) 571.47.13</a></div></div>
+    </div>
+
+    <div class="tel-sub" data-i18n="tel.sub.transito">🚦 Tránsito</div>
+    <div class="list-grid">
+      <div class="tel-ambu"><div class="pl">Inspectoría Nacional de Tránsito <span style="font-weight:400;color:var(--muted)">· INT</span></div><div class="nums"><a href="tel:167">167</a></div></div>
+      <div class="tel-ambu"><div class="pl">Vivex <span style="font-weight:400;color:var(--muted)">· vías expresas</span></div><div class="nums"><a href="tel:02124716001">(0212) 471.60.01</a> · <a href="tel:02124711481">471.14.81</a></div></div>
+      <div class="tel-ambu"><div class="pl">Brigada de vías y emergencias <span style="font-weight:400;color:var(--muted)">· Min. Transporte</span></div><div class="nums"><a href="tel:02125372677">(0212) 537.26.77</a></div></div>
+    </div>
+
+    <div class="note" data-i18n-html="note.tel">📌 El <b>171</b> es la línea integrada nacional. Este directorio es <b>referencial para Caracas</b>: <b>verifica</b> los números antes de difundirlos. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
   </section>
 
   <footer class="appfoot">
     <p data-i18n-html="footer.1">Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b></p>
     <p class="appfoot-sub" data-i18n="footer.2">Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.</p>
+    <div class="appfoot-partners">
+      <span class="appfoot-sub" data-i18n="footer.partners">Otros directorios de personas — colabora también con:</span>
+      <div class="partner-links">
+        <a href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">🔗 desaparecidosterremotovenezuela.com</a>
+        <a href="https://www.afectadosporelterremotovenezuela.com/" target="_blank" rel="noopener">🔗 afectadosporelterremotovenezuela.com</a>
+      </div>
+    </div>
     <p class="appfoot-sub"><span data-i18n="footer.3">¿Encontraste un problema en el sitio? Escríbenos a </span><a href="mailto:alemandev@outlook.com">alemandev@outlook.com</a></p>
   </footer>
 </main>
@@ -479,13 +565,15 @@ const I18N={
   'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.miss':'Buscados',
   'chart.title':'📊 Estadísticas de reportes','chart.sub':'Distribución en vivo de los reportes activos por categoría y zona.','chart.total':'reportes activos en total','chart.byCat':'Por categoría','chart.byZone':'Zonas más afectadas','chart.loading':'Cargando estadísticas…','chart.empty':'Aún no hay reportes activos para graficar.',
   'tel.sub.op':'📡 Líneas de emergencia por operadora · Caracas','tel.sub.ambu':'🚑 Ambulancias · Caracas',
+  'tel.sub.hosp':'🏥 Hospitales y clínicas con emergencia · Caracas','tel.sub.bomberos':'🚒 Bomberos · Caracas','tel.sub.pc':'🛡️ Protección Civil','tel.sub.policia':'👮 Policía','tel.sub.rescate':'⛑️ Rescate','tel.sub.transito':'🚦 Tránsito',
   'note.map':'🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Usa <b>🔄</b> para refrescar, o <b>⏱️</b> para la actualización automática (cada 60 s).',
   'note.desap':'Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.',
   'note.hosp':'🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.',
   'note.volun':'🙋 ¿Puedes recorrer tu zona o acercarte a verificar por un familiar de alguien? Ofrécete como <b>buscador voluntario</b> con el botón <b>＋ Reportar</b>. Indica la zona que puedes cubrir y cómo contactarte. <b>No compartas datos sensibles</b> y actúa siempre de buena fe.',
-  'note.tel':'📌 El <b>171</b> es la línea integrada nacional. Las líneas por operadora y las ambulancias son referenciales para Caracas: <b>verifica</b> los números regionales con tu alcaldía. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.',
+  'note.tel':'📌 El <b>171</b> es la línea integrada nacional. Este directorio es <b>referencial para Caracas</b>: <b>verifica</b> los números antes de difundirlos. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.',
   'footer.1':'Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b>',
   'footer.2':'Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.',
+  'footer.partners':'Otros directorios de personas — colabora también con:',
   'footer.3':'¿Encontraste un problema en el sitio? Escríbenos a ',
   'pick.banner':'🗺️ Toca el mapa donde está el edificio o la persona','pick.cancel':'Cancelar','close':'Cerrar',
   'priv.title':'Aviso de privacidad','priv.ok':'Entiendo y acepto',
@@ -500,7 +588,7 @@ const I18N={
   'fph.need.volun':'Ej.: puedo recorrer mi sector y verificar direcciones. Contacto: +58 4xx-xxxxxxx (WhatsApp).','fph.need.person':'Nombre o descripción, edad aprox., estado, señas particulares','fph.need.aid':'Ej.: agua, comida, atención médica, refugio. Horario y a quién atiende.','fph.need.acopio':'Ej.: reciben agua, medicinas, alimentos. Horario de recepción.','fph.need.def':'Ej.: paramédicos, agua, maquinaria, cisterna...',
   'f.name':'Nombre y apellido','f.name.hint':'(si se conoce)','f.opt':'(opcional)','f.ci':'Cédula','f.ci.sug':'(opcional, recomendada)','f.ci.opt':'(si está identificada)',
   'f.ci.hint':'🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.','f.ci.hintSug':' <b>Si la conoces, inclúyela</b> para poder cruzar la búsqueda con los centros de salud — pero no es obligatoria.',
-  'f.ficha':'Ficha en desaparecidosterremotovenezuela.com','f.ficha.hint':'🔒 Solo se aceptan enlaces de <b>desaparecidosterremotovenezuela.com</b> (por seguridad).',
+  'f.ficha':'Ficha oficial (desaparecidos / afectados)','f.ficha.hint':'🔒 Solo se aceptan enlaces de <b>desaparecidosterremotovenezuela.com</b> o <b>afectadosporelterremotovenezuela.com</b> (por seguridad).',
   'f.roadStatus':'Estado del paso','f.cause':'Causa','f.cause.none':'— Sin especificar —',
   'f.mapLabel':'Ubicación en el mapa','f.mapRec':'(recomendado para rescate)','f.gps':'📍 Usar mi ubicación (GPS)','f.mapBtn':'🗺️ Marcar en el mapa',
   'f.state':'Estado','f.muni':'Municipio','f.muni.pick':'— Selecciona un estado —','f.muni.loading':'Cargando municipios…','f.muni.none':'— Sin especificar —','f.muni.na':'(municipios no disponibles)',
@@ -523,13 +611,15 @@ const I18N={
   'stat.crit':'Critical','stat.build':'Damage/utilities','stat.miss':'Searched',
   'chart.title':'📊 Report statistics','chart.sub':'Live distribution of active reports by category and area.','chart.total':'active reports in total','chart.byCat':'By category','chart.byZone':'Most affected areas','chart.loading':'Loading statistics…','chart.empty':'No active reports to chart yet.',
   'tel.sub.op':'📡 Emergency lines by carrier · Caracas','tel.sub.ambu':'🚑 Ambulances · Caracas',
+  'tel.sub.hosp':'🏥 Hospitals & clinics with ER · Caracas','tel.sub.bomberos':'🚒 Firefighters · Caracas','tel.sub.pc':'🛡️ Civil Protection','tel.sub.policia':'👮 Police','tel.sub.rescate':'⛑️ Rescue','tel.sub.transito':'🚦 Traffic',
   'note.map':'🔋 <b>Low-data mode by default.</b> The map opens without downloading streets (dark theme, markers and borders). Tap <b>🛣️ Streets</b> to see real streets and roads when you need them; tap again to save data. Use <b>🔄</b> to refresh, or <b>⏱️</b> for auto-refresh (every 60 s).',
   'note.desap':'If you find someone safe, report it to remove them from the list and focus the search.',
   'note.hosp':'🏥 Report here people who are alive and being treated at a hospital or health center. This helps families locate their loved ones and clear the missing list.',
   'note.volun':'🙋 Can you cover your area or go verify on behalf of someone\'s relative? Volunteer as a <b>searcher</b> using the <b>＋ Report</b> button. Indicate the area you can cover and how to reach you. <b>Do not share sensitive data</b> and always act in good faith.',
-  'note.tel':'📌 <b>171</b> is the national integrated line. Carrier lines and ambulances are for reference in Caracas: <b>verify</b> regional numbers with your municipality. This app coordinates citizen reports and <b>does not replace</b> the authorities.',
+  'note.tel':'📌 <b>171</b> is the national integrated line. This directory is <b>for reference in Caracas</b>: <b>verify</b> the numbers before sharing them. This app coordinates citizen reports and <b>does not replace</b> the authorities.',
   'footer.1':'This is a <b>citizen, non-partisan</b> tool. In a medical emergency, call the rescue services. <b>Always verify information before sharing it.</b>',
   'footer.2':'Made voluntarily to support locating people. We do not request or handle money, donations or aid of any kind.',
+  'footer.partners':'Other people directories — collaborate with them too:',
   'footer.3':'Found a problem on the site? Email us at ',
   'pick.banner':'🗺️ Tap the map where the building or person is','pick.cancel':'Cancel','close':'Close',
   'priv.title':'Privacy notice','priv.ok':'I understand and accept',
@@ -544,7 +634,7 @@ const I18N={
   'fph.need.volun':'e.g. I can walk my area and verify addresses. Contact: +58 4xx-xxxxxxx (WhatsApp).','fph.need.person':'Name or description, approx. age, condition, distinguishing marks','fph.need.aid':'e.g. water, food, medical care, shelter. Schedule and who is served.','fph.need.acopio':'e.g. they receive water, medicine, food. Drop-off hours.','fph.need.def':'e.g. paramedics, water, machinery, water truck...',
   'f.name':'First and last name','f.name.hint':'(if known)','f.opt':'(optional)','f.ci':'ID number','f.ci.sug':'(optional, recommended)','f.ci.opt':'(if identified)',
   'f.ci.hint':'🔒 The ID is <b>not shown or published</b>: it is only used, encrypted, to detect whether the person appears both in hospital and missing.','f.ci.hintSug':' <b>If you know it, include it</b> to cross-check the search with health centers — but it is not required.',
-  'f.ficha':'Profile on desaparecidosterremotovenezuela.com','f.ficha.hint':'🔒 Only links from <b>desaparecidosterremotovenezuela.com</b> are accepted (for security).',
+  'f.ficha':'Official profile (missing / affected)','f.ficha.hint':'🔒 Only links from <b>desaparecidosterremotovenezuela.com</b> or <b>afectadosporelterremotovenezuela.com</b> are accepted (for security).',
   'f.roadStatus':'Passage status','f.cause':'Cause','f.cause.none':'— Unspecified —',
   'f.mapLabel':'Location on the map','f.mapRec':'(recommended for rescue)','f.gps':'📍 Use my location (GPS)','f.mapBtn':'🗺️ Mark on the map',
   'f.state':'State','f.muni':'Municipality','f.muni.pick':'— Select a state —','f.muni.loading':'Loading municipalities…','f.muni.none':'— Unspecified —','f.muni.na':'(municipalities unavailable)',
@@ -682,7 +772,7 @@ function esc(s){
 // Seguridad: SOLO se acepta ese dominio, por HTTPS, sin usuario/contraseña ni
 // puerto raro. Bloquea javascript:, data:, otros dominios y trucos tipo
 // "https://desaparecidos...@malicioso.com". Se valida al guardar Y al renderizar.
-const PROFILE_HOSTS = ['desaparecidosterremotovenezuela.com','www.desaparecidosterremotovenezuela.com'];
+const PROFILE_HOSTS = ['desaparecidosterremotovenezuela.com','www.desaparecidosterremotovenezuela.com','afectadosporelterremotovenezuela.com','www.afectadosporelterremotovenezuela.com'];
 function safeProfileLink(raw){
   if(!raw) return null;
   let s=String(raw).trim();
@@ -696,7 +786,7 @@ function safeProfileLink(raw){
   return u.href; // URL normalizada y segura
 }
 // Extrae (si existe) un enlace válido a la ficha dentro del texto del reporte
-const PROFILE_RE = /https?:\/\/[^\s"'<>]*desaparecidosterremotovenezuela\.com[^\s"'<>]*/i;
+const PROFILE_RE = /https?:\/\/[^\s"'<>]*(?:desaparecidosterremotovenezuela|afectadosporelterremotovenezuela)\.com[^\s"'<>]*/i;
 function extractProfile(rp){
   const hay=`${rp&&rp.need||''} ${rp&&rp.loc||''}`;
   const m=hay.match(PROFILE_RE);
@@ -1461,7 +1551,7 @@ document.getElementById('submitRep').addEventListener('click',async()=>{
   let profileUrl=null;
   if(linkEl && linkEl.value.trim()){
     profileUrl=safeProfileLink(linkEl.value);
-    if(!profileUrl){ alert('El enlace debe ser de https://desaparecidosterremotovenezuela.com'); return; }
+    if(!profileUrl){ alert(lang==='en'?'The link must be (https) from desaparecidosterremotovenezuela.com or afectadosporelterremotovenezuela.com':'El enlace debe ser (https) de desaparecidosterremotovenezuela.com o afectadosporelterremotovenezuela.com'); return; }
   }
   // Identidad (solo personas): nombre -> título; cédula -> hash (no se publica el número)
   const nameEl=document.getElementById('f-name');
