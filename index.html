@@ -597,26 +597,9 @@ const ROAD_CAUSE = ['Derrumbe','Deslizamiento','Objetos/escombros','Grieta/hundi
 // Estados afectados (resaltados en rojo)
 const HOT = ['Distrito Capital','Miranda','La Guaira','Aragua','Carabobo','Yaracuy','Falcón'];
 
-// Reportes iniciales basados en información pública del 25 jun 2026 (lon/lat reales)
-const SEED = [
-  {id:'r1', type:'crit', title:'Edif. Petunia colapsado', loc:'Los Palos Grandes, Chacao, Caracas', lon:-66.84, lat:10.50, need:'Maquinaria pesada, paramédicos', when:'hace 2 h'},
-  {id:'r2', type:'build', title:'Colapso parcial', loc:'Av. Los Próceres, San Bernardino', lon:-66.89, lat:10.51, need:'Evaluación estructural', when:'hace 3 h'},
-  {id:'r3', type:'build', title:'Edificio 14 plantas caído', loc:'Zona Este de Caracas', lon:-66.80, lat:10.49, need:'Rescate pesado', when:'hace 1 h'},
-  {id:'r4', type:'crit', title:'Edif. Ritasol Palace', loc:'Los Corales, La Guaira', lon:-66.93, lat:10.60, need:'Búsqueda de atrapados', when:'hace 2 h'},
-  {id:'r5', type:'water', title:'Falla crítica de agua', loc:'Sector residencial, Miranda', lon:-66.55, lat:10.40, need:'Cisternas de agua potable', when:'hace 4 h'},
-  {id:'r6', type:'dark', title:'Sector sin electricidad', loc:'Catia, Caracas', lon:-66.95, lat:10.50, need:'Iluminación / plantas', when:'hace 3 h'},
-  {id:'r7', type:'acopio', title:'Centro de acopio activo', loc:'Plaza Altamira, Chacao', lon:-66.85, lat:10.49, need:'Reciben agua, medicinas, alimentos', when:'hace 1 h'},
-  {id:'r8', type:'miss', title:'Familia Barone', loc:'Caraballeda, La Guaira', lon:-66.85, lat:10.61, need:'Contacto: +58 414-3925735\nhttps://desaparecidosterremotovenezuela.com/?persona=p90ce309b8962', when:'hace 5 h'},
-  {id:'r9', type:'miss', title:'Familia Caicedo', loc:'Macuto, La Guaira', lon:-66.90, lat:10.60, need:'Esposa Lucena y bebé Luciano', when:'hace 4 h'},
-  {id:'r14', type:'volunteer', title:'Buscador voluntario', loc:'Chacao y este de Caracas', lon:-66.85, lat:10.50, need:'Puedo recorrer mi sector y verificar direcciones. Contacto: +58 412-0000000 (WhatsApp)', when:'hace 1 h'},
-  {id:'r15', type:'miss', title:'Carlos Rivas', loc:'Petare, Sucre, Miranda', lon:-66.81, lat:10.49, need:'Hombre 35 años, camisa azul. Contacto familiar: +58 414-1112233 CIH:1a2b3c4d', when:'hace 6 h'},
-  {id:'r16', type:'hosp', title:'Carlos Rivas', loc:'Hospital Pérez de León II, Petare', lon:-66.81, lat:10.49, need:'Estable y consciente, ingresado por golpes. CIH:1a2b3c4d', when:'hace 1 h'},
-  {id:'r17', type:'road', title:'Estado de vía / vialidad', loc:'Autopista Gran Mariscal, Guarenas–Caracas', lon:-66.61, lat:10.47, need:'Derrumbe en el canal derecho, paso lento · Causa: Deslizamiento RS:partial', when:'hace 2 h'},
-  {id:'r10', type:'water', title:'Sin suministro de agua', loc:'Maracay, Aragua', lon:-67.60, lat:10.25, need:'Agua potable / cisternas', when:'hace 3 h'},
-  {id:'r11', type:'build', title:'Daños en edificaciones', loc:'Valencia, Carabobo', lon:-68.00, lat:10.18, need:'Evaluación estructural', when:'hace 5 h'},
-  {id:'r12', type:'hosp', title:'Hombre adulto, ~40 años', loc:'Hospital Vargas de Caracas, San José', lon:-66.91, lat:10.50, need:'Estable, sin identificación. Tatuaje en antebrazo derecho', when:'hace 2 h'},
-  {id:'r13', type:'hosp', title:'Niña, ~6 años', loc:'Hospital J.M. de los Ríos, San Bernardino', lon:-66.89, lat:10.50, need:'Atendida y estable. Busca a sus padres', when:'hace 1 h'},
-];
+// Sin reportes de ejemplo: en producción la app muestra solo datos reales de la
+// nube (Supabase). Si no hay reportes, se ven los estados vacíos de cada sección.
+const SEED = [];
 
 // ---- Conexión Supabase ----
 const SUPABASE_URL = 'https://lzhvyjgbwynyuwylxucu.supabase.co';
@@ -1042,7 +1025,7 @@ async function load(){
     const rows = await sbFetch();
     cloudOK = true;
     reports = rows.map(r=>({ id:r.id, type:r.type, title:r.title, loc:r.loc, need:r.need, lon:r.lon, lat:r.lat, confirms:r.confirms||0, precision:r.precision||'approx', when:relTime(r.created_at) }));
-    if(reports.length===0){ reports = SEED.slice(); } // primera vez: muestra ejemplos locales
+    // sin datos de ejemplo: si la nube no tiene reportes, se muestran los estados vacíos
   }catch(e){
     // 2) respaldo local
     cloudOK = false;
