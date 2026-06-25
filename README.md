@@ -23,6 +23,14 @@ puntos de ayuda humanitaria, todo sobre un mapa interactivo.
   posibilidad de enlazar la **ficha oficial** en `desaparecidosterremotovenezuela.com`.
   Por seguridad **solo se aceptan enlaces de ese dominio** (HTTPS, sin trucos de
   `usuario@host`, `javascript:`, etc.), validados al guardar y al mostrar.
+- **🔎 Coincidencias hospital ↔ desaparecidos**: si una persona aparece a la vez
+  en ambas listas (cruce por **cédula** —guardada solo como **hash**, nunca se
+  publica— o por nombre), se marca como *posible coincidencia* en ambas tarjetas,
+  con aviso en la app y **notificación del navegador** para que un humano lo
+  verifique.
+- **🛣️ Estado de vialidad**: las vías se reportan con su estado de paso
+  (cerrada / parcial / solo motos / solo a pie / despejada) y cualquiera puede
+  **marcarla como despejada** cuando ya se puede circular.
 - **🙋 Buscadores voluntarios**: sección para que las personas se ofrezcan a
   recorrer o verificar su zona por un familiar de alguien, indicando su contacto.
 - **📞 Teléfonos oficiales** de emergencia (171, Bomberos, Protección Civil,
