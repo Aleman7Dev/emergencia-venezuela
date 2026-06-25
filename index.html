@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emergencia Sísmica Venezuela</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -221,7 +221,7 @@
   </section>
 </main>
 
-<button class="fab" id="fab">＋ Reportar emergencia</button>
+<button class="fab" id="fab">＋ Reportar</button>
 
 <div id="pickbanner" style="display:none;">
   <span>🗺️ Toca el mapa donde está el edificio o la persona</span>
@@ -418,9 +418,17 @@ function muniStyle(){ return { color:'#3b82f6', weight:0.7, fillColor:'#3b82f6',
 
 function initMap(){
   if(map) return;
+  // Si Leaflet no cargó (CDN bloqueado/sin red), avisar en vez de dejar el mapa negro
+  if(typeof L==='undefined'){
+    const el=document.getElementById('map');
+    if(el) el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:#8b97a7;font-size:13px;line-height:1.6">No se pudo cargar el mapa (sin conexión o CDN bloqueado).<br>Los reportes y teléfonos siguen disponibles en las otras pestañas.<br>Reintenta con conexión a internet.</div>';
+    return;
+  }
   map=L.map('map',{ zoomControl:false, attributionControl:true, minZoom:5, maxZoom:18 })
        .setView(VEN_CENTER,6);
   map.attributionControl.setPrefix(false);
+  // forzar cálculo de tamaño una vez montado (evita render parcial/gris)
+  setTimeout(()=>{ if(map) map.invalidateSize(); }, 120);
   // Estados (siempre visibles)
   if(GEO){
     statesLayer=L.geoJSON(GEO,{
