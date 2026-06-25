@@ -39,10 +39,18 @@
     --bg:#0a0e14; --panel:#11161f; --panel2:#161d29; --line:#222c3a;
     --txt:#e6edf3; --muted:#8b97a7; --acc:#3b82f6;
     --crit:#ef4444; --build:#f59e0b; --miss:#a855f7; --acopio:#22c55e; --aid:#ec4899; --dark:#64748b; --water:#06b6d4; --safe:#10b981;
+    --header-bg:rgba(10,14,20,.92);
   }
+  /* Modo claro */
+  :root[data-theme="light"]{
+    --bg:#eef2f8; --panel:#ffffff; --panel2:#f1f5fb; --line:#d4dce8;
+    --txt:#0f172a; --muted:#5a6676; --acc:#2563eb;
+    --header-bg:rgba(238,242,248,.92);
+  }
+  :root[data-theme="light"] .hsub, :root[data-theme="light"] .leaflet-popup-content-wrapper{ color:var(--muted); }
   html,body{ background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior:none; }
   body{ max-width:520px; margin:0 auto; min-height:100vh; position:relative; }
-  header{ position:sticky; top:0; z-index:30; background:rgba(10,14,20,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 16px; }
+  header{ position:sticky; top:0; z-index:30; background:var(--header-bg); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 16px; }
   .htop{ display:flex; align-items:center; gap:10px; }
   .pulse{ width:10px; height:10px; border-radius:50%; background:var(--crit); flex:none; }
   h1{ font-size:17px; font-weight:700; letter-spacing:.2px; }
@@ -224,6 +232,22 @@
   .tel-ambu .pl{ font-size:14px; font-weight:700; }
   .tel-ambu .nums{ font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.7; font-variant-numeric:tabular-nums; }
   .tel-ambu .nums a{ color:var(--txt); text-decoration:none; border-bottom:1px dotted var(--line); }
+
+  /* Toggle de tema (claro/oscuro) */
+  .theme-toggle{ flex:none; width:36px; height:36px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); color:var(--txt); font-size:16px; cursor:pointer; line-height:1; }
+
+  /* Botón de control activo en el mapa (auto-refresh) */
+  .mapctl button.on{ background:var(--acc); color:#fff; border-color:var(--acc); }
+
+  /* Ordenar por cercanía */
+  .sortbar{ display:flex; justify-content:flex-end; margin:-2px 0 10px; }
+  .sortnear{ display:inline-flex; align-items:center; gap:6px; min-height:36px; padding:7px 13px; border-radius:18px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); font-size:12.5px; font-weight:600; cursor:pointer; }
+  .sortnear.on{ background:var(--acc); border-color:var(--acc); color:#fff; }
+
+  /* Pie de página / aviso ciudadano */
+  .appfoot{ margin-top:22px; padding:16px; border-top:1px solid var(--line); text-align:center; }
+  .appfoot p{ font-size:12px; color:var(--muted); line-height:1.6; max-width:520px; margin:0 auto; }
+  .appfoot .appfoot-sub{ font-size:11px; margin-top:8px; opacity:.85; }
 </style>
 </head>
 <body>
@@ -249,6 +273,7 @@
       </svg>
       <small>Venezuela</small>
     </div>
+    <button class="theme-toggle" id="themeToggle" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema claro u oscuro">🌙</button>
   </div>
 </header>
 <div class="emergency-banner">⚠️ Doble terremoto 7,2 y 7,5 — Réplicas activas. Mantente alejado de estructuras dañadas.</div>
@@ -286,6 +311,7 @@
             <button id="zout" title="Alejar" aria-label="Alejar el mapa">－</button>
             <button id="zfit" title="Ver Venezuela completa" aria-label="Ver Venezuela completa">⛶</button>
             <button id="refresh" title="Refrescar desde la nube" aria-label="Refrescar reportes desde la nube">🔄</button>
+            <button id="autoref" title="Actualización automática cada 60 s" aria-label="Activar o desactivar actualización automática" aria-pressed="false">⏱️</button>
           </div>
           <button id="tiletoggle" class="tiletoggle" title="Mostrar/ocultar calles y carreteras">🛣️ Calles</button>
         </div>
@@ -299,7 +325,7 @@
           <span class="lg"><span class="dot" style="background:var(--water)"></span>Sin agua potable</span>
           <span class="lg"><span class="dot" style="background:#0ea5e9"></span>Buscador voluntario</span>
         </div>
-        <div class="note">🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Sin actualización automática: usa 🔄 para ver reportes nuevos.</div>
+        <div class="note">🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Usa <b>🔄</b> para refrescar, o <b>⏱️</b> para activar la actualización automática (cada 60 s).</div>
       </div>
       <aside class="map-side">
         <div class="stats">
@@ -318,6 +344,7 @@
 
   <section class="view" id="v-reportes">
     <div class="sectitle">Reportes activos</div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
     <div id="list-rep" class="list-grid"></div>
   </section>
 
@@ -327,6 +354,7 @@
       <input id="missSearch" placeholder="Buscar por nombre, zona o estado…">
       <button class="sclear" id="missClear">Limpiar</button>
     </div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
     <div id="list-miss" class="list-grid"></div>
     <div class="note">Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.</div>
   </section>
@@ -337,12 +365,14 @@
       <input id="hospSearch" placeholder="Buscar por nombre, hospital o estado…">
       <button class="sclear" id="hospClear">Limpiar</button>
     </div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
     <div id="list-hosp" class="list-grid"></div>
     <div class="note">🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.</div>
   </section>
 
   <section class="view" id="v-acopio">
     <div class="sectitle">Centros de acopio y puntos de ayuda humanitaria</div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
     <div id="list-acopio" class="list-grid"></div>
   </section>
 
@@ -352,6 +382,7 @@
       <input id="volunSearch" placeholder="Buscar por zona o estado…" aria-label="Buscar buscadores voluntarios por zona o estado">
       <button class="sclear" id="volunClear">Limpiar</button>
     </div>
+    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false">📍 Cerca de mí</button></div>
     <div id="list-volun" class="list-grid"></div>
     <div class="note">🙋 ¿Puedes recorrer tu zona o acercarte a verificar por un familiar de alguien? Ofrécete como <b>buscador voluntario</b> con el botón <b>＋ Reportar</b> → <b>Buscador voluntario</b>. Indica la zona que puedes cubrir y cómo contactarte. <b>No compartas datos sensibles</b> y actúa siempre de buena fe.</div>
   </section>
@@ -383,6 +414,11 @@
 
     <div class="note">📌 El <b>171</b> es la línea integrada nacional. Las líneas por operadora y las ambulancias son referenciales para Caracas: <b>verifica</b> los números regionales con tu alcaldía. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
   </section>
+
+  <footer class="appfoot">
+    <p>Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b></p>
+    <p class="appfoot-sub">Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.</p>
+  </footer>
 </main>
 
 <button class="fab" id="fab" aria-label="Crear un nuevo reporte">＋ Reportar</button>
@@ -407,6 +443,8 @@
 // Si anime.js no cargó (CDN bloqueado o conexión inestable), usar un sustituto sin
 // efecto para que la app NO se rompa: lo importante en una emergencia es que funcione.
 if(typeof anime==='undefined'){ window.anime=function(){ return { finished:Promise.resolve() }; }; }
+// Tema (claro/oscuro): aplicar cuanto antes para evitar parpadeo
+(function(){ try{ var t=localStorage.getItem('vzla_theme'); if(t) document.documentElement.setAttribute('data-theme',t); }catch(e){} })();
 const TYPES = {
   crit:   {e:'🆘', t:'Emergencia crítica', c:'#ef4444'},
   build:  {e:'🏚️', t:'Edificio/acceso dañado', c:'#f59e0b'},
@@ -491,6 +529,7 @@ let reports=[], selState=null, selMuni=null;
 let zoom=1, panX=0, panY=0;
 let activeFilters=new Set(Object.keys(TYPES).filter(k=>k!=='safe'));
 let missQuery='', hospQuery='', volunQuery='';
+let nearMode=false, userLoc=null;   // ordenar listas por cercanía (GPS)
 
 // ---- Municipios (capa que aparece al enfocar un estado) ----
 let MUNIS=null;              // { estado: [ [nombre, tipo, coords], ... ] }
@@ -546,6 +585,17 @@ function extractProfile(rp){
 }
 function stripProfile(text){
   return String(text==null?'':text).replace(PROFILE_RE,'').replace(/\s{2,}/g,' ').replace(/\s*[\n·|]\s*$/,'').trim();
+}
+
+// Detecta un móvil venezolano (412/414/416/424/426 + 7 dígitos) y lo normaliza
+// al formato internacional de WhatsApp (58XXXXXXXXXX), o null si no hay.
+function waPhone(text){
+  const s=String(text==null?'':text);
+  const m=s.match(/(?:\+?58[\s.\-]?|0)?(4(?:12|14|16|24|26))[\s.\-]?(\d{3}[\s.\-]?\d{2}[\s.\-]?\d{2}|\d{7})/);
+  if(!m) return null;
+  const tail=m[2].replace(/\D/g,'');
+  if(tail.length!==7) return null;
+  return '58'+m[1]+tail;
 }
 
 function shareLinks(rp){
@@ -696,6 +746,7 @@ function activateTab(name){
   document.querySelectorAll('.tab').forEach(x=>{ const on=x.dataset.v===name; x.classList.toggle('on', on); x.setAttribute('aria-selected', on?'true':'false'); });
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
   document.getElementById('v-'+name).classList.add('on');
+  if(typeof saveTab==='function') saveTab(name);
   if(name==='mapa' && map) setTimeout(()=>map.invalidateSize(),60);
 }
 
@@ -779,12 +830,30 @@ document.getElementById('zin').onclick=()=>{ map&&map.zoomIn(); };
 document.getElementById('zout').onclick=()=>{ map&&map.zoomOut(); };
 document.getElementById('zfit').onclick=()=>{ map&&map.fitBounds(VEN_BOUNDS); };
 document.getElementById('tiletoggle').onclick=()=>{ setTiles(!tilesOn); };
-document.getElementById('refresh').onclick=async()=>{
-  const btn=document.getElementById('refresh'); btn.textContent='…';
+async function cloudRefresh(){
   try{ const rows=await sbFetch(); cloudOK=true; reports=rows.map(r=>({id:r.id,type:r.type,title:r.title,loc:r.loc,need:r.need,lon:r.lon,lat:r.lat,confirms:r.confirms||0,precision:r.precision||'approx',when:relTime(r.created_at)})); }
   catch(e){ cloudOK=false; }
-  updateCloudBadge(); render(); btn.textContent='🔄';
+  updateCloudBadge(); render();
+}
+document.getElementById('refresh').onclick=async()=>{
+  const btn=document.getElementById('refresh'); btn.textContent='…';
+  await cloudRefresh(); btn.textContent='🔄';
 };
+// Actualización automática opcional (cada 60 s; se pausa si la pestaña no está visible)
+let autoTimer=null;
+function setAuto(on){
+  const btn=document.getElementById('autoref');
+  if(on){
+    if(!autoTimer) autoTimer=setInterval(()=>{ if(!document.hidden) cloudRefresh(); }, 60000);
+    if(btn){ btn.classList.add('on'); btn.setAttribute('aria-pressed','true'); btn.title='Auto-actualización: ACTIVADA'; }
+    cloudRefresh();
+  } else {
+    if(autoTimer){ clearInterval(autoTimer); autoTimer=null; }
+    if(btn){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); btn.title='Actualización automática cada 60 s'; }
+  }
+  try{ window.storage && window.storage.set('vzla_autoref', on?'1':'0'); }catch(e){}
+}
+{ const ab=document.getElementById('autoref'); if(ab) ab.onclick=()=>setAuto(!autoTimer); }
 
 // ---- datos ----
 async function load(){
@@ -804,9 +873,16 @@ async function load(){
   if(!GEO && window.__GEO__) GEO=window.__GEO__;
   // confirmaciones previas de este navegador
   try{ const c=await window.storage.get('vzla_confirmed'); if(c&&c.value) confirmedByMe=new Set(JSON.parse(c.value)); }catch(e){}
+  // preferencias guardadas: filtros, última pestaña y auto-actualización
+  let savedTab=null, savedAuto=false;
+  try{ const f=await window.storage.get('vzla_filters'); if(f&&f.value){ const arr=JSON.parse(f.value).filter(k=>TYPES[k]&&k!=='safe'); if(arr.length) activeFilters=new Set(arr); } }catch(e){}
+  try{ const tb=await window.storage.get('vzla_tab'); if(tb&&tb.value&&document.getElementById('v-'+tb.value)) savedTab=tb.value; }catch(e){}
+  try{ const ar=await window.storage.get('vzla_autoref'); savedAuto=!!(ar&&ar.value==='1'); }catch(e){}
   updateCloudBadge();
   initMap();   // crea el mapa Leaflet (tiles desactivados por defecto)
   render();
+  if(savedTab) activateTab(savedTab);
+  if(savedAuto) setAuto(true);
 }
 async function save(){ // solo respaldo local cuando no hay nube
   if(cloudOK) return;
@@ -835,6 +911,7 @@ function buildFilters(){
     const k=c.dataset.f;
     if(activeFilters.has(k)) activeFilters.delete(k); else activeFilters.add(k);
     if(activeFilters.size===0) activeFilters=new Set(Object.keys(TYPES).filter(x=>x!=='safe'));
+    if(typeof saveFilters==='function') saveFilters();
     buildFilters(); buildMap();
   }));
 }
@@ -855,6 +932,14 @@ function card(rp){
   // Ficha oficial (solo enlaces validados de desaparecidosterremotovenezuela.com)
   const prof=extractProfile(rp);
   const fichaBtn = prof ? `<a class="sbtn ficha" href="${esc(prof)}" target="_blank" rel="noopener noreferrer">🔗 Ver ficha oficial ↗</a>` : '';
+  // WhatsApp: si el reporte incluye un móvil, contactar directamente; si no, compartir
+  const phone = waPhone((rp.need||'')+' '+(rp.loc||''));
+  const waMsg = rp.type==='volunteer'
+    ? 'Hola, te contacto por la app Emergencia Sísmica Venezuela por tu ofrecimiento como buscador voluntario.'
+    : `Hola, te contacto por la app Emergencia Sísmica Venezuela sobre el reporte: ${rp.title}.`;
+  const waBtn = phone
+    ? `<a class="sbtn wa" href="https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}" target="_blank" rel="noopener">💬 WhatsApp</a>`
+    : `<a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">↗ Compartir</a>`;
   const dispLoc = esc(stripProfile(rp.loc));
   const dispNeed = esc(stripProfile(rp.need)) || '(sin detalle)';
   return `<div class="card"><div class="crow">
@@ -866,7 +951,7 @@ function card(rp){
       ${precBadge}
       <span style="font-size:10.5px;color:var(--muted);margin-left:6px">${esc(rp.when)}</span>
       <div class="share-row">
-        <a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">↗ WhatsApp</a>
+        ${waBtn}
         <button class="sbtn" data-copy="${esc(rp.id)}">⧉ Copiar</button>
         ${fichaBtn}
         ${confBtn}
@@ -933,18 +1018,18 @@ function render(){
   document.getElementById('s-miss').textContent=reports.filter(r=>r.type==='miss').length;
   renderChart();
   const all=reports.filter(r=>!['miss','acopio','hosp','aid','volunteer'].includes(r.type));
-  document.getElementById('list-rep').innerHTML=all.length?all.map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
+  document.getElementById('list-rep').innerHTML=all.length?sortNear(all).map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
   let miss=reports.filter(r=>r.type==='miss');
   if(missQuery){ const q=missQuery.toLowerCase(); miss=miss.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
-  document.getElementById('list-miss').innerHTML=miss.length?miss.map(card).join(''):'<div class="empty">'+(missQuery?'Sin coincidencias para “'+esc(missQuery)+'”.':'No hay personas reportadas.')+'</div>';
+  document.getElementById('list-miss').innerHTML=miss.length?sortNear(miss).map(card).join(''):'<div class="empty">'+(missQuery?'Sin coincidencias para “'+esc(missQuery)+'”.':'No hay personas reportadas.')+'</div>';
   let hosp=reports.filter(r=>r.type==='hosp');
   if(hospQuery){ const q=hospQuery.toLowerCase(); hosp=hosp.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
-  document.getElementById('list-hosp').innerHTML=hosp.length?hosp.map(card).join(''):'<div class="empty">'+(hospQuery?'Sin coincidencias para “'+esc(hospQuery)+'”.':'Aún no hay personas reportadas en centros de salud.')+'</div>';
+  document.getElementById('list-hosp').innerHTML=hosp.length?sortNear(hosp).map(card).join(''):'<div class="empty">'+(hospQuery?'Sin coincidencias para “'+esc(hospQuery)+'”.':'Aún no hay personas reportadas en centros de salud.')+'</div>';
   const aco=reports.filter(r=>r.type==='acopio'||r.type==='aid');
-  document.getElementById('list-acopio').innerHTML=aco.length?aco.map(card).join(''):'<div class="empty">No hay centros de acopio ni puntos de ayuda reportados.</div>';
+  document.getElementById('list-acopio').innerHTML=aco.length?sortNear(aco).map(card).join(''):'<div class="empty">No hay centros de acopio ni puntos de ayuda reportados.</div>';
   let volun=reports.filter(r=>r.type==='volunteer');
   if(volunQuery){ const q=volunQuery.toLowerCase(); volun=volun.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
-  document.getElementById('list-volun').innerHTML=volun.length?volun.map(card).join(''):'<div class="empty">'+(volunQuery?'Sin coincidencias para “'+esc(volunQuery)+'”.':'Aún no hay buscadores voluntarios. ¡Ofrécete con ＋ Reportar!')+'</div>';
+  document.getElementById('list-volun').innerHTML=volun.length?sortNear(volun).map(card).join(''):'<div class="empty">'+(volunQuery?'Sin coincidencias para “'+esc(volunQuery)+'”.':'Aún no hay buscadores voluntarios. ¡Ofrécete con ＋ Reportar!')+'</div>';
   document.querySelectorAll('[data-done]').forEach(b=>{ b.addEventListener('click',async()=>{
     const id=b.dataset.done;
     if(confirmedByMe.has(String(id))) return;            // ya confirmado por este navegador
@@ -981,12 +1066,48 @@ const vs=document.getElementById('volunSearch');
 if(vs){ vs.addEventListener('input',e=>{ volunQuery=e.target.value.trim(); render(); }); }
 const vc=document.getElementById('volunClear'); if(vc){ vc.addEventListener('click',()=>{ volunQuery=''; vs.value=''; render(); }); }
 
+// ---- Tema claro/oscuro ----
+const themeBtn=document.getElementById('themeToggle');
+function applyThemeIcon(){ const light=document.documentElement.getAttribute('data-theme')==='light'; if(themeBtn){ themeBtn.textContent=light?'☀️':'🌙'; themeBtn.setAttribute('aria-label', light?'Cambiar a tema oscuro':'Cambiar a tema claro'); } }
+if(themeBtn){
+  themeBtn.addEventListener('click',()=>{
+    const light=document.documentElement.getAttribute('data-theme')==='light';
+    const next=light?'dark':'light';
+    document.documentElement.setAttribute('data-theme',next);
+    try{ localStorage.setItem('vzla_theme',next); }catch(e){}
+    applyThemeIcon(); if(map) setTimeout(()=>map.invalidateSize(),60);
+  });
+  applyThemeIcon();
+}
+
+// ---- Ordenar listas por cercanía (GPS) ----
+function distKm(lat1,lon1,lat2,lon2){ const R=6371,toR=x=>x*Math.PI/180; const dLat=toR(lat2-lat1),dLon=toR(lon2-lon1); const a=Math.sin(dLat/2)**2+Math.cos(toR(lat1))*Math.cos(toR(lat2))*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(a)); }
+function sortNear(arr){ if(!nearMode||!userLoc) return arr; return arr.slice().sort((a,b)=>{ const da=a.lat!=null?distKm(userLoc.lat,userLoc.lon,a.lat,a.lon):1e9; const db=b.lat!=null?distKm(userLoc.lat,userLoc.lon,b.lat,b.lon):1e9; return da-db; }); }
+function updateNearBtns(){ document.querySelectorAll('.sortnear').forEach(b=>{ b.classList.toggle('on',nearMode); b.setAttribute('aria-pressed',nearMode?'true':'false'); b.textContent=nearMode?'📍 Cerca de mí ✓':'📍 Cerca de mí'; }); }
+function setNear(on){ nearMode=on; updateNearBtns(); render(); }
+document.querySelectorAll('.sortnear').forEach(b=>b.addEventListener('click',()=>{
+  if(nearMode){ setNear(false); return; }
+  if(userLoc){ setNear(true); return; }
+  if(!navigator.geolocation){ alert('Tu dispositivo no permite ubicación GPS.'); return; }
+  b.textContent='Ubicando…';
+  navigator.geolocation.getCurrentPosition(
+    pos=>{ userLoc={lat:pos.coords.latitude,lon:pos.coords.longitude}; setNear(true); },
+    ()=>{ updateNearBtns(); alert('No se pudo obtener tu ubicación. Activa el GPS o el permiso de ubicación.'); },
+    { enableHighAccuracy:true, timeout:10000, maximumAge:60000 }
+  );
+}));
+
+// ---- Persistencia de preferencias (filtros, pestaña) ----
+function saveFilters(){ try{ window.storage && window.storage.set('vzla_filters', JSON.stringify([...activeFilters])); }catch(e){} }
+function saveTab(name){ try{ window.storage && window.storage.set('vzla_tab', name); }catch(e){} }
+
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(x=>{ x.classList.remove('on'); x.setAttribute('aria-selected','false'); });
     document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
     t.classList.add('on'); t.setAttribute('aria-selected','true');
     document.getElementById('v-'+t.dataset.v).classList.add('on');
+    saveTab(t.dataset.v);
     if(t.dataset.v==='mapa' && map){ setTimeout(()=>map.invalidateSize(),60); }
   });
 });
