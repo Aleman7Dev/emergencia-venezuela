@@ -210,15 +210,44 @@
     .fab{ bottom:calc(20px + env(safe-area-inset-bottom)); }
     main{ padding-bottom:calc(90px + env(safe-area-inset-bottom)); }
   }
+
+  /* ===== Bandera de Venezuela ===== */
+  .flag-accent{ height:4px; width:100%; background:linear-gradient(to right,#f7d117 0 33.34%,#00247d 33.34% 66.67%,#cf142b 66.67% 100%); }
+  .ve-flag{ width:30px; height:20px; border-radius:3px; flex:none; box-shadow:0 0 0 1px rgba(255,255,255,.12); }
+  .ve-flag-wrap{ display:flex; flex-direction:column; align-items:center; gap:2px; margin-left:auto; }
+  .ve-flag-wrap small{ font-size:8.5px; font-weight:700; letter-spacing:.4px; color:var(--muted); text-transform:uppercase; }
+
+  /* Tarjeta de buscador voluntario y enlace a ficha oficial */
+  .sbtn.ficha{ color:#fbbf24; border-color:#fbbf2433; background:#fbbf2412; }
+  .tel-sub{ font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin:18px 0 9px; }
+  .tel-ambu{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:10px; }
+  .tel-ambu .pl{ font-size:14px; font-weight:700; }
+  .tel-ambu .nums{ font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.7; font-variant-numeric:tabular-nums; }
+  .tel-ambu .nums a{ color:var(--txt); text-decoration:none; border-bottom:1px dotted var(--line); }
 </style>
 </head>
 <body>
+<div class="flag-accent" aria-hidden="true"></div>
 <header>
   <div class="htop">
     <span class="pulse" id="pulse" aria-hidden="true"></span>
     <div>
       <h1>Emergencia Sísmica · Venezuela</h1>
       <div class="hsub" id="clock" aria-live="polite">Estado de Emergencia Nacional · 25 jun 2026</div>
+    </div>
+    <div class="ve-flag-wrap">
+      <svg class="ve-flag" viewBox="0 0 30 20" role="img" aria-label="Bandera de Venezuela">
+        <rect width="30" height="20" rx="3" fill="#00247d"/>
+        <rect width="30" height="6.667" fill="#f7d117"/>
+        <rect width="30" height="6.667" y="13.333" fill="#cf142b"/>
+        <g fill="#fff">
+          <circle cx="5.5" cy="8.60" r="0.6"/><circle cx="8.2" cy="9.48" r="0.6"/>
+          <circle cx="10.9" cy="10.06" r="0.6"/><circle cx="13.6" cy="10.36" r="0.6"/>
+          <circle cx="16.4" cy="10.36" r="0.6"/><circle cx="19.1" cy="10.06" r="0.6"/>
+          <circle cx="21.8" cy="9.48" r="0.6"/><circle cx="24.5" cy="8.60" r="0.6"/>
+        </g>
+      </svg>
+      <small>Venezuela</small>
     </div>
   </div>
 </header>
@@ -241,6 +270,7 @@
   <button class="tab" role="tab" aria-selected="false" data-v="desap">🧍 Desaparecidos</button>
   <button class="tab" role="tab" aria-selected="false" data-v="hosp">🏥 Hospitales</button>
   <button class="tab" role="tab" aria-selected="false" data-v="acopio">📦 Acopio y ayuda</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="volun">🙋 Buscadores</button>
   <button class="tab" role="tab" aria-selected="false" data-v="tel">📞 Teléfonos</button>
 </nav>
 
@@ -267,6 +297,7 @@
           <span class="lg"><span class="dot" style="background:var(--aid)"></span>Ayuda humanitaria</span>
           <span class="lg"><span class="dot" style="background:var(--dark)"></span>Zona sin luz</span>
           <span class="lg"><span class="dot" style="background:var(--water)"></span>Sin agua potable</span>
+          <span class="lg"><span class="dot" style="background:#0ea5e9"></span>Buscador voluntario</span>
         </div>
         <div class="note">🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Sin actualización automática: usa 🔄 para ver reportes nuevos.</div>
       </div>
@@ -315,6 +346,16 @@
     <div id="list-acopio" class="list-grid"></div>
   </section>
 
+  <section class="view" id="v-volun">
+    <div class="sectitle">Buscadores voluntarios</div>
+    <div class="searchbar">
+      <input id="volunSearch" placeholder="Buscar por zona o estado…" aria-label="Buscar buscadores voluntarios por zona o estado">
+      <button class="sclear" id="volunClear">Limpiar</button>
+    </div>
+    <div id="list-volun" class="list-grid"></div>
+    <div class="note">🙋 ¿Puedes recorrer tu zona o acercarte a verificar por un familiar de alguien? Ofrécete como <b>buscador voluntario</b> con el botón <b>＋ Reportar</b> → <b>Buscador voluntario</b>. Indica la zona que puedes cubrir y cómo contactarte. <b>No compartas datos sensibles</b> y actúa siempre de buena fe.</div>
+  </section>
+
   <section class="view" id="v-tel">
     <div class="sectitle">Teléfonos de emergencia oficiales</div>
     <div class="list-grid">
@@ -324,7 +365,23 @@
       <a class="phone" href="tel:0212571"><div><div class="pl">Cruz Roja Venezolana</div><div class="ps">Atención médica / ambulancias</div></div><div class="pn">0212-571</div></a>
       <a class="phone" href="tel:0212"><div><div class="pl">FUNVISIS — Reporte sísmico</div><div class="ps">Información de sismos y réplicas</div></div><div class="pn">0212</div></a>
     </div>
-    <div class="note">📌 Verifica los números regionales con tu alcaldía. El 171 es la línea integrada nacional de emergencias. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
+
+    <div class="tel-sub">📡 Líneas de emergencia por operadora · Caracas</div>
+    <div class="list-grid">
+      <a class="phone" href="tel:171"><div><div class="pl">CANTV (teléfono fijo)</div><div class="ps">Emergencias</div></div><div class="pn">171</div></a>
+      <a class="phone" href="tel:*1"><div><div class="pl">Movilnet</div><div class="ps">Emergencias</div></div><div class="pn">*1</div></a>
+      <a class="phone" href="tel:112"><div><div class="pl">Digitel</div><div class="ps">Emergencias</div></div><div class="pn">112</div></a>
+      <a class="phone" href="tel:911"><div><div class="pl">Movistar</div><div class="ps">Emergencias</div></div><div class="pn">911</div></a>
+    </div>
+
+    <div class="tel-sub">🚑 Ambulancias · Caracas</div>
+    <div class="list-grid">
+      <div class="tel-ambu"><div class="pl">Aeroambulancias</div><div class="nums"><a href="tel:02129932541">(0212) 993.25.41</a> · <a href="tel:02129928980">992.89.80</a> · <a href="tel:02129928990">992.89.90</a> · <a href="tel:02129917940">991.79.40</a></div></div>
+      <div class="tel-ambu"><div class="pl">Rescarven</div><div class="nums"><a href="tel:02129936911">(0212) 993.69.11</a> · <a href="tel:02129936991">993.69.91</a> · <a href="tel:02129931310">993.13.10</a> · <a href="tel:02129933367">993.33.67</a></div></div>
+      <div class="tel-ambu"><div class="pl">Ambulancia Metropolitano</div><div class="nums"><a href="tel:02125454545">(0212) 545.45.45</a> · <a href="tel:02125454655">545.46.55</a> · <a href="tel:02125779209">577.92.09</a></div></div>
+    </div>
+
+    <div class="note">📌 El <b>171</b> es la línea integrada nacional. Las líneas por operadora y las ambulancias son referenciales para Caracas: <b>verifica</b> los números regionales con tu alcaldía. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
   </section>
 </main>
 
@@ -360,6 +417,7 @@ const TYPES = {
   aid:    {e:'⛑️', t:'Punto de ayuda humanitaria', c:'#ec4899'},
   dark:   {e:'🔌', t:'Zona sin luz', c:'#64748b'},
   water:  {e:'💧', t:'Sin agua potable', c:'#06b6d4'},
+  volunteer:{e:'🙋', t:'Buscador voluntario', c:'#0ea5e9'},
   safe:   {e:'✅', t:'Localizado a salvo', c:'#10b981'},
 };
 // Estados de paso para vialidad
@@ -384,8 +442,9 @@ const SEED = [
   {id:'r5', type:'water', title:'Falla crítica de agua', loc:'Sector residencial, Miranda', lon:-66.55, lat:10.40, need:'Cisternas de agua potable', when:'hace 4 h'},
   {id:'r6', type:'dark', title:'Sector sin electricidad', loc:'Catia, Caracas', lon:-66.95, lat:10.50, need:'Iluminación / plantas', when:'hace 3 h'},
   {id:'r7', type:'acopio', title:'Centro de acopio activo', loc:'Plaza Altamira, Chacao', lon:-66.85, lat:10.49, need:'Reciben agua, medicinas, alimentos', when:'hace 1 h'},
-  {id:'r8', type:'miss', title:'Familia Barone', loc:'Caraballeda, La Guaira', lon:-66.85, lat:10.61, need:'Contacto: +58 414-3925735', when:'hace 5 h'},
+  {id:'r8', type:'miss', title:'Familia Barone', loc:'Caraballeda, La Guaira', lon:-66.85, lat:10.61, need:'Contacto: +58 414-3925735\nhttps://desaparecidosterremotovenezuela.com/?persona=p90ce309b8962', when:'hace 5 h'},
   {id:'r9', type:'miss', title:'Familia Caicedo', loc:'Macuto, La Guaira', lon:-66.90, lat:10.60, need:'Esposa Lucena y bebé Luciano', when:'hace 4 h'},
+  {id:'r14', type:'volunteer', title:'Buscador voluntario', loc:'Chacao y este de Caracas', lon:-66.85, lat:10.50, need:'Puedo recorrer mi sector y verificar direcciones. Contacto: +58 412-0000000 (WhatsApp)', when:'hace 1 h'},
   {id:'r10', type:'water', title:'Sin suministro de agua', loc:'Maracay, Aragua', lon:-67.60, lat:10.25, need:'Agua potable / cisternas', when:'hace 3 h'},
   {id:'r11', type:'build', title:'Daños en edificaciones', loc:'Valencia, Carabobo', lon:-68.00, lat:10.18, need:'Evaluación estructural', when:'hace 5 h'},
   {id:'r12', type:'hosp', title:'Hombre adulto, ~40 años', loc:'Hospital Vargas de Caracas, San José', lon:-66.91, lat:10.50, need:'Estable, sin identificación. Tatuaje en antebrazo derecho', when:'hace 2 h'},
@@ -431,7 +490,7 @@ let GEO=null, VB={w:600,h:420}, BOUNDS=null;
 let reports=[], selState=null, selMuni=null;
 let zoom=1, panX=0, panY=0;
 let activeFilters=new Set(Object.keys(TYPES).filter(k=>k!=='safe'));
-let missQuery='', hospQuery='';
+let missQuery='', hospQuery='', volunQuery='';
 
 // ---- Municipios (capa que aparece al enfocar un estado) ----
 let MUNIS=null;              // { estado: [ [nombre, tipo, coords], ... ] }
@@ -458,6 +517,35 @@ function esc(s){
   return String(s==null?'':s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ---- Enlace a la ficha oficial de desaparecidosterremotovenezuela.com ----
+// Seguridad: SOLO se acepta ese dominio, por HTTPS, sin usuario/contraseña ni
+// puerto raro. Bloquea javascript:, data:, otros dominios y trucos tipo
+// "https://desaparecidos...@malicioso.com". Se valida al guardar Y al renderizar.
+const PROFILE_HOSTS = ['desaparecidosterremotovenezuela.com','www.desaparecidosterremotovenezuela.com'];
+function safeProfileLink(raw){
+  if(!raw) return null;
+  let s=String(raw).trim();
+  if(!s || s.length>300) return null;
+  let u;
+  try{ u=new URL(s); }catch(e){ return null; }
+  if(u.protocol!=='https:') return null;
+  if(u.username || u.password) return null;
+  if(u.port && u.port!=='443') return null;
+  if(!PROFILE_HOSTS.includes(u.hostname.toLowerCase())) return null;
+  return u.href; // URL normalizada y segura
+}
+// Extrae (si existe) un enlace válido a la ficha dentro del texto del reporte
+const PROFILE_RE = /https?:\/\/[^\s"'<>]*desaparecidosterremotovenezuela\.com[^\s"'<>]*/i;
+function extractProfile(rp){
+  const hay=`${rp&&rp.need||''} ${rp&&rp.loc||''}`;
+  const m=hay.match(PROFILE_RE);
+  if(!m) return null;
+  return safeProfileLink(m[0]); // re-validación estricta (defensa en profundidad)
+}
+function stripProfile(text){
+  return String(text==null?'':text).replace(PROFILE_RE,'').replace(/\s{2,}/g,' ').replace(/\s*[\n·|]\s*$/,'').trim();
 }
 
 function shareLinks(rp){
@@ -758,23 +846,29 @@ function card(rp){
   const mine=confirmedByMe.has(String(rp.id));
   // Etiqueta según el tipo: desaparecidos -> "encontrado"; resto -> "confirmar"
   const verbo = rp.type==='miss' ? 'Confirmar encontrado' : 'Confirmar';
-  // Botón de confirmación: requiere CONFIRM_THRESHOLD confirmaciones distintas
-  const confBtn = mine
+  // Botón de confirmación (no aplica a buscadores voluntarios)
+  const confBtn = rp.type==='volunteer' ? '' : (mine
     ? `<button class="btn-done sbtn" disabled style="color:var(--muted);opacity:.7">✓ Confirmaste (${c}/${CONFIRM_THRESHOLD})</button>`
-    : `<button class="btn-done sbtn" data-done="${esc(rp.id)}" style="color:var(--safe)">✓ ${verbo} (${c}/${CONFIRM_THRESHOLD})</button>`;
+    : `<button class="btn-done sbtn" data-done="${esc(rp.id)}" style="color:var(--safe)">✓ ${verbo} (${c}/${CONFIRM_THRESHOLD})</button>`);
   const pl=precLabel(rp.precision);
   const precBadge=`<span class="precbadge ${pl.exact?'pexact':'papprox'}">${pl.exact?'✓ exacta':'≈ aprox.'}</span>`;
+  // Ficha oficial (solo enlaces validados de desaparecidosterremotovenezuela.com)
+  const prof=extractProfile(rp);
+  const fichaBtn = prof ? `<a class="sbtn ficha" href="${esc(prof)}" target="_blank" rel="noopener noreferrer">🔗 Ver ficha oficial ↗</a>` : '';
+  const dispLoc = esc(stripProfile(rp.loc));
+  const dispNeed = esc(stripProfile(rp.need)) || '(sin detalle)';
   return `<div class="card"><div class="crow">
     <div class="cicon" style="background:${t.c}22">${t.e}</div>
     <div style="flex:1">
       <div class="ctitle">${esc(rp.title)}</div>
-      <div class="cmeta">📍 ${esc(rp.loc)}<br>ℹ️ ${esc(rp.need)}</div>
+      <div class="cmeta">📍 ${dispLoc}<br>ℹ️ ${dispNeed}</div>
       <span class="ctag" style="background:${t.c}22;color:${t.c}">${t.t}</span>
       ${precBadge}
       <span style="font-size:10.5px;color:var(--muted);margin-left:6px">${esc(rp.when)}</span>
       <div class="share-row">
         <a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">↗ WhatsApp</a>
         <button class="sbtn" data-copy="${esc(rp.id)}">⧉ Copiar</button>
+        ${fichaBtn}
         ${confBtn}
       </div>
     </div></div></div>`;
@@ -783,7 +877,7 @@ function card(rp){
 const TYPE_SHORT = {
   crit:'Críticas', build:'Edif. dañados', road:'Vialidad', miss:'Desaparecidos',
   hosp:'En hospital', acopio:'Acopio', aid:'Ayuda human.', dark:'Sin luz',
-  water:'Sin agua', safe:'A salvo'
+  water:'Sin agua', volunteer:'Voluntarios', safe:'A salvo'
 };
 // Gráfica de barras (SVG/CSS puro, sin dependencias) con las estadísticas de los reportes
 function renderChart(){
@@ -838,7 +932,7 @@ function render(){
   document.getElementById('s-build').textContent=reports.filter(r=>['build','dark','water'].includes(r.type)).length;
   document.getElementById('s-miss').textContent=reports.filter(r=>r.type==='miss').length;
   renderChart();
-  const all=reports.filter(r=>!['miss','acopio','hosp','aid'].includes(r.type));
+  const all=reports.filter(r=>!['miss','acopio','hosp','aid','volunteer'].includes(r.type));
   document.getElementById('list-rep').innerHTML=all.length?all.map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
   let miss=reports.filter(r=>r.type==='miss');
   if(missQuery){ const q=missQuery.toLowerCase(); miss=miss.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
@@ -848,6 +942,9 @@ function render(){
   document.getElementById('list-hosp').innerHTML=hosp.length?hosp.map(card).join(''):'<div class="empty">'+(hospQuery?'Sin coincidencias para “'+esc(hospQuery)+'”.':'Aún no hay personas reportadas en centros de salud.')+'</div>';
   const aco=reports.filter(r=>r.type==='acopio'||r.type==='aid');
   document.getElementById('list-acopio').innerHTML=aco.length?aco.map(card).join(''):'<div class="empty">No hay centros de acopio ni puntos de ayuda reportados.</div>';
+  let volun=reports.filter(r=>r.type==='volunteer');
+  if(volunQuery){ const q=volunQuery.toLowerCase(); volun=volun.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
+  document.getElementById('list-volun').innerHTML=volun.length?volun.map(card).join(''):'<div class="empty">'+(volunQuery?'Sin coincidencias para “'+esc(volunQuery)+'”.':'Aún no hay buscadores voluntarios. ¡Ofrécete con ＋ Reportar!')+'</div>';
   document.querySelectorAll('[data-done]').forEach(b=>{ b.addEventListener('click',async()=>{
     const id=b.dataset.done;
     if(confirmedByMe.has(String(id))) return;            // ya confirmado por este navegador
@@ -880,6 +977,9 @@ document.getElementById('missClear').addEventListener('click',()=>{ missQuery=''
 const hs=document.getElementById('hospSearch');
 if(hs){ hs.addEventListener('input',e=>{ hospQuery=e.target.value.trim(); render(); }); }
 document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''; hs.value=''; render(); });
+const vs=document.getElementById('volunSearch');
+if(vs){ vs.addEventListener('input',e=>{ volunQuery=e.target.value.trim(); render(); }); }
+const vc=document.getElementById('volunClear'); if(vc){ vc.addEventListener('click',()=>{ volunQuery=''; vs.value=''; render(); }); }
 
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
@@ -899,20 +999,31 @@ function buildSheet(){
   tg.querySelectorAll('.tcard').forEach(c=>c.addEventListener('click',()=>{ selType=c.dataset.t; buildSheet(); }));
   const states = GEO?GEO.features.filter(f=>f.properties.NAME_1).map(f=>f.properties.NAME_1):HOT;
   const isPerson = (selType==='miss'||selType==='hosp');
+  const isVolun = (selType==='volunteer');
   const pl=precLabel(pickedSrc);
   const locStatus = pickedLat!=null
     ? `<div class="loc-ok">${pl.exact?'✓':'≈'} ${pl.t}<br><span style="color:var(--muted)">lat ${pickedLat.toFixed(5)}, lon ${pickedLon.toFixed(5)}</span> · <button type="button" class="loc-clear" id="locClear">quitar</button></div>`
     : `<div class="loc-warn">Sin ubicación precisa. Si no marcas una, el reporte se ubicará de forma <b>aproximada</b> al centro del estado.</div>`;
   const isOffer = (selType==='aid'||selType==='acopio');
-  const needLabel = isPerson ? 'Nombre y descripción de la persona' : (isOffer ? 'Qué se ofrece / horario' : 'Qué se necesita / detalle');
-  const needPh = isPerson ? 'Nombre o descripción, edad aprox., estado, señas particulares'
+  const locLabel = selType==='hosp' ? 'Hospital o centro de salud' : (isVolun ? 'Zona que puedes cubrir' : 'Ubicación / dirección');
+  const locPh = selType==='hosp' ? 'Ej.: Hospital Vargas, San José, Caracas' : (isVolun ? 'Ej.: Municipio Chacao y este de Caracas' : 'Ej.: Av. Francisco de Miranda, Chacao');
+  const needLabel = isVolun ? 'Cómo puedes ayudar y cómo contactarte'
+    : (isPerson ? 'Nombre y descripción de la persona' : (isOffer ? 'Qué se ofrece / horario' : 'Qué se necesita / detalle'));
+  const needPh = isVolun ? 'Ej.: puedo recorrer mi sector y verificar direcciones. Contacto: +58 4xx-xxxxxxx (WhatsApp).'
+    : (isPerson ? 'Nombre o descripción, edad aprox., estado, señas particulares'
     : (isOffer ? (selType==='aid' ? 'Ej.: agua, comida, atención médica, refugio. Horario y a quién atiende.' : 'Ej.: reciben agua, medicinas, alimentos. Horario de recepción.')
-                : 'Ej.: paramédicos, agua, maquinaria, cisterna...');
+                : 'Ej.: paramédicos, agua, maquinaria, cisterna...'));
+  // Campo opcional de ficha oficial (solo para personas: desaparecidos / hospital)
+  const fichaField = isPerson ? `
+    <label class="fl">Ficha en desaparecidosterremotovenezuela.com <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
+    <input id="f-link" type="url" inputmode="url" placeholder="https://desaparecidosterremotovenezuela.com/?persona=...">
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 Solo se aceptan enlaces de <b>desaparecidosterremotovenezuela.com</b> (por seguridad).</div>` : '';
   document.getElementById('formfields').innerHTML=`
-    <label class="fl">${selType==='hosp'?'Hospital o centro de salud':'Ubicación / dirección'}</label>
-    <input id="f-loc" placeholder="${selType==='hosp'?'Ej.: Hospital Vargas, San José, Caracas':'Ej.: Av. Francisco de Miranda, Chacao'}">
+    <label class="fl">${locLabel}</label>
+    <input id="f-loc" placeholder="${locPh}">
     <label class="fl">${needLabel}</label>
     <textarea id="f-need" placeholder="${needPh}"></textarea>
+    ${fichaField}
     <label class="fl">Ubicación en el mapa <span style="font-weight:400;color:var(--muted)">(recomendado para rescate)</span></label>
     <div class="loc-btns">
       <button type="button" class="loc-btn" id="gpsBtn">📍 Usar mi ubicación (GPS)</button>
@@ -967,13 +1078,22 @@ document.getElementById('submitRep').addEventListener('click',async()=>{
   const muniEl=document.getElementById('f-muni');
   const muni=muniEl?muniEl.value.trim():'';
   if(!loc0){ alert('Indica la ubicación.'); return; }
+  // Enlace a la ficha oficial (opcional, solo personas): validación estricta de dominio
+  const linkEl=document.getElementById('f-link');
+  let profileUrl=null;
+  if(linkEl && linkEl.value.trim()){
+    profileUrl=safeProfileLink(linkEl.value);
+    if(!profileUrl){ alert('El enlace debe ser de https://desaparecidosterremotovenezuela.com'); return; }
+  }
+  // Componer la descripción adjuntando el enlace validado (sin alterar el esquema de la BD)
+  const needFinal = (need||'(sin detalle)') + (profileUrl ? `\n${profileUrl}` : '');
   // Componer ubicación con municipio si se eligió
   const loc = muni ? `${loc0} — ${muni}, ${st}` : loc0;
   // Coordenadas: usar punto preciso (GPS o marcado) si existe; si no, centro del estado (aprox)
   let lon, lat, precision;
   if(pickedLat!=null){ lat=pickedLat; lon=pickedLon; precision=pickedSrc; }
   else { const [clon,clat]=stateCentroidLonLat(st); const jit=()=>(Math.random()-.5)*0.25; lon=clon+jit(); lat=clat+jit(); precision='approx'; }
-  const rep={ type:selType, title:TYPES[selType].t, loc, need:need||'(sin detalle)', lon, lat, precision };
+  const rep={ type:selType, title:TYPES[selType].t, loc, need:needFinal, lon, lat, precision };
   const btn=document.getElementById('submitRep');
   btn.textContent='Publicando…'; btn.disabled=true;
   if(cloudOK){
