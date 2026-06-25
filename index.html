@@ -299,7 +299,7 @@
     <h2 data-i18n="priv.title" style="font-size:17px;text-align:center;margin-bottom:12px">Aviso de privacidad</h2>
     <p data-i18n-html="priv.1" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Esta es una herramienta comunitaria. <b>Todo lo que publiques será visible públicamente</b> para cualquier persona que use la app.</p>
     <p data-i18n-html="priv.2" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">No incluyas información sensible innecesaria (datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.</p>
-    <p data-i18n-html="priv.3" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Al reportar personas <b>sí se solicita la cédula</b>: sirve para verificar si la persona aparece a la vez como desaparecida y en un centro de salud. <b>La cédula no se muestra públicamente</b> — se guarda de forma cifrada y solo se usa para cruzar coincidencias.</p>
+    <p data-i18n-html="priv.3" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Al reportar personas <b>se sugiere la cédula</b> (opcional): ayuda a verificar si la persona aparece a la vez como desaparecida y en un centro de salud. Puedes reportar <b>sin cédula</b> (p. ej. menores o personas no identificadas). <b>La cédula no se muestra públicamente</b> — se guarda cifrada y solo se usa para cruzar coincidencias.</p>
     <p data-i18n-html="priv.4" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.</p>
     <button id="privacyOk" data-i18n="priv.ok" style="width:100%;background:var(--acc);color:#fff;border:none;padding:13px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer">Entiendo y acepto</button>
   </div>
@@ -491,15 +491,15 @@ const I18N={
   'priv.title':'Aviso de privacidad','priv.ok':'Entiendo y acepto',
   'priv.1':'Esta es una herramienta comunitaria. <b>Todo lo que publiques será visible públicamente</b> para cualquier persona que use la app.',
   'priv.2':'No incluyas información sensible innecesaria (datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.',
-  'priv.3':'Al reportar personas <b>sí se solicita la cédula</b>: sirve para verificar si la persona aparece a la vez como desaparecida y en un centro de salud. <b>La cédula no se muestra públicamente</b> — se guarda de forma cifrada y solo se usa para cruzar coincidencias.',
+  'priv.3':'Al reportar personas <b>se sugiere la cédula</b> (opcional): ayuda a verificar si la persona aparece a la vez como desaparecida y en un centro de salud. Puedes reportar <b>sin cédula</b> (p. ej. menores o personas no identificadas). <b>La cédula no se muestra públicamente</b> — se guarda cifrada y solo se usa para cruzar coincidencias.',
   'priv.4':'Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.',
   'sheet.title':'Nuevo reporte','sheet.sub':'Tu reporte aparece en el mapa para los equipos de rescate.','sheet.submit':'Publicar reporte','sheet.publishing':'Publicando…',
   'f.loc.hosp':'Hospital o centro de salud','f.loc.volun':'Zona que puedes cubrir','f.loc.def':'Ubicación / dirección',
   'fph.loc.hosp':'Ej.: Hospital Vargas, San José, Caracas','fph.loc.volun':'Ej.: Municipio Chacao y este de Caracas','fph.loc.def':'Ej.: Av. Francisco de Miranda, Chacao',
   'f.need.volun':'Cómo puedes ayudar y cómo contactarte','f.need.person':'Nombre y descripción de la persona','f.need.offer':'Qué se ofrece / horario','f.need.def':'Qué se necesita / detalle',
   'fph.need.volun':'Ej.: puedo recorrer mi sector y verificar direcciones. Contacto: +58 4xx-xxxxxxx (WhatsApp).','fph.need.person':'Nombre o descripción, edad aprox., estado, señas particulares','fph.need.aid':'Ej.: agua, comida, atención médica, refugio. Horario y a quién atiende.','fph.need.acopio':'Ej.: reciben agua, medicinas, alimentos. Horario de recepción.','fph.need.def':'Ej.: paramédicos, agua, maquinaria, cisterna...',
-  'f.name':'Nombre y apellido','f.name.hint':'(si se conoce)','f.opt':'(opcional)','f.ci':'Cédula','f.ci.req':'*&nbsp;obligatoria','f.ci.opt':'(si está identificada)',
-  'f.ci.hint':'🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.','f.ci.hintReq':' Es <b>obligatoria</b> para cruzar la búsqueda con los centros de salud.',
+  'f.name':'Nombre y apellido','f.name.hint':'(si se conoce)','f.opt':'(opcional)','f.ci':'Cédula','f.ci.sug':'(opcional, recomendada)','f.ci.opt':'(si está identificada)',
+  'f.ci.hint':'🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.','f.ci.hintSug':' <b>Si la conoces, inclúyela</b> para poder cruzar la búsqueda con los centros de salud — pero no es obligatoria.',
   'f.ficha':'Ficha en desaparecidosterremotovenezuela.com','f.ficha.hint':'🔒 Solo se aceptan enlaces de <b>desaparecidosterremotovenezuela.com</b> (por seguridad).',
   'f.roadStatus':'Estado del paso','f.cause':'Causa','f.cause.none':'— Sin especificar —',
   'f.mapLabel':'Ubicación en el mapa','f.mapRec':'(recomendado para rescate)','f.gps':'📍 Usar mi ubicación (GPS)','f.mapBtn':'🗺️ Marcar en el mapa',
@@ -535,15 +535,15 @@ const I18N={
   'priv.title':'Privacy notice','priv.ok':'I understand and accept',
   'priv.1':'This is a community tool. <b>Everything you post will be publicly visible</b> to anyone who uses the app.',
   'priv.2':'Do not include unnecessary sensitive information (detailed medical data, exact home addresses). Share only what is essential to help with rescue or location.',
-  'priv.3':'When reporting people, <b>the ID number (cédula) is requested</b>: it is used to check whether the person appears both as missing and in a health center. <b>The ID is not shown publicly</b> — it is stored encrypted and only used to cross-match.',
+  'priv.3':'When reporting people, <b>the ID number is suggested</b> (optional): it helps check whether the person appears both as missing and in a health center. You can report <b>without an ID</b> (e.g. minors or unidentified people). <b>The ID is not shown publicly</b> — it is stored encrypted and only used to cross-match.',
   'priv.4':'When reporting people, do so in good faith and with their interest in mind. False reports can cost lives by diverting resources.',
   'sheet.title':'New report','sheet.sub':'Your report appears on the map for rescue teams.','sheet.submit':'Publish report','sheet.publishing':'Publishing…',
   'f.loc.hosp':'Hospital or health center','f.loc.volun':'Area you can cover','f.loc.def':'Location / address',
   'fph.loc.hosp':'e.g. Vargas Hospital, San José, Caracas','fph.loc.volun':'e.g. Chacao municipality and east Caracas','fph.loc.def':'e.g. Francisco de Miranda Ave., Chacao',
   'f.need.volun':'How you can help and how to reach you','f.need.person':'Name and description of the person','f.need.offer':'What is offered / schedule','f.need.def':'What is needed / details',
   'fph.need.volun':'e.g. I can walk my area and verify addresses. Contact: +58 4xx-xxxxxxx (WhatsApp).','fph.need.person':'Name or description, approx. age, condition, distinguishing marks','fph.need.aid':'e.g. water, food, medical care, shelter. Schedule and who is served.','fph.need.acopio':'e.g. they receive water, medicine, food. Drop-off hours.','fph.need.def':'e.g. paramedics, water, machinery, water truck...',
-  'f.name':'First and last name','f.name.hint':'(if known)','f.opt':'(optional)','f.ci':'ID number','f.ci.req':'*&nbsp;required','f.ci.opt':'(if identified)',
-  'f.ci.hint':'🔒 The ID is <b>not shown or published</b>: it is only used, encrypted, to detect whether the person appears both in hospital and missing.','f.ci.hintReq':' It is <b>required</b> to cross-check the search with health centers.',
+  'f.name':'First and last name','f.name.hint':'(if known)','f.opt':'(optional)','f.ci':'ID number','f.ci.sug':'(optional, recommended)','f.ci.opt':'(if identified)',
+  'f.ci.hint':'🔒 The ID is <b>not shown or published</b>: it is only used, encrypted, to detect whether the person appears both in hospital and missing.','f.ci.hintSug':' <b>If you know it, include it</b> to cross-check the search with health centers — but it is not required.',
   'f.ficha':'Profile on desaparecidosterremotovenezuela.com','f.ficha.hint':'🔒 Only links from <b>desaparecidosterremotovenezuela.com</b> are accepted (for security).',
   'f.roadStatus':'Passage status','f.cause':'Cause','f.cause.none':'— Unspecified —',
   'f.mapLabel':'Location on the map','f.mapRec':'(recommended for rescue)','f.gps':'📍 Use my location (GPS)','f.mapBtn':'🗺️ Mark on the map',
@@ -1393,13 +1393,13 @@ function buildSheet(){
   const locPh = selType==='hosp' ? t('fph.loc.hosp') : (isVolun ? t('fph.loc.volun') : t('fph.loc.def'));
   const needLabel = isVolun ? t('f.need.volun') : (isPerson ? t('f.need.person') : (isOffer ? t('f.need.offer') : t('f.need.def')));
   const needPh = isVolun ? t('fph.need.volun') : (isPerson ? t('fph.need.person') : (isOffer ? (selType==='aid' ? t('fph.need.aid') : t('fph.need.acopio')) : t('fph.need.def')));
-  const ciRequired = (selType==='miss');   // obligatoria al reportar un desaparecido
+  const ciSuggest = (selType==='miss');   // opcional, pero recomendada al reportar desaparecidos
   const personFields = isPerson ? `
     <label class="fl">${t('f.name')} <span style="font-weight:400;color:var(--muted)">${t('f.name.hint')}</span></label>
     <input id="f-name" placeholder="${t('fph.name')}">
-    <label class="fl">${t('f.ci')} ${ciRequired ? `<span style="color:var(--crit)">${t('f.ci.req')}</span>` : `<span style="font-weight:400;color:var(--muted)">${t('f.ci.opt')}</span>`}</label>
-    <input id="f-ci" inputmode="numeric" placeholder="${t('fph.ci')}" ${ciRequired ? 'required' : ''}>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">${t('f.ci.hint')}${ciRequired ? t('f.ci.hintReq') : ''}</div>` : '';
+    <label class="fl">${t('f.ci')} <span style="font-weight:400;color:var(--muted)">${ciSuggest ? t('f.ci.sug') : t('f.ci.opt')}</span></label>
+    <input id="f-ci" inputmode="numeric" placeholder="${t('fph.ci')}">
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">${t('f.ci.hint')}${ciSuggest ? t('f.ci.hintSug') : ''}</div>` : '';
   const fichaField = isPerson ? `
     <label class="fl">${t('f.ficha')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
     <input id="f-link" type="url" inputmode="url" placeholder="https://desaparecidosterremotovenezuela.com/?persona=...">
@@ -1484,9 +1484,7 @@ document.getElementById('submitRep').addEventListener('click',async()=>{
   const nameEl=document.getElementById('f-name');
   const personName = nameEl ? nameEl.value.trim() : '';
   const ciEl=document.getElementById('f-ci');
-  const ciHash = ciEl ? hashCI(ciEl.value) : null;
-  // La cédula es obligatoria al reportar un desaparecido (permite el cruce con hospitales)
-  if(selType==='miss' && !ciHash){ alert('Indica la cédula de la persona desaparecida (6 a 10 dígitos). Es necesaria para verificar si aparece reportada en un centro de salud.'); return; }
+  const ciHash = ciEl ? hashCI(ciEl.value) : null;   // cédula OPCIONAL (no se exige); si se da, mejora el cruce con hospitales
   // Componer la descripción adjuntando enlace validado + hash de cédula (sin alterar el esquema)
   let needFinal = (need||'(sin detalle)') + (profileUrl ? `\n${profileUrl}` : '') + (ciHash ? ` CIH:${ciHash}` : '');
   // Vialidad: adjunta causa (texto) y estado de paso (token RS:)
