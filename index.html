@@ -31,7 +31,7 @@
   .view{ display:none; } .view.on{ display:block; }
 
   /* MAPA */
-  .mapwrap{ position:relative; background:#0c1119; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .mapwrap{ position:relative; isolation:isolate; background:#0c1119; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
   svg.vmap{ display:block; width:100%; height:auto; touch-action:none; }
   #map{ width:100%; height:60vh; min-height:340px; max-height:560px; background:#0c1119; }
   .leaflet-container{ background:#0c1119; font-family:inherit; }
@@ -101,8 +101,8 @@
   .phone .pl{ font-size:13.5px; font-weight:600; color:var(--txt); } .phone .ps{ font-size:11px; color:var(--muted); margin-top:2px; }
   .phone .pn{ font-size:18px; font-weight:800; color:var(--crit); }
 
-  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:40; background:var(--crit); color:#fff; border:none; padding:14px 26px; border-radius:30px; font-size:14.5px; font-weight:700; box-shadow:0 6px 22px rgba(239,68,68,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
-  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:50; display:none; align-items:flex-end; justify-content:center; }
+  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1100; background:var(--crit); color:#fff; border:none; padding:14px 26px; border-radius:30px; font-size:14.5px; font-weight:700; box-shadow:0 6px 22px rgba(239,68,68,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; display:none; align-items:flex-end; justify-content:center; }
   .overlay.on{ display:flex; }
   .sheet{ background:var(--panel); width:100%; max-width:520px; border-radius:18px 18px 0 0; border-top:1px solid var(--line); padding:18px 18px 26px; max-height:88vh; overflow-y:auto; }
   .sheet h2{ font-size:16px; margin-bottom:4px; } .sheet p.h{ font-size:12px; color:var(--muted); margin-bottom:14px; }
@@ -131,7 +131,7 @@
 </header>
 <div class="emergency-banner">⚠️ Doble terremoto 7,2 y 7,5 — Réplicas activas. Mantente alejado de estructuras dañadas.</div>
 
-<div id="privacy" style="display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.75);align-items:center;justify-content:center;padding:20px;">
+<div id="privacy" style="display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.75);align-items:center;justify-content:center;padding:20px;">
   <div style="background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:420px;padding:22px;">
     <div style="font-size:30px;text-align:center;margin-bottom:8px">🔒</div>
     <h2 style="font-size:17px;text-align:center;margin-bottom:12px">Aviso de privacidad</h2>
@@ -404,17 +404,19 @@ let statesLayer=null, munisLayer=null, markersLayer=null;
 // Captura de ubicación precisa para reportes nuevos
 let pickMode=false, pickMarker=null, pickedLat=null, pickedLon=null, pickedSrc=null;
 const VEN_CENTER=[8.0,-66.3], VEN_BOUNDS=[[0.6,-73.4],[12.3,-59.8]];
-// Tiles oscuros (CARTO) para combinar con el tema; ver nota de uso/llave en el chat
-const TILE_URL='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+// Estilo "Calles": CARTO Voyager — detallado tipo Google Maps (calles, cuadras y
+// huellas de edificios al acercar). Ver nota de uso/llave de proveedor en el chat.
+const TILE_URL='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 const TILE_ATTR='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
 function stateStyle(name){
   const hot=HOT.includes(name);
-  return { color: hot?'#7f1d1d':'#2b3848', weight: hot?1.2:0.8,
-           fillColor: hot?'#3a2030':'#1b2433',
-           fillOpacity: tilesOn?0.12:(hot?0.85:0.7) };
+  // Con calles activadas: relleno casi nulo para que se vean cuadras/edificios; borde sí visible
+  return { color: hot?'#b91c1c':'#2b3848', weight: hot?1.4:0.8,
+           fillColor: hot?'#ef4444':'#1b2433',
+           fillOpacity: tilesOn?(hot?0.10:0):(hot?0.85:0.7) };
 }
-function muniStyle(){ return { color:'#3b82f6', weight:0.7, fillColor:'#3b82f6', fillOpacity: tilesOn?0.04:0.08 }; }
+function muniStyle(){ return { color:'#3b82f6', weight:0.7, fillColor:'#3b82f6', fillOpacity: tilesOn?0:0.08 }; }
 
 function initMap(){
   if(map) return;
@@ -424,7 +426,7 @@ function initMap(){
     if(el) el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:#8b97a7;font-size:13px;line-height:1.6">No se pudo cargar el mapa (sin conexión o CDN bloqueado).<br>Los reportes y teléfonos siguen disponibles en las otras pestañas.<br>Reintenta con conexión a internet.</div>';
     return;
   }
-  map=L.map('map',{ zoomControl:false, attributionControl:true, minZoom:5, maxZoom:18 })
+  map=L.map('map',{ zoomControl:false, attributionControl:true, minZoom:5, maxZoom:19 })
        .setView(VEN_CENTER,6);
   map.attributionControl.setPrefix(false);
   // forzar cálculo de tamaño una vez montado (evita render parcial/gris)
@@ -563,7 +565,7 @@ function setTiles(on){
   tilesOn=on;
   const btn=document.getElementById('tiletoggle');
   if(on){
-    if(!tileLayer) tileLayer=L.tileLayer(TILE_URL,{ attribution:TILE_ATTR, subdomains:'abcd', maxZoom:19 });
+    if(!tileLayer) tileLayer=L.tileLayer(TILE_URL,{ attribution:TILE_ATTR, subdomains:'abcd', maxZoom:20, maxNativeZoom:20 });
     tileLayer.addTo(map); tileLayer.bringToBack();
     btn.classList.add('on'); btn.textContent='🛣️ Calles ON';
   } else {
