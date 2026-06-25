@@ -19,17 +19,20 @@
 <meta name="apple-mobile-web-app-title" content="Emergencia VE">
 <meta name="mobile-web-app-capable" content="yes">
 
-<!-- Open Graph / redes sociales -->
+<!-- Open Graph / redes sociales. NOTA: si tu dominio de producción es distinto,
+     cambia la base https://emergencia-venezuela.vercel.app en estas 4 URLs. -->
+<link rel="canonical" href="https://emergencia-venezuela.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_VE">
 <meta property="og:site_name" content="Emergencia Sísmica Venezuela">
+<meta property="og:url" content="https://emergencia-venezuela.vercel.app/">
 <meta property="og:title" content="Emergencia Sísmica · Venezuela">
 <meta property="og:description" content="Reportes ciudadanos en tiempo real sobre el mapa: emergencias, desaparecidos, hospitales, acopio y ayuda. Herramienta comunitaria.">
-<meta property="og:image" content="icon-512.png">
+<meta property="og:image" content="https://emergencia-venezuela.vercel.app/icon-512.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Emergencia Sísmica · Venezuela">
 <meta name="twitter:description" content="Reportes ciudadanos en tiempo real sobre el mapa. Herramienta comunitaria.">
-<meta name="twitter:image" content="icon-512.png">
+<meta name="twitter:image" content="https://emergencia-venezuela.vercel.app/icon-512.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
@@ -47,7 +50,10 @@
     --txt:#0f172a; --muted:#5a6676; --acc:#2563eb;
     --header-bg:rgba(238,242,248,.92);
   }
-  :root[data-theme="light"] .hsub, :root[data-theme="light"] .leaflet-popup-content-wrapper{ color:var(--muted); }
+  /* En modo claro, el mapa sigue siendo oscuro: popups y controles van en oscuro para que se lean */
+  :root[data-theme="light"] .leaflet-popup-content-wrapper, :root[data-theme="light"] .leaflet-popup-tip{ background:#161d29; border-color:#2b3848; }
+  :root[data-theme="light"] .leaflet-popup-content-wrapper, :root[data-theme="light"] .leaflet-popup-content a{ color:#e6edf3; }
+  :root[data-theme="light"] .leaflet-bar a{ background:rgba(17,22,31,.9); color:#e6edf3; border-color:#2b3848; }
   html,body{ background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior:none; }
   body{ max-width:520px; margin:0 auto; min-height:100vh; position:relative; }
   header{ position:sticky; top:0; z-index:30; background:var(--header-bg); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 16px; }
@@ -72,8 +78,8 @@
   .leaflet-popup-content-wrapper, .leaflet-popup-tip{ background:var(--panel2); color:var(--txt); border:1px solid var(--line); }
   .leaflet-popup-content{ font-size:12.5px; line-height:1.5; margin:10px 12px; }
   .leaflet-bar a{ background:var(--panel2); color:var(--txt); border-color:var(--line); }
-  .muni-tip{ background:rgba(17,22,31,.92); border:1px solid var(--line); color:var(--txt); font-size:11px; font-weight:600; padding:2px 6px; border-radius:6px; }
-  .tiletoggle{ position:absolute; left:8px; bottom:8px; z-index:1000; background:rgba(17,22,31,.92); border:1px solid var(--line); color:var(--txt); font-size:12px; font-weight:700; padding:7px 11px; border-radius:9px; cursor:pointer; }
+  .muni-tip{ background:rgba(17,22,31,.92); border:1px solid #2b3848; color:#e6edf3; font-size:11px; font-weight:600; padding:2px 6px; border-radius:6px; }
+  .tiletoggle{ position:absolute; left:8px; bottom:8px; z-index:1000; background:rgba(17,22,31,.92); border:1px solid #2b3848; color:#e6edf3; font-size:12px; font-weight:700; padding:7px 11px; border-radius:9px; cursor:pointer; }
   .tiletoggle.on{ background:var(--acc); color:#fff; border-color:var(--acc); }
   .loc-btns{ display:flex; gap:8px; }
   .loc-btn{ flex:1; min-height:46px; background:var(--panel2); border:1px solid var(--line); color:var(--txt); font-size:13px; font-weight:600; padding:12px 8px; border-radius:10px; cursor:pointer; }
@@ -100,7 +106,7 @@
   .lg{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
   .dot{ width:10px; height:10px; border-radius:50%; flex:none; }
   .mapctl{ position:absolute; top:8px; right:8px; z-index:1000; display:flex; flex-direction:column; gap:4px; }
-  .mapctl button{ width:30px; height:30px; border-radius:8px; background:rgba(17,22,31,.9); border:1px solid var(--line); color:var(--txt); font-size:16px; cursor:pointer; }
+  .mapctl button{ width:32px; height:32px; border-radius:8px; background:rgba(17,22,31,.9); border:1px solid #2b3848; color:#e6edf3; font-size:16px; cursor:pointer; }
   .filters{ display:flex; gap:6px; overflow-x:auto; padding:0 0 10px; scrollbar-width:none; }
   .filters::-webkit-scrollbar{ display:none; }
   .fchip{ flex:none; display:flex; align-items:center; gap:6px; min-height:38px; padding:8px 13px; border-radius:19px; background:var(--panel2); border:1px solid var(--line); font-size:12.5px; font-weight:600; color:var(--muted); cursor:pointer; }
@@ -292,7 +298,8 @@
     <div style="font-size:30px;text-align:center;margin-bottom:8px">🔒</div>
     <h2 style="font-size:17px;text-align:center;margin-bottom:12px">Aviso de privacidad</h2>
     <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Esta es una herramienta comunitaria. <b>Todo lo que publiques será visible públicamente</b> para cualquier persona que use la app.</p>
-    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">No incluyas información sensible innecesaria (documentos de identidad, datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">No incluyas información sensible innecesaria (datos médicos detallados, direcciones exactas de domicilios). Comparte solo lo indispensable para ayudar en el rescate o la localización.</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px">Al reportar personas <b>sí se solicita la cédula</b>: sirve para verificar si la persona aparece a la vez como desaparecida y en un centro de salud. <b>La cédula no se muestra públicamente</b> — se guarda de forma cifrada y solo se usa para cruzar coincidencias.</p>
     <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.</p>
     <button id="privacyOk" style="width:100%;background:var(--acc);color:#fff;border:none;padding:13px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer">Entiendo y acepto</button>
   </div>
@@ -520,11 +527,11 @@ async function sbInsert(rep){
   if(!r.ok) throw new Error('insert '+r.status);
   return (await r.json())[0];
 }
-// Actualiza la descripción de un reporte (usado para cambiar el estado de vialidad).
-// Requiere que la BD permita UPDATE; si no, el cambio queda solo en este dispositivo.
-async function sbUpdateNeed(id, need){
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/reports?id=eq.${encodeURIComponent(id)}`, { method:'PATCH', headers:{...SB_HEAD, Prefer:'return=minimal'}, body:JSON.stringify({ need }) });
-  if(!r.ok) throw new Error('update '+r.status);
+// Marca una vía como despejada en la nube vía RPC seguro (ver supabase.sql).
+// Si la función no existe o la BD no lo permite, el cambio queda solo en este dispositivo.
+async function sbMarkRoadOpen(id){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/mark_road_open`, { method:'POST', headers:SB_HEAD, body:JSON.stringify({ rid:String(id) }) });
+  if(!r.ok) throw new Error('road '+r.status);
 }
 // Confirmación múltiple: llama a la función RPC que incrementa de forma atómica
 // y retira el reporte (status='atendido') al alcanzar el umbral. Devuelve el nº de confirmaciones.
@@ -1145,7 +1152,7 @@ function render(){
     const cur=String(rp.need||'');
     const newNeed = /\bRS:(closed|partial|moto|foot|open)\b/i.test(cur) ? cur.replace(/\bRS:(closed|partial|moto|foot|open)\b/i,'RS:open') : (cur+' RS:open');
     const isLocal = String(id).indexOf('u')===0 || String(id).indexOf('r')===0; // seed o reporte local
-    if(cloudOK && !isLocal){ try{ await sbUpdateNeed(id, newNeed); }catch(e){ /* la BD puede no permitir UPDATE: queda en local */ } }
+    if(cloudOK && !isLocal){ try{ await sbMarkRoadOpen(id); }catch(e){ /* sin RPC mark_road_open: queda en local */ } }
     rp.need=newNeed; save(); render();
   }); });
 }
@@ -1273,12 +1280,13 @@ function buildSheet(){
                 : 'Ej.: paramédicos, agua, maquinaria, cisterna...'));
   // Campo opcional de ficha oficial (solo para personas: desaparecidos / hospital)
   // Identidad (solo personas): nombre -> título; cédula -> hash para cruzar coincidencias
+  const ciRequired = (selType==='miss');   // obligatoria al reportar un desaparecido
   const personFields = isPerson ? `
     <label class="fl">Nombre y apellido <span style="font-weight:400;color:var(--muted)">(si se conoce)</span></label>
     <input id="f-name" placeholder="Ej.: Juan Pérez">
-    <label class="fl">Cédula <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
-    <input id="f-ci" inputmode="numeric" placeholder="Ej.: 12345678">
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.</div>` : '';
+    <label class="fl">Cédula ${ciRequired ? '<span style="color:var(--crit)">*&nbsp;obligatoria</span>' : '<span style="font-weight:400;color:var(--muted)">(si está identificada)</span>'}</label>
+    <input id="f-ci" inputmode="numeric" placeholder="Ej.: 12345678" ${ciRequired ? 'required' : ''}>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 La cédula <b>no se muestra ni se publica</b>: solo se usa, cifrada, para detectar si la persona aparece a la vez en hospital y en desaparecidos.${ciRequired ? ' Es <b>obligatoria</b> para cruzar la búsqueda con los centros de salud.' : ''}</div>` : '';
   const fichaField = isPerson ? `
     <label class="fl">Ficha en desaparecidosterremotovenezuela.com <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
     <input id="f-link" type="url" inputmode="url" placeholder="https://desaparecidosterremotovenezuela.com/?persona=...">
@@ -1364,6 +1372,8 @@ document.getElementById('submitRep').addEventListener('click',async()=>{
   const personName = nameEl ? nameEl.value.trim() : '';
   const ciEl=document.getElementById('f-ci');
   const ciHash = ciEl ? hashCI(ciEl.value) : null;
+  // La cédula es obligatoria al reportar un desaparecido (permite el cruce con hospitales)
+  if(selType==='miss' && !ciHash){ alert('Indica la cédula de la persona desaparecida (6 a 10 dígitos). Es necesaria para verificar si aparece reportada en un centro de salud.'); return; }
   // Componer la descripción adjuntando enlace validado + hash de cédula (sin alterar el esquema)
   let needFinal = (need||'(sin detalle)') + (profileUrl ? `\n${profileUrl}` : '') + (ciHash ? ` CIH:${ciHash}` : '');
   // Vialidad: adjunta causa (texto) y estado de paso (token RS:)
