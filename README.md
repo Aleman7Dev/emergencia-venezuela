@@ -19,9 +19,14 @@ puntos de ayuda humanitaria, todo sobre un mapa interactivo.
 - **📋 Reportes por tipo**: emergencias críticas, daños en edificios, estado de
   vías, zonas sin luz/agua, desaparecidos, personas en centros de salud, acopio
   y ayuda humanitaria.
-- **🧍 Búsqueda de personas** desaparecidas y localizadas en hospitales.
+- **🧍 Búsqueda de personas** desaparecidas y localizadas en hospitales, con
+  posibilidad de enlazar la **ficha oficial** en `desaparecidosterremotovenezuela.com`.
+  Por seguridad **solo se aceptan enlaces de ese dominio** (HTTPS, sin trucos de
+  `usuario@host`, `javascript:`, etc.), validados al guardar y al mostrar.
+- **🙋 Buscadores voluntarios**: sección para que las personas se ofrezcan a
+  recorrer o verificar su zona por un familiar de alguien, indicando su contacto.
 - **📞 Teléfonos oficiales** de emergencia (171, Bomberos, Protección Civil,
-  Cruz Roja, FUNVISIS).
+  Cruz Roja, FUNVISIS) y líneas por operadora / ambulancias en Caracas.
 - **➕ Reporte ciudadano** con ubicación por **GPS** o marcando un punto en el
   mapa, y precisión indicada (exacta / aproximada).
 - **✅ Confirmación múltiple**: un reporte se retira al ser confirmado por varias
