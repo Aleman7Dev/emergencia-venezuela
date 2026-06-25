@@ -12,7 +12,7 @@
   :root{
     --bg:#0a0e14; --panel:#11161f; --panel2:#161d29; --line:#222c3a;
     --txt:#e6edf3; --muted:#8b97a7; --acc:#3b82f6;
-    --crit:#ef4444; --build:#f59e0b; --miss:#a855f7; --acopio:#22c55e; --dark:#64748b; --water:#06b6d4; --safe:#10b981;
+    --crit:#ef4444; --build:#f59e0b; --miss:#a855f7; --acopio:#22c55e; --aid:#ec4899; --dark:#64748b; --water:#06b6d4; --safe:#10b981;
   }
   html,body{ background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior:none; }
   body{ max-width:520px; margin:0 auto; min-height:100vh; position:relative; }
@@ -31,7 +31,7 @@
   .view{ display:none; } .view.on{ display:block; }
 
   /* MAPA */
-  .mapwrap{ position:relative; isolation:isolate; background:#0c1119; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .mapwrap{ position:relative; z-index:0; isolation:isolate; background:#0c1119; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
   svg.vmap{ display:block; width:100%; height:auto; touch-action:none; }
   #map{ width:100%; height:60vh; min-height:340px; max-height:560px; background:#0c1119; }
   .leaflet-container{ background:#0c1119; font-family:inherit; }
@@ -147,7 +147,7 @@
   <button class="tab" data-v="reportes">📋 Reportes</button>
   <button class="tab" data-v="desap">🧍 Desaparecidos</button>
   <button class="tab" data-v="hosp">🏥 Hospitales</button>
-  <button class="tab" data-v="acopio">📦 Acopio</button>
+  <button class="tab" data-v="acopio">📦 Acopio y ayuda</button>
   <button class="tab" data-v="tel">📞 Teléfonos</button>
 </nav>
 
@@ -169,6 +169,7 @@
       <span class="lg"><span class="dot" style="background:var(--build)"></span>Edificio/acceso dañado</span>
       <span class="lg"><span class="dot" style="background:var(--miss)"></span>Desaparecido</span>
       <span class="lg"><span class="dot" style="background:var(--acopio)"></span>Centro de acopio</span>
+      <span class="lg"><span class="dot" style="background:var(--aid)"></span>Ayuda humanitaria</span>
       <span class="lg"><span class="dot" style="background:var(--dark)"></span>Zona sin luz</span>
       <span class="lg"><span class="dot" style="background:var(--water)"></span>Sin agua potable</span>
     </div>
@@ -206,7 +207,7 @@
   </section>
 
   <section class="view" id="v-acopio">
-    <div class="sectitle">Centros de acopio y atención</div>
+    <div class="sectitle">Centros de acopio y puntos de ayuda humanitaria</div>
     <div id="list-acopio"></div>
   </section>
 
@@ -247,6 +248,7 @@ const TYPES = {
   miss:   {e:'🧍', t:'Persona desaparecida', c:'#a855f7'},
   hosp:   {e:'🏥', t:'Persona en centro de salud', c:'#14b8a6'},
   acopio: {e:'📦', t:'Centro de acopio', c:'#22c55e'},
+  aid:    {e:'⛑️', t:'Punto de ayuda humanitaria', c:'#ec4899'},
   dark:   {e:'🔌', t:'Zona sin luz', c:'#64748b'},
   water:  {e:'💧', t:'Sin agua potable', c:'#06b6d4'},
   safe:   {e:'✅', t:'Localizado a salvo', c:'#10b981'},
@@ -674,7 +676,7 @@ function render(){
   document.getElementById('s-crit').textContent=reports.filter(r=>r.type==='crit').length;
   document.getElementById('s-build').textContent=reports.filter(r=>['build','dark','water'].includes(r.type)).length;
   document.getElementById('s-miss').textContent=reports.filter(r=>r.type==='miss').length;
-  const all=reports.filter(r=>!['miss','acopio','hosp'].includes(r.type));
+  const all=reports.filter(r=>!['miss','acopio','hosp','aid'].includes(r.type));
   document.getElementById('list-rep').innerHTML=all.length?all.map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
   let miss=reports.filter(r=>r.type==='miss');
   if(missQuery){ const q=missQuery.toLowerCase(); miss=miss.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
@@ -682,8 +684,8 @@ function render(){
   let hosp=reports.filter(r=>r.type==='hosp');
   if(hospQuery){ const q=hospQuery.toLowerCase(); hosp=hosp.filter(r=>(r.title+' '+r.loc+' '+r.need).toLowerCase().includes(q)); }
   document.getElementById('list-hosp').innerHTML=hosp.length?hosp.map(card).join(''):'<div class="empty">'+(hospQuery?'Sin coincidencias para “'+esc(hospQuery)+'”.':'Aún no hay personas reportadas en centros de salud.')+'</div>';
-  const aco=reports.filter(r=>r.type==='acopio');
-  document.getElementById('list-acopio').innerHTML=aco.length?aco.map(card).join(''):'<div class="empty">No hay centros de acopio reportados.</div>';
+  const aco=reports.filter(r=>r.type==='acopio'||r.type==='aid');
+  document.getElementById('list-acopio').innerHTML=aco.length?aco.map(card).join(''):'<div class="empty">No hay centros de acopio ni puntos de ayuda reportados.</div>';
   document.querySelectorAll('[data-done]').forEach(b=>{ b.addEventListener('click',async()=>{
     const id=b.dataset.done;
     if(confirmedByMe.has(String(id))) return;            // ya confirmado por este navegador
@@ -739,11 +741,16 @@ function buildSheet(){
   const locStatus = pickedLat!=null
     ? `<div class="loc-ok">${pl.exact?'✓':'≈'} ${pl.t}<br><span style="color:var(--muted)">lat ${pickedLat.toFixed(5)}, lon ${pickedLon.toFixed(5)}</span> · <button type="button" class="loc-clear" id="locClear">quitar</button></div>`
     : `<div class="loc-warn">Sin ubicación precisa. Si no marcas una, el reporte se ubicará de forma <b>aproximada</b> al centro del estado.</div>`;
+  const isOffer = (selType==='aid'||selType==='acopio');
+  const needLabel = isPerson ? 'Nombre y descripción de la persona' : (isOffer ? 'Qué se ofrece / horario' : 'Qué se necesita / detalle');
+  const needPh = isPerson ? 'Nombre o descripción, edad aprox., estado, señas particulares'
+    : (isOffer ? (selType==='aid' ? 'Ej.: agua, comida, atención médica, refugio. Horario y a quién atiende.' : 'Ej.: reciben agua, medicinas, alimentos. Horario de recepción.')
+                : 'Ej.: paramédicos, agua, maquinaria, cisterna...');
   document.getElementById('formfields').innerHTML=`
     <label class="fl">${selType==='hosp'?'Hospital o centro de salud':'Ubicación / dirección'}</label>
     <input id="f-loc" placeholder="${selType==='hosp'?'Ej.: Hospital Vargas, San José, Caracas':'Ej.: Av. Francisco de Miranda, Chacao'}">
-    <label class="fl">${isPerson?'Nombre y descripción de la persona':'Qué se necesita / detalle'}</label>
-    <textarea id="f-need" placeholder="${isPerson?'Nombre o descripción, edad aprox., estado, señas particulares':'Ej.: paramédicos, agua, maquinaria, cisterna...'}"></textarea>
+    <label class="fl">${needLabel}</label>
+    <textarea id="f-need" placeholder="${needPh}"></textarea>
     <label class="fl">Ubicación en el mapa <span style="font-weight:400;color:var(--muted)">(recomendado para rescate)</span></label>
     <div class="loc-btns">
       <button type="button" class="loc-btn" id="gpsBtn">📍 Usar mi ubicación (GPS)</button>
