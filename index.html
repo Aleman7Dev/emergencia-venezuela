@@ -19,12 +19,12 @@
   header{ position:sticky; top:0; z-index:30; background:rgba(10,14,20,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 16px; }
   .htop{ display:flex; align-items:center; gap:10px; }
   .pulse{ width:10px; height:10px; border-radius:50%; background:var(--crit); flex:none; }
-  h1{ font-size:16px; font-weight:700; letter-spacing:.2px; }
-  .hsub{ font-size:11px; color:var(--muted); margin-top:2px; }
-  .emergency-banner{ background:linear-gradient(90deg,#7f1d1d,#991b1b); font-size:11.5px; padding:7px 16px; color:#fecaca; border-bottom:1px solid #b91c1c; }
+  h1{ font-size:17px; font-weight:700; letter-spacing:.2px; }
+  .hsub{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .emergency-banner{ background:linear-gradient(90deg,#7f1d1d,#991b1b); font-size:12.5px; font-weight:600; padding:9px 16px; color:#fecaca; border-bottom:1px solid #b91c1c; line-height:1.4; }
 
-  nav{ display:flex; flex-wrap:wrap; gap:6px; padding:10px 12px; border-bottom:1px solid var(--line); justify-content:center; }
-  .tab{ flex:0 1 auto; padding:8px 12px; border-radius:18px; background:var(--panel2); color:var(--muted); font-size:12px; font-weight:600; border:1px solid transparent; cursor:pointer; transition:color .15s,background .15s; white-space:nowrap; }
+  nav{ display:flex; flex-wrap:wrap; gap:7px; padding:11px 12px; border-bottom:1px solid var(--line); justify-content:center; }
+  .tab{ flex:0 1 auto; min-height:40px; padding:9px 15px; border-radius:20px; background:var(--panel2); color:var(--muted); font-size:13px; font-weight:600; border:1px solid transparent; cursor:pointer; transition:color .15s,background .15s; white-space:nowrap; }
   .tab.on{ background:var(--acc); color:#fff; }
 
   main{ padding:14px 16px 90px; }
@@ -42,7 +42,7 @@
   .tiletoggle{ position:absolute; left:8px; bottom:8px; z-index:1000; background:rgba(17,22,31,.92); border:1px solid var(--line); color:var(--txt); font-size:12px; font-weight:700; padding:7px 11px; border-radius:9px; cursor:pointer; }
   .tiletoggle.on{ background:var(--acc); color:#fff; border-color:var(--acc); }
   .loc-btns{ display:flex; gap:8px; }
-  .loc-btn{ flex:1; background:var(--panel2); border:1px solid var(--line); color:var(--txt); font-size:12px; font-weight:600; padding:10px 8px; border-radius:10px; cursor:pointer; }
+  .loc-btn{ flex:1; min-height:46px; background:var(--panel2); border:1px solid var(--line); color:var(--txt); font-size:13px; font-weight:600; padding:12px 8px; border-radius:10px; cursor:pointer; }
   .loc-btn:active{ background:#1d2735; }
   .loc-ok{ margin-top:8px; font-size:11.5px; color:var(--safe); background:#10b9811a; border:1px solid #10b98144; border-radius:9px; padding:8px 10px; line-height:1.5; }
   .loc-warn{ margin-top:8px; font-size:11px; color:var(--build); background:#f59e0b14; border:1px solid #f59e0b33; border-radius:9px; padding:8px 10px; line-height:1.5; }
@@ -63,20 +63,20 @@
   .munilabel{ fill:#aeb9ca; pointer-events:none; font-weight:600; }
   .munilabel-sel{ fill:#e6edf3; }
   .legend{ display:flex; flex-wrap:wrap; gap:8px 12px; padding:12px; background:var(--panel); border:1px solid var(--line); border-top:none; border-radius:0 0 14px 14px; }
-  .lg{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+  .lg{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
   .dot{ width:10px; height:10px; border-radius:50%; flex:none; }
   .mapctl{ position:absolute; top:8px; right:8px; z-index:1000; display:flex; flex-direction:column; gap:4px; }
   .mapctl button{ width:30px; height:30px; border-radius:8px; background:rgba(17,22,31,.9); border:1px solid var(--line); color:var(--txt); font-size:16px; cursor:pointer; }
   .filters{ display:flex; gap:6px; overflow-x:auto; padding:0 0 10px; scrollbar-width:none; }
   .filters::-webkit-scrollbar{ display:none; }
-  .fchip{ flex:none; display:flex; align-items:center; gap:5px; padding:6px 11px; border-radius:18px; background:var(--panel2); border:1px solid var(--line); font-size:11.5px; font-weight:600; color:var(--muted); cursor:pointer; }
+  .fchip{ flex:none; display:flex; align-items:center; gap:6px; min-height:38px; padding:8px 13px; border-radius:19px; background:var(--panel2); border:1px solid var(--line); font-size:12.5px; font-weight:600; color:var(--muted); cursor:pointer; }
   .fchip.on{ color:#fff; }
   .fchip .fdot{ width:8px; height:8px; border-radius:50%; }
   .searchbar{ display:flex; gap:8px; margin-bottom:12px; }
   .searchbar input{ flex:1; }
   .sclear{ background:var(--panel2); border:1px solid var(--line); color:var(--muted); border-radius:10px; padding:0 14px; cursor:pointer; font-size:13px; }
   .share-row{ display:flex; gap:8px; margin-top:9px; }
-  .sbtn{ flex:1; text-align:center; font-size:11px; padding:7px; border-radius:8px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); cursor:pointer; text-decoration:none; font-weight:600; }
+  .sbtn{ flex:1; min-height:40px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:12.5px; padding:9px 8px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); color:var(--txt); cursor:pointer; text-decoration:none; font-weight:600; }
   .sbtn.wa{ color:#25d366; border-color:#1e3a2f; }
   .sbtn.flag{ color:#f59e0b; }
   .vbadge{ display:inline-block; font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:9px; margin-left:6px; vertical-align:middle; }
@@ -85,23 +85,23 @@
   .roadbadge{ display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9px; margin-top:6px; }
 
   .stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0; }
-  .stat{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 8px; text-align:center; }
-  .stat .n{ font-size:20px; font-weight:800; } .stat .l{ font-size:10px; color:var(--muted); margin-top:2px; }
+  .stat{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 8px; text-align:center; }
+  .stat .n{ font-size:24px; font-weight:800; } .stat .l{ font-size:11.5px; color:var(--muted); margin-top:3px; }
 
   .sectitle{ font-size:13px; font-weight:700; margin:18px 0 10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
 
   .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:10px; }
   .crow{ display:flex; gap:11px; align-items:flex-start; }
   .cicon{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex:none; }
-  .ctitle{ font-size:14px; font-weight:700; } .cmeta{ font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.5; }
-  .ctag{ display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-top:6px; }
-  .btn-done{ margin-top:9px; font-size:11px; padding:6px 11px; border-radius:8px; background:var(--panel2); border:1px solid var(--line); color:var(--safe); cursor:pointer; font-weight:600; }
+  .ctitle{ font-size:15.5px; font-weight:700; line-height:1.3; } .cmeta{ font-size:12.5px; color:var(--muted); margin-top:4px; line-height:1.55; }
+  .ctag{ display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:10px; margin-top:7px; }
+  .btn-done{ margin-top:9px; font-size:12.5px; padding:6px 11px; border-radius:8px; background:var(--panel2); border:1px solid var(--line); color:var(--safe); cursor:pointer; font-weight:600; }
 
   .phone{ display:flex; align-items:center; justify-content:space-between; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:9px; text-decoration:none; }
-  .phone .pl{ font-size:13.5px; font-weight:600; color:var(--txt); } .phone .ps{ font-size:11px; color:var(--muted); margin-top:2px; }
-  .phone .pn{ font-size:18px; font-weight:800; color:var(--crit); }
+  .phone .pl{ font-size:14.5px; font-weight:600; color:var(--txt); } .phone .ps{ font-size:12px; color:var(--muted); margin-top:3px; }
+  .phone .pn{ font-size:19px; font-weight:800; color:var(--crit); white-space:nowrap; }
 
-  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1100; background:var(--crit); color:#fff; border:none; padding:14px 26px; border-radius:30px; font-size:14.5px; font-weight:700; box-shadow:0 6px 22px rgba(239,68,68,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
+  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1100; background:var(--crit); color:#fff; border:none; padding:15px 26px; border-radius:30px; font-size:15.5px; font-weight:700; box-shadow:0 6px 22px rgba(239,68,68,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
   .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; display:none; align-items:flex-end; justify-content:center; }
   .overlay.on{ display:flex; }
   .sheet{ background:var(--panel); width:100%; max-width:520px; border-radius:18px 18px 0 0; border-top:1px solid var(--line); padding:18px 18px 26px; max-height:88vh; overflow-y:auto; }
@@ -116,7 +116,57 @@
   .submit{ width:100%; margin-top:16px; background:var(--acc); color:#fff; border:none; padding:14px; border-radius:11px; font-size:15px; font-weight:700; cursor:pointer; }
   .close{ position:absolute; right:16px; top:14px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; }
   .empty{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 10px; }
-  .note{ font-size:10.5px; color:var(--muted); line-height:1.55; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:11px; margin-top:14px; }
+  .note{ font-size:11.5px; color:var(--muted); line-height:1.6; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:14px; }
+
+  /* ===== Gráfica de estadísticas ===== */
+  .chart-card{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:15px 15px 6px; margin:14px 0; }
+  .chart-card h3{ font-size:12.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin:0 0 3px; }
+  .chart-sub{ font-size:11.5px; color:var(--muted); margin-bottom:13px; line-height:1.45; }
+  .chart-total{ display:flex; align-items:baseline; gap:8px; margin-bottom:14px; }
+  .chart-total .ct-n{ font-size:30px; font-weight:800; color:var(--txt); line-height:1; }
+  .chart-total .ct-l{ font-size:12px; color:var(--muted); }
+  .chart-h{ font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin:16px 0 9px; }
+  .bar-row{ display:grid; grid-template-columns:104px 1fr 26px; align-items:center; gap:9px; margin-bottom:10px; }
+  .bar-row .bl{ font-size:12px; color:var(--txt); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bar-track{ display:block; background:var(--panel2); border-radius:6px; height:15px; overflow:hidden; }
+  .bar-fill{ display:block; height:100%; border-radius:6px; transition:width .55s cubic-bezier(.4,0,.2,1); min-width:3px; }
+  .bar-val{ font-size:12.5px; font-weight:700; text-align:right; color:var(--txt); }
+  .chart-empty{ font-size:12px; color:var(--muted); text-align:center; padding:18px 6px; }
+
+  /* ===== Layout de escritorio (aprovechar el espacio amplio) ===== */
+  .map-grid{ display:block; }
+  .desktop-only{ display:none; }
+  @media (min-width:900px){
+    body{ max-width:1240px; }
+    header{ padding:14px 26px; }
+    h1{ font-size:19px; }
+    .emergency-banner{ padding:10px 26px; font-size:13px; }
+    nav{ justify-content:flex-start; padding:12px 22px; gap:8px; }
+    main{ padding:20px 26px 96px; }
+    .sectitle{ font-size:14px; }
+
+    /* Vista de mapa en 2 columnas: mapa grande + barra lateral con datos */
+    .map-grid{ display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:20px; align-items:start; }
+    .map-side{ position:sticky; top:18px; }
+    .map-side .stats{ margin-top:0; }
+    #map{ height:calc(100vh - 210px); min-height:540px; max-height:none; }
+
+    /* Listas en grilla de tarjetas */
+    .list-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:13px; align-items:start; }
+    .list-grid .card, .list-grid .phone{ margin-bottom:0; }
+    .list-grid .empty{ grid-column:1/-1; }
+
+    /* FAB a la esquina; formulario como diálogo centrado */
+    .fab{ left:auto; right:28px; transform:none; width:auto; max-width:none; }
+    .overlay{ align-items:center; }
+    .sheet{ max-width:580px; border-radius:18px; max-height:90vh; }
+    .typegrid{ grid-template-columns:repeat(3,1fr); }
+    .desktop-only{ display:block; }
+  }
+  @media (min-width:1180px){
+    nav .tab{ font-size:13.5px; }
+    .map-grid{ grid-template-columns:minmax(0,1fr) 420px; }
+  }
 </style>
 </head>
 <body>
@@ -153,37 +203,48 @@
 
 <main>
   <section class="view on" id="v-mapa">
-    <div class="filters" id="filters"></div>
-    <div class="mapwrap">
-      <div id="map"></div>
-      <div class="mapctl">
-        <button id="zin" title="Acercar">＋</button>
-        <button id="zout" title="Alejar">－</button>
-        <button id="zfit" title="Ver Venezuela completa">⛶</button>
-        <button id="refresh" title="Refrescar desde la nube">🔄</button>
+    <div class="map-grid">
+      <div class="map-main">
+        <div class="filters" id="filters"></div>
+        <div class="mapwrap">
+          <div id="map"></div>
+          <div class="mapctl">
+            <button id="zin" title="Acercar">＋</button>
+            <button id="zout" title="Alejar">－</button>
+            <button id="zfit" title="Ver Venezuela completa">⛶</button>
+            <button id="refresh" title="Refrescar desde la nube">🔄</button>
+          </div>
+          <button id="tiletoggle" class="tiletoggle" title="Mostrar/ocultar calles y carreteras">🛣️ Calles</button>
+        </div>
+        <div class="legend">
+          <span class="lg"><span class="dot" style="background:var(--crit)"></span>Emergencia crítica</span>
+          <span class="lg"><span class="dot" style="background:var(--build)"></span>Edificio/acceso dañado</span>
+          <span class="lg"><span class="dot" style="background:var(--miss)"></span>Desaparecido</span>
+          <span class="lg"><span class="dot" style="background:var(--acopio)"></span>Centro de acopio</span>
+          <span class="lg"><span class="dot" style="background:var(--aid)"></span>Ayuda humanitaria</span>
+          <span class="lg"><span class="dot" style="background:var(--dark)"></span>Zona sin luz</span>
+          <span class="lg"><span class="dot" style="background:var(--water)"></span>Sin agua potable</span>
+        </div>
+        <div class="note">🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Sin actualización automática: usa 🔄 para ver reportes nuevos.</div>
       </div>
-      <button id="tiletoggle" class="tiletoggle" title="Mostrar/ocultar calles y carreteras">🛣️ Calles</button>
+      <aside class="map-side">
+        <div class="stats">
+          <div class="stat"><div class="n" id="s-crit" style="color:var(--crit)">0</div><div class="l">Críticas</div></div>
+          <div class="stat"><div class="n" id="s-build" style="color:var(--build)">0</div><div class="l">Daños/servicios</div></div>
+          <div class="stat"><div class="n" id="s-miss" style="color:var(--miss)">0</div><div class="l">Buscados</div></div>
+        </div>
+        <div class="chart-card">
+          <h3>📊 Estadísticas de reportes</h3>
+          <div class="chart-sub">Distribución en vivo de los reportes activos por categoría y zona.</div>
+          <div id="chart-body"><div class="chart-empty">Cargando estadísticas…</div></div>
+        </div>
+      </aside>
     </div>
-    <div class="legend">
-      <span class="lg"><span class="dot" style="background:var(--crit)"></span>Emergencia crítica</span>
-      <span class="lg"><span class="dot" style="background:var(--build)"></span>Edificio/acceso dañado</span>
-      <span class="lg"><span class="dot" style="background:var(--miss)"></span>Desaparecido</span>
-      <span class="lg"><span class="dot" style="background:var(--acopio)"></span>Centro de acopio</span>
-      <span class="lg"><span class="dot" style="background:var(--aid)"></span>Ayuda humanitaria</span>
-      <span class="lg"><span class="dot" style="background:var(--dark)"></span>Zona sin luz</span>
-      <span class="lg"><span class="dot" style="background:var(--water)"></span>Sin agua potable</span>
-    </div>
-    <div class="stats">
-      <div class="stat"><div class="n" id="s-crit" style="color:var(--crit)">0</div><div class="l">Críticas</div></div>
-      <div class="stat"><div class="n" id="s-build" style="color:var(--build)">0</div><div class="l">Daños/servicios</div></div>
-      <div class="stat"><div class="n" id="s-miss" style="color:var(--miss)">0</div><div class="l">Buscados</div></div>
-    </div>
-    <div class="note">🔋 <b>Modo bajo consumo por defecto.</b> El mapa abre sin descargar calles (tema oscuro, marcadores y límites). Toca <b>🛣️ Calles</b> para ver calles y carreteras reales cuando lo necesites; vuelve a tocarlo para ahorrar datos. Sin actualización automática: usa 🔄 para ver reportes nuevos.</div>
   </section>
 
   <section class="view" id="v-reportes">
     <div class="sectitle">Reportes activos</div>
-    <div id="list-rep"></div>
+    <div id="list-rep" class="list-grid"></div>
   </section>
 
   <section class="view" id="v-desap">
@@ -192,7 +253,7 @@
       <input id="missSearch" placeholder="Buscar por nombre, zona o estado…">
       <button class="sclear" id="missClear">Limpiar</button>
     </div>
-    <div id="list-miss"></div>
+    <div id="list-miss" class="list-grid"></div>
     <div class="note">Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.</div>
   </section>
 
@@ -202,22 +263,24 @@
       <input id="hospSearch" placeholder="Buscar por nombre, hospital o estado…">
       <button class="sclear" id="hospClear">Limpiar</button>
     </div>
-    <div id="list-hosp"></div>
+    <div id="list-hosp" class="list-grid"></div>
     <div class="note">🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.</div>
   </section>
 
   <section class="view" id="v-acopio">
     <div class="sectitle">Centros de acopio y puntos de ayuda humanitaria</div>
-    <div id="list-acopio"></div>
+    <div id="list-acopio" class="list-grid"></div>
   </section>
 
   <section class="view" id="v-tel">
     <div class="sectitle">Teléfonos de emergencia oficiales</div>
-    <a class="phone" href="tel:171"><div><div class="pl">Emergencias 171 (VEN911)</div><div class="ps">Atención integrada nacional</div></div><div class="pn">171</div></a>
-    <a class="phone" href="tel:171"><div><div class="pl">Bomberos</div><div class="ps">Rescate e incendios</div></div><div class="pn">171</div></a>
-    <a class="phone" href="tel:0800724"><div><div class="pl">Protección Civil (PCDNA)</div><div class="ps">Gestión de desastres</div></div><div class="pn">0800-PCIVIL</div></a>
-    <a class="phone" href="tel:0212571"><div><div class="pl">Cruz Roja Venezolana</div><div class="ps">Atención médica / ambulancias</div></div><div class="pn">0212-571</div></a>
-    <a class="phone" href="tel:0212"><div><div class="pl">FUNVISIS — Reporte sísmico</div><div class="ps">Información de sismos y réplicas</div></div><div class="pn">0212</div></a>
+    <div class="list-grid">
+      <a class="phone" href="tel:171"><div><div class="pl">Emergencias 171 (VEN911)</div><div class="ps">Atención integrada nacional</div></div><div class="pn">171</div></a>
+      <a class="phone" href="tel:171"><div><div class="pl">Bomberos</div><div class="ps">Rescate e incendios</div></div><div class="pn">171</div></a>
+      <a class="phone" href="tel:0800724"><div><div class="pl">Protección Civil (PCDNA)</div><div class="ps">Gestión de desastres</div></div><div class="pn">0800-PCIVIL</div></a>
+      <a class="phone" href="tel:0212571"><div><div class="pl">Cruz Roja Venezolana</div><div class="ps">Atención médica / ambulancias</div></div><div class="pn">0212-571</div></a>
+      <a class="phone" href="tel:0212"><div><div class="pl">FUNVISIS — Reporte sísmico</div><div class="ps">Información de sismos y réplicas</div></div><div class="pn">0212</div></a>
+    </div>
     <div class="note">📌 Verifica los números regionales con tu alcaldía. El 171 es la línea integrada nacional de emergencias. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
   </section>
 </main>
@@ -241,6 +304,9 @@
 </div>
 
 <script>
+// Si anime.js no cargó (CDN bloqueado o conexión inestable), usar un sustituto sin
+// efecto para que la app NO se rompa: lo importante en una emergencia es que funcione.
+if(typeof anime==='undefined'){ window.anime=function(){ return { finished:Promise.resolve() }; }; }
 const TYPES = {
   crit:   {e:'🆘', t:'Emergencia crítica', c:'#ef4444'},
   build:  {e:'🏚️', t:'Edificio/acceso dañado', c:'#f59e0b'},
@@ -670,12 +736,65 @@ function card(rp){
       </div>
     </div></div></div>`;
 }
+// Etiquetas cortas para la gráfica (evitan desbordar la barra lateral)
+const TYPE_SHORT = {
+  crit:'Críticas', build:'Edif. dañados', road:'Vialidad', miss:'Desaparecidos',
+  hosp:'En hospital', acopio:'Acopio', aid:'Ayuda human.', dark:'Sin luz',
+  water:'Sin agua', safe:'A salvo'
+};
+// Gráfica de barras (SVG/CSS puro, sin dependencias) con las estadísticas de los reportes
+function renderChart(){
+  const wrap=document.getElementById('chart-body');
+  if(!wrap) return;
+  const total=reports.length;
+
+  // 1) Reportes por categoría
+  const counts={}; reports.forEach(r=>counts[r.type]=(counts[r.type]||0)+1);
+  const cats=Object.keys(TYPES).filter(k=>k!=='safe'&&counts[k])
+    .map(k=>({n:counts[k], c:TYPES[k].c, e:TYPES[k].e, l:TYPE_SHORT[k]||TYPES[k].t}))
+    .sort((a,b)=>b.n-a.n);
+  const maxCat=Math.max(1,...cats.map(c=>c.n));
+
+  // 2) Zonas (estados) más afectadas — detecta el estado dentro del texto de ubicación
+  const stateNames=GEO?GEO.features.map(f=>f.properties&&f.properties.NAME_1).filter(Boolean):[];
+  const stCount={};
+  reports.forEach(r=>{
+    const loc=(r.loc||'').toLowerCase();
+    let hit=null;
+    for(const s of stateNames){ if(loc.includes(s.toLowerCase())){ hit=s; break; } }
+    if(!hit && (loc.includes('caracas')||loc.includes('chacao')||loc.includes('libertador'))) hit='Distrito Capital';
+    if(hit) stCount[hit]=(stCount[hit]||0)+1;
+  });
+  const zonas=Object.entries(stCount).map(([s,n])=>({s,n})).sort((a,b)=>b.n-a.n).slice(0,6);
+  const maxZ=Math.max(1,...zonas.map(z=>z.n));
+
+  if(!total){ wrap.innerHTML='<div class="chart-empty">Aún no hay reportes activos para graficar.</div>'; return; }
+
+  let html=`<div class="chart-total"><span class="ct-n">${total}</span><span class="ct-l">reportes activos en total</span></div>`;
+  html+=`<div class="chart-h">Por categoría</div>`;
+  html+=cats.map(c=>`<div class="bar-row">
+      <span class="bl" title="${esc(c.l)}">${c.e} ${esc(c.l)}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${Math.round(c.n/maxCat*100)}%;background:${c.c}"></span></span>
+      <span class="bar-val">${c.n}</span>
+    </div>`).join('');
+  if(zonas.length){
+    html+=`<div class="chart-h">Zonas más afectadas</div>`;
+    html+=zonas.map(z=>`<div class="bar-row">
+        <span class="bl" title="${esc(z.s)}">${esc(z.s)}</span>
+        <span class="bar-track"><span class="bar-fill" style="width:${Math.round(z.n/maxZ*100)}%;background:var(--crit)"></span></span>
+        <span class="bar-val">${z.n}</span>
+      </div>`).join('');
+  }
+  wrap.innerHTML=html;
+}
+
 function render(){
   buildFilters();
   buildMap();
   document.getElementById('s-crit').textContent=reports.filter(r=>r.type==='crit').length;
   document.getElementById('s-build').textContent=reports.filter(r=>['build','dark','water'].includes(r.type)).length;
   document.getElementById('s-miss').textContent=reports.filter(r=>r.type==='miss').length;
+  renderChart();
   const all=reports.filter(r=>!['miss','acopio','hosp','aid'].includes(r.type));
   document.getElementById('list-rep').innerHTML=all.length?all.map(card).join(''):'<div class="empty">Sin reportes activos.</div>';
   let miss=reports.filter(r=>r.type==='miss');
