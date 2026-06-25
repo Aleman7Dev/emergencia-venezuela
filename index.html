@@ -129,7 +129,9 @@
 
   .sectitle{ font-size:13px; font-weight:700; margin:18px 0 10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
 
-  .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:10px; }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:10px; scroll-margin-top:74px; }
+  .card.card-focus{ border-color:var(--acc); box-shadow:0 0 0 3px rgba(59,130,246,.45); animation:cardpulse 1.4s ease-out 1; }
+  @keyframes cardpulse{ from{ box-shadow:0 0 0 7px rgba(59,130,246,.55); } to{ box-shadow:0 0 0 3px rgba(59,130,246,.25); } }
   .crow{ display:flex; gap:11px; align-items:flex-start; }
   .cicon{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex:none; }
   .ctitle{ font-size:15.5px; font-weight:700; line-height:1.3; } .cmeta{ font-size:12.5px; color:var(--muted); margin-top:4px; line-height:1.55; }
@@ -596,7 +598,7 @@ const I18N={
   'type.crit':'Emergencia crítica','type.build':'Edificio/acceso dañado','type.road':'Estado de vía / vialidad','type.miss':'Persona desaparecida','type.hosp':'Persona en centro de salud','type.acopio':'Centro de acopio','type.aid':'Punto de ayuda humanitaria','type.dark':'Zona sin luz','type.water':'Sin agua potable','type.volunteer':'Buscador voluntario','type.safe':'Localizado a salvo',
   'short.crit':'Críticas','short.build':'Edif. dañados','short.road':'Vialidad','short.miss':'Desaparecidos','short.hosp':'En hospital','short.acopio':'Acopio','short.aid':'Ayuda human.','short.dark':'Sin luz','short.water':'Sin agua','short.volunteer':'Voluntarios','short.safe':'A salvo',
   'road.closed':'Cerrada / intransitable','road.partial':'Paso parcial','road.moto':'Solo motocicletas','road.foot':'Solo a pie','road.open':'Despejada',
-  'btn.wa':'💬 WhatsApp','btn.share':'↗ Compartir','btn.copy':'⧉ Copiar','btn.copied':'✓ Copiado','btn.ficha':'🔗 Ver ficha oficial ↗','btn.clear':'✅ Marcar despejada','btn.clearing':'Actualizando…','btn.confirm':'Confirmar','btn.confirmMiss':'Confirmar encontrado','btn.confirmed':'✓ Confirmaste','btn.confirming':'Confirmando…','btn.retry':'✗ Reintentar',
+  'btn.wa':'💬 WhatsApp','btn.share':'🔗 Compartir','btn.copy':'⧉ Copiar','btn.copied':'✓ Copiado','btn.ficha':'🔗 Ver ficha oficial ↗','btn.clear':'✅ Marcar despejada','btn.clearing':'Actualizando…','btn.confirm':'Confirmar','btn.confirmMiss':'Confirmar encontrado','btn.confirmed':'✓ Confirmaste','btn.confirming':'Confirmando…','btn.retry':'✗ Reintentar',
   'tag.exact':'✓ exacta','tag.approx':'≈ aprox.',
   'empty.rep':'Sin reportes activos.','empty.miss':'No hay personas reportadas.','empty.hosp':'Aún no hay personas reportadas en centros de salud.','empty.acopio':'No hay centros de acopio ni puntos de ayuda reportados.','empty.volun':'Aún no hay buscadores voluntarios. ¡Ofrécete con ＋ Reportar!','empty.nomatch':'Sin coincidencias para',
   'match.badge':'Posible coincidencia','match.inHosp':'en un centro de salud','match.inMiss':'en la lista de desaparecidos','match.sameCI':' · misma cédula','match.verify':'Verifíquenlo antes de actuar.','match.banner1':'posible(s) coincidencia(s) entre','match.banner2':'hospital','match.banner3':'desaparecidos','match.banner4':'. Revisa las tarjetas marcadas.','match.notif':'🔔 Avisarme','match.notifTitle':'⚠️ Posible coincidencia','match.notifBody':'un reporte en hospital podría coincidir con un desaparecido. Revísalo en la app.',
@@ -642,7 +644,7 @@ const I18N={
   'type.crit':'Critical emergency','type.build':'Damaged building/access','type.road':'Road condition','type.miss':'Missing person','type.hosp':'Person in health center','type.acopio':'Collection center','type.aid':'Humanitarian aid point','type.dark':'No power','type.water':'No drinking water','type.volunteer':'Volunteer searcher','type.safe':'Located safe',
   'short.crit':'Critical','short.build':'Damaged bldg.','short.road':'Roads','short.miss':'Missing','short.hosp':'In hospital','short.acopio':'Supplies','short.aid':'Aid','short.dark':'No power','short.water':'No water','short.volunteer':'Volunteers','short.safe':'Safe',
   'road.closed':'Closed / impassable','road.partial':'Partial passage','road.moto':'Motorcycles only','road.foot':'On foot only','road.open':'Clear',
-  'btn.wa':'💬 WhatsApp','btn.share':'↗ Share','btn.copy':'⧉ Copy','btn.copied':'✓ Copied','btn.ficha':'🔗 Official profile ↗','btn.clear':'✅ Mark as clear','btn.clearing':'Updating…','btn.confirm':'Confirm','btn.confirmMiss':'Confirm found','btn.confirmed':'✓ You confirmed','btn.confirming':'Confirming…','btn.retry':'✗ Retry',
+  'btn.wa':'💬 WhatsApp','btn.share':'🔗 Share','btn.copy':'⧉ Copy','btn.copied':'✓ Copied','btn.ficha':'🔗 Official profile ↗','btn.clear':'✅ Mark as clear','btn.clearing':'Updating…','btn.confirm':'Confirm','btn.confirmMiss':'Confirm found','btn.confirmed':'✓ You confirmed','btn.confirming':'Confirming…','btn.retry':'✗ Retry',
   'tag.exact':'✓ exact','tag.approx':'≈ approx.',
   'empty.rep':'No active reports.','empty.miss':'No people reported.','empty.hosp':'No people reported in health centers yet.','empty.acopio':'No collection centers or aid points reported.','empty.volun':'No volunteer searchers yet. Offer to help with ＋ Report!','empty.nomatch':'No matches for',
   'match.badge':'Possible match','match.inHosp':'in a health center','match.inMiss':'in the missing list','match.sameCI':' · same ID','match.verify':'Please verify before acting.','match.banner1':'possible match(es) between','match.banner2':'hospital','match.banner3':'missing','match.banner4':'. Check the marked cards.','match.notif':'🔔 Notify me','match.notifTitle':'⚠️ Possible match','match.notifBody':'a hospital report may match a missing person. Check it in the app.',
@@ -850,12 +852,29 @@ function computeMatches(){
 }
 
 function shareLinks(rp){
-  const txt=`${TYPES[rp.type].e} ${TYPES[rp.type].t}\n${rp.title}\n📍 ${rp.loc}\nℹ️ ${rp.need}\n— vía App Emergencia Sísmica Venezuela`;
+  const txt=`${TYPES[rp.type].e} ${TYPES[rp.type].t}\n${displayTitle(rp)}\n📍 ${stripProfile(rp.loc)}\nℹ️ ${stripProfile(rp.need)}\n— vía App Emergencia Sísmica Venezuela`;
   const enc=encodeURIComponent(txt);
   return {
     wa:`https://wa.me/?text=${enc}`,
     txt
   };
+}
+// Enlace profundo a un reporte concreto (abre la app directamente en esa persona/punto)
+function deepLink(rp){ return `${location.origin}/?p=${encodeURIComponent(rp.id)}`; }
+// Pestaña en la que vive cada tipo de reporte (para enfocar al abrir un enlace ?p=)
+const TYPE_TAB={ miss:'desap', hosp:'hosp', acopio:'acopio', aid:'acopio', volunteer:'volun' };
+function focusReport(id){
+  const rp=reports.find(r=>String(r.id)===String(id)); if(!rp) return false;
+  activateTab(TYPE_TAB[rp.type]||'reportes');
+  // esperar a que la pestaña pinte y luego resaltar/desplazar la tarjeta
+  setTimeout(()=>{
+    const el=document.querySelector(`[data-card="${(window.CSS&&CSS.escape)?CSS.escape(String(id)):String(id)}"]`);
+    if(!el) return;
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.classList.add('card-focus');
+    setTimeout(()=>el.classList.remove('card-focus'),4200);
+  },120);
+  return true;
 }
 
 function computeBounds(features){
@@ -1136,6 +1155,8 @@ async function load(){
   render();
   if(savedTab) activateTab(savedTab);
   if(savedAuto) setAuto(true);
+  // Enlace profundo: si la URL trae ?p=<id>, abrir la app enfocada en ese reporte
+  try{ const pid=new URLSearchParams(location.search).get('p'); if(pid) focusReport(pid); }catch(e){}
 }
 async function save(){ // solo respaldo local cuando no hay nube
   if(cloudOK) return;
@@ -1171,7 +1192,6 @@ function buildFilters(){
 
 function card(rp){
   const ty=TYPES[rp.type];
-  const sh=shareLinks(rp);
   const c=rp.confirms||0;
   const mine=confirmedByMe.has(String(rp.id));
   const verbo = rp.type==='miss' ? t('btn.confirmMiss') : t('btn.confirm');
@@ -1194,7 +1214,7 @@ function card(rp){
     : (lang==='en'?`Hello, I\'m contacting you via the Emergencia Sísmica Venezuela app about the report: ${rp.title}.`:`Hola, te contacto por la app Emergencia Sísmica Venezuela sobre el reporte: ${rp.title}.`);
   const waBtn = phone
     ? `<a class="sbtn wa" href="https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}" target="_blank" rel="noopener">${t('btn.wa')}</a>`
-    : `<a class="sbtn wa" href="${sh.wa}" target="_blank" rel="noopener">${t('btn.share')}</a>`;
+    : '';
   const dispLoc = esc(stripProfile(rp.loc));
   const dispNeed = esc(stripProfile(rp.need)) || (lang==='en'?'(no details)':'(sin detalle)');
   // Aviso de posible coincidencia hospital ↔ desaparecido
@@ -1206,7 +1226,7 @@ function card(rp){
     const where = rp.type==='miss' ? t('match.inHosp') : t('match.inMiss');
     matchBadge = `<div class="match-badge ${strong?'strong':''}">⚠️ <b>${t('match.badge')}</b> ${where}${strong?t('match.sameCI'):''}: ${esc(displayTitle(other))} — ${esc(stripProfile(other.loc))}. <span class="mb-verify">${t('match.verify')}</span></div>`;
   }
-  return `<div class="card"><div class="crow">
+  return `<div class="card" data-card="${esc(rp.id)}"><div class="crow">
     <div class="cicon" style="background:${ty.c}22">${ty.e}</div>
     <div style="flex:1">
       <div class="ctitle">${esc(displayTitle(rp))}</div>
@@ -1218,7 +1238,7 @@ function card(rp){
       ${matchBadge}
       <div class="share-row">
         ${waBtn}
-        <button class="sbtn" data-copy="${esc(rp.id)}">${t('btn.copy')}</button>
+        <button class="sbtn" data-share="${esc(rp.id)}">${t('btn.share')}</button>
         ${fichaBtn}
         ${clearBtn}
         ${confBtn}
@@ -1319,10 +1339,14 @@ function render(){
     if(rp && rp.confirms>=CONFIRM_THRESHOLD){ reports=reports.filter(r=>r.id!==id); }
     save(); render();
   }); });
-  document.querySelectorAll('[data-copy]').forEach(b=>{ b.addEventListener('click',()=>{
-    const rp=reports.find(r=>r.id===b.dataset.copy); if(!rp)return;
-    const txt=shareLinks(rp).txt;
-    navigator.clipboard?.writeText(txt).then(()=>{ b.textContent=t('btn.copied'); setTimeout(()=>b.textContent=t('btn.copy'),1500); }).catch(()=>{ b.textContent='✗'; });
+  document.querySelectorAll('[data-share]').forEach(b=>{ b.addEventListener('click',async()=>{
+    const rp=reports.find(r=>String(r.id)===String(b.dataset.share)); if(!rp)return;
+    const txt=shareLinks(rp).txt, url=deepLink(rp), title=displayTitle(rp);
+    // 1) Compartir nativo (móvil): abre la hoja del sistema con el enlace a esa persona
+    if(navigator.share){ try{ await navigator.share({title,text:txt,url}); return; }catch(e){ if(e&&e.name==='AbortError') return; } }
+    // 2) Respaldo: copiar texto + enlace al portapapeles
+    const full=txt+'\n'+url;
+    navigator.clipboard?.writeText(full).then(()=>{ b.textContent=t('btn.copied'); setTimeout(()=>b.textContent=t('btn.share'),1600); }).catch(()=>{ b.textContent='✗'; });
   }); });
   // Vialidad: marcar una vía como despejada (ya se puede circular)
   document.querySelectorAll('[data-clear]').forEach(b=>{ b.addEventListener('click',async()=>{
