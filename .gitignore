@@ -15,9 +15,22 @@ Thumbs.db
 *.swp
 *~
 
-# Entorno
+# Entorno / secretos (NUNCA al repo)
 .env
-.env.local
+.env.*
+*.key
+*.pem
+service_role*.txt
+
+# Datos personales / PII (NO publicar en un repo público)
+# Lotes de carga, exportaciones y consolidados con datos de personas.
+*.csv
+desaparecidos.json
+afectados.json
+ingresos*.json
+/datos/
+/private/
+importar-*.mjs
 
 # Build / temporales
 dist/
