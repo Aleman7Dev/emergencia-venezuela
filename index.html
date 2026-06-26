@@ -1160,11 +1160,15 @@ function attributeState(r){
   if(/\b(caracas|chacao|libertador|baruta|el hatillo|petare|sucre)\b/.test(loc)) return 'Distrito Capital';
   return null;
 }
+// Solo cuentan para la INTENSIDAD los reportes de afectación (daño/emergencia).
+// Los puntos de ayuda/positivos —acopio, ayuda humanitaria, voluntarios y "a salvo"—
+// se ven en el mapa como pines, pero NO pintan la zona de rojo.
+const AFFECTED_TYPES=new Set(['crit','build','miss','hosp','road','dark','water']);
 let stateLoad={}, stateLoadMax=0, _slKey='__';
 function refreshStateLoad(){
   const key=reports.length+':'+((reports[0]&&reports[0].id)||'');
   if(key===_slKey) return; _slKey=key;
-  const m={}; for(const r of reports){ const st=attributeState(r); if(st) m[st]=(m[st]||0)+1; }
+  const m={}; for(const r of reports){ if(!AFFECTED_TYPES.has(r.type)) continue; const st=attributeState(r); if(st) m[st]=(m[st]||0)+1; }
   stateLoad=m; stateLoadMax=Math.max(0,...Object.values(m));
 }
 function stateStyle(name){
