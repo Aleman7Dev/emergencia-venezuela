@@ -233,6 +233,51 @@
   .dedic-chip{ border:1px solid var(--line); background:var(--panel2); color:var(--txt); border-radius:999px; padding:6px 11px; font-size:12.5px; cursor:pointer; font-family:inherit; line-height:1; }
   .dedic-chip.on{ border-color:transparent; background:linear-gradient(90deg,#CF142B,#003893); color:#fff; font-weight:800; }
   .dedic-chip:active{ transform:scale(.96); }
+  /* Solicitudes de ayuda (vista principal) */
+  .sol-hero{ text-align:center; padding:14px 14px 4px; }
+  .sol-stripe{ height:6px; border-radius:6px; max-width:420px; margin:0 auto 12px; background:linear-gradient(90deg,#FCD116 0 33.3%,#003893 33.3% 66.6%,#CF142B 66.6% 100%); }
+  .sol-title{ font-size:19px; margin:.1em 0; }
+  .sol-sub{ color:var(--muted); font-size:12.5px; max-width:600px; margin:6px auto 0; line-height:1.5; }
+  .sol-toolbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; max-width:760px; margin:12px auto 4px; padding:0 2px; }
+  .sol-new{ border:none; border-radius:12px; padding:11px 16px; font-size:14px; font-weight:800; color:#fff; cursor:pointer; background:linear-gradient(90deg,#CF142B,#003893); box-shadow:0 2px 12px rgba(0,56,147,.30); }
+  .sol-new:active{ transform:scale(.97); }
+  .sol-filter{ flex:1 1 120px; min-width:0; padding:9px 11px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:13px; font-family:inherit; }
+  .sol-list{ max-width:760px; margin:10px auto 0; display:flex; flex-direction:column; gap:10px; padding-bottom:14px; }
+  .sol-empty{ text-align:center; color:var(--muted); font-size:13.5px; line-height:1.6; padding:22px 14px; border:1px dashed var(--line); border-radius:14px; }
+  .sol-empty .sol-quick{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px; }
+  .sol-empty .sol-quick button{ border:1px solid var(--line); background:var(--panel2); color:var(--txt); border-radius:999px; padding:8px 13px; font-size:12.5px; cursor:pointer; font-family:inherit; }
+  .sol-item{ background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--acc); border-radius:12px; padding:12px 14px; }
+  .sol-item.urgente{ border-left-color:#CF142B; }
+  .sol-item .si-top{ display:flex; align-items:flex-start; gap:8px; }
+  .sol-item .si-ic{ font-size:20px; line-height:1; flex:none; }
+  .sol-item .si-title{ font-size:15px; font-weight:800; line-height:1.3; }
+  .sol-item .si-detalle{ font-size:13px; color:var(--txt); margin-top:5px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+  .sol-item .si-meta{ font-size:11.5px; color:var(--muted); margin-top:7px; display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; }
+  .sol-badge{ font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:999px; text-transform:uppercase; letter-spacing:.3px; }
+  .sb-abierta{ background:rgba(16,185,129,.16); color:#10b981; }
+  .sb-en_proceso{ background:rgba(245,158,11,.16); color:#f59e0b; }
+  .sb-cumplida{ background:rgba(100,116,139,.18); color:var(--muted); }
+  .sb-urgente{ background:rgba(207,20,43,.16); color:#ef4444; }
+  .sb-org{ background:rgba(0,56,147,.18); color:#5b8def; }
+  .sol-item .si-actions{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+  .sol-item .si-actions button{ border:1px solid var(--line); background:var(--panel2); color:var(--txt); border-radius:9px; padding:7px 11px; font-size:12.5px; cursor:pointer; font-family:inherit; }
+  .sol-item .si-wa{ border-color:transparent; background:#25D366; color:#08231a; font-weight:800; }
+  /* Modal de publicar solicitud */
+  .sol-modal{ position:fixed; inset:0; z-index:2200; background:rgba(0,0,0,.6); display:none; align-items:flex-end; justify-content:center; }
+  .sol-modal.on{ display:flex; }
+  .sol-card{ background:var(--panel); border:1px solid var(--line); border-radius:16px 16px 0 0; width:100%; max-width:560px; max-height:92vh; overflow:auto; padding:16px 16px calc(18px + env(safe-area-inset-bottom)); }
+  .sol-modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .sol-modal-head h3{ font-size:16px; margin:0; }
+  .sol-x{ border:none; background:none; color:var(--muted); font-size:18px; cursor:pointer; padding:4px 8px; }
+  .sol-card label{ display:block; font-size:12.5px; color:var(--muted); font-weight:700; margin:10px 0 4px; }
+  .sol-card input[type=text], .sol-card input:not([type]), .sol-card textarea, .sol-card select{ width:100%; padding:10px 12px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:14px; font-family:inherit; }
+  .sol-card textarea{ resize:vertical; }
+  .sol-chk{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--txt); font-weight:600; margin-top:10px; }
+  .sol-chk input{ width:18px; height:18px; }
+  .sol-note{ font-size:11.5px; color:var(--muted); line-height:1.5; margin:10px 0 4px; border-left:3px solid #FCD116; padding-left:9px; }
+  .sol-submit{ width:100%; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:800; color:#fff; cursor:pointer; background:linear-gradient(90deg,#CF142B,#003893); margin-top:12px; }
+  .sol-status{ text-align:center; font-size:12.5px; min-height:18px; margin-top:8px; }
+  @media(min-width:760px){ .sol-modal{ align-items:center; } .sol-card{ border-radius:16px; } }
   /* Marquesina + banda de oración por Venezuela (portada, sobre el mapa) */
   .pray-band{ position:relative; border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:10px; background:linear-gradient(180deg,rgba(252,209,22,.10),rgba(0,56,147,.06) 55%,rgba(207,20,43,.07)); }
   .pray-band::before{ content:''; position:absolute; left:0; right:0; top:0; height:3px; background:linear-gradient(90deg,#FCD116 0 33.3%,#003893 33.3% 66.6%,#CF142B 66.6% 100%); z-index:1; }
@@ -410,7 +455,8 @@
 </div>
 
 <nav role="tablist" aria-label="Secciones de la aplicación">
-  <button class="tab on" role="tab" aria-selected="true" data-v="mapa" data-i18n="nav.mapa">🗺️ Mapa</button>
+  <button class="tab on" role="tab" aria-selected="true" data-v="solicitudes" data-i18n="nav.solicitudes">🤝 Solicitudes</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="mapa" data-i18n="nav.mapa">🗺️ Mapa</button>
   <button class="tab" role="tab" aria-selected="false" data-v="reportes" data-i18n="nav.reportes">📋 Reportes</button>
   <button class="tab" role="tab" aria-selected="false" data-v="desap" data-i18n="nav.desap">🧍 Desaparecidos</button>
   <button class="tab" role="tab" aria-selected="false" data-v="hosp" data-i18n="nav.hosp">🏥 Hospitales</button>
@@ -421,7 +467,25 @@
 </nav>
 
 <main>
-  <section class="view on" id="v-mapa">
+  <section class="view on" id="v-solicitudes">
+    <div class="sol-hero">
+      <div class="sol-stripe"></div>
+      <h2 class="sol-title" data-i18n="sol.title">Solicitudes de ayuda</h2>
+      <p class="sol-sub" data-i18n-html="sol.sub">Tablón de necesidades de la respuesta: brazos, agua, alimentos e insumos para equipos y afectados. Es un tablón que revisas, no garantiza que alguien irá. Ante peligro de vida, llama al <b>171</b>.</p>
+    </div>
+    <div class="sol-toolbar">
+      <button class="sol-new" id="sol-new"><span data-i18n="sol.new">Publicar solicitud</span></button>
+      <select id="sol-fk" class="sol-filter" aria-label="Categoría"></select>
+      <select id="sol-fe" class="sol-filter" aria-label="Estado">
+        <option value="" data-i18n="sol.f.all">Todas</option>
+        <option value="abierta" data-i18n="sol.st.abierta">Abiertas</option>
+        <option value="en_proceso" data-i18n="sol.st.en_proceso">En proceso</option>
+        <option value="cumplida" data-i18n="sol.st.cumplida">Cumplidas</option>
+      </select>
+    </div>
+    <div id="sol-list" class="sol-list"></div>
+  </section>
+  <section class="view" id="v-mapa">
     <div class="map-grid">
       <div class="map-main">
         <a class="hope-strip" id="hope-strip" href="#v-apoyo" data-goapoyo="1" hidden>
@@ -682,6 +746,31 @@
   </footer>
 </main>
 
+<div class="sol-modal" id="sol-modal" role="dialog" aria-modal="true" aria-labelledby="sol-modal-t">
+  <div class="sol-card">
+    <div class="sol-modal-head">
+      <h3 id="sol-modal-t" data-i18n="sol.new">Publicar solicitud</h3>
+      <button class="sol-x" id="sol-close" aria-label="Cerrar">✕</button>
+    </div>
+    <label data-i18n="sol.f.kind">Categoría</label>
+    <select id="sf-kind"></select>
+    <label data-i18n="sol.f.titulo">¿Qué se necesita?</label>
+    <input id="sf-titulo" maxlength="140" data-i18n-ph="sol.ph.titulo" placeholder="Ej.: Se necesitan 10 voluntarios con guantes">
+    <label data-i18n="sol.f.detalle">Detalle (opcional)</label>
+    <textarea id="sf-detalle" maxlength="1000" rows="3" data-i18n-ph="sol.ph.detalle" placeholder="Cantidad, horario, a quién se entrega, etc."></textarea>
+    <label data-i18n="sol.f.sector">Zona aproximada</label>
+    <input id="sf-sector" maxlength="120" data-i18n-ph="sol.ph.sector" placeholder="Ej.: Caraballeda, La Guaira (sin dirección exacta)">
+    <label data-i18n="sol.f.contacto">Contacto (cómo coordinar)</label>
+    <input id="sf-contacto" maxlength="120" data-i18n-ph="sol.ph.contacto" placeholder="Teléfono / WhatsApp o grupo de la organización">
+    <label data-i18n="sol.f.org">Organización (opcional)</label>
+    <input id="sf-org" maxlength="80" data-i18n-ph="sol.ph.org" placeholder="Ej.: Comando ConVzla, Cruz Roja, parroquia…">
+    <label class="sol-chk"><input type="checkbox" id="sf-urgente"> <span data-i18n="sol.f.urgente">Marcar como urgente</span></label>
+    <div class="sol-note" data-i18n="sol.note">Usa una zona aproximada, no una dirección exacta. La solicitud es pública. Ante peligro de vida, llama al 171.</div>
+    <button class="sol-submit" id="sf-submit" data-i18n="sol.publish">Publicar solicitud</button>
+    <div class="sol-status" id="sf-status" role="status"></div>
+  </div>
+</div>
+
 <button class="fab" id="fab" aria-label="Crear un nuevo reporte" data-i18n="fab">＋ Reportar</button>
 
 <div id="pickbanner" style="display:none;">
@@ -714,7 +803,15 @@ try{ const sl=localStorage.getItem('vzla_lang'); if(sl==='en'||sl==='es') lang=s
 const I18N={
  es:{
   'status.base':'Estado de Emergencia Nacional','status.online':' · 🟢 En línea','status.local':' · 🟡 Local (sin conexión)',
-  'nav.reportes':'📋 Reportes','nav.desap':'🧍 Desaparecidos','nav.hosp':'🏥 Hospitales','nav.acopio':'📦 Acopio y ayuda','nav.volun':'🙋 Buscadores','nav.tel':'📞 Teléfonos','nav.mapa':'🗺️ Mapa',
+  'nav.solicitudes':'🤝 Solicitudes','nav.reportes':'📋 Reportes','nav.desap':'🧍 Desaparecidos','nav.hosp':'🏥 Hospitales','nav.acopio':'📦 Acopio y ayuda','nav.volun':'🙋 Buscadores','nav.tel':'📞 Teléfonos','nav.mapa':'🗺️ Mapa',
+  'sol.title':'Solicitudes de ayuda','sol.sub':'Tablón de necesidades de la respuesta: brazos, agua, alimentos e insumos para equipos y afectados. Es un tablón que revisas, no garantiza que alguien irá. Ante peligro de vida, llama al <b>171</b>.','sol.new':'Publicar solicitud','sol.publish':'Publicar solicitud','sol.empty':'Aún no hay solicitudes publicadas. Cuando una organización o un equipo necesite voluntarios, agua, alimentos o insumos, aparecerán aquí. Mientras tanto, explora:',
+  'sol.f.all':'Todas','sol.f.allKinds':'Todas las categorías','sol.f.kind':'Categoría','sol.f.titulo':'¿Qué se necesita?','sol.f.detalle':'Detalle (opcional)','sol.f.sector':'Zona aproximada','sol.f.contacto':'Contacto (cómo coordinar)','sol.f.org':'Organización (opcional)','sol.f.urgente':'Marcar como urgente',
+  'sol.ph.titulo':'Ej.: Se necesitan 10 voluntarios con guantes','sol.ph.detalle':'Cantidad, horario, a quién se entrega, etc.','sol.ph.sector':'Ej.: Caraballeda, La Guaira (sin dirección exacta)','sol.ph.contacto':'Teléfono / WhatsApp o grupo de la organización','sol.ph.org':'Ej.: Comando ConVzla, Cruz Roja, parroquia…',
+  'sol.note':'Usa una zona aproximada, no una dirección exacta. La solicitud es pública. Ante peligro de vida, llama al 171.',
+  'sol.st.abierta':'Abierta','sol.st.en_proceso':'En proceso','sol.st.cumplida':'Cumplida','sol.st.cancelada':'Cancelada','sol.urgente':'Urgente',
+  'sol.share':'Compartir','sol.contact':'Contactar','sol.shareTxt':'Solicitud de ayuda','sol.mark.proceso':'Marcar en proceso','sol.mark.cumplida':'Marcar cumplida',
+  'sol.errTitulo':'Describe brevemente qué se necesita.','sol.wait':'Espera unos segundos antes de publicar otra.','sol.errBackend':'No se pudo publicar. Si eres el administrador, falta crear la tabla «solicitudes» en Supabase (sección 7).',
+  'sol.kind.voluntarios':'Voluntarios / brazos','sol.kind.agua':'Agua','sol.kind.alimentos':'Alimentos','sol.kind.insumos':'Insumos / materiales','sol.kind.insumos_medicos':'Insumos médicos','sol.kind.transporte':'Transporte / logística','sol.kind.refugio':'Refugio / alojamiento',
   'sect.reportes':'Reportes activos','sect.desap':'Personas desaparecidas','sect.hosp':'Personas ubicadas en centros de salud','sect.acopio':'Centros de acopio y puntos de ayuda humanitaria','sect.volun':'Buscadores voluntarios','sect.tel':'Teléfonos de emergencia oficiales',
   'search.miss':'Buscar por nombre, zona o estado…','search.hosp':'Buscar por nombre, hospital o estado…','search.volun':'Buscar por zona o estado…','search.clear':'Limpiar',
   'ally.head':'También en el directorio aliado (desaparecidosterremotovenezuela.com):','ally.searching':'Buscando en el directorio aliado…','ally.more':'Ver más en desaparecidosterremotovenezuela.com ↗',
@@ -766,7 +863,15 @@ const I18N={
  },
  en:{
   'status.base':'National State of Emergency','status.online':' · 🟢 Online','status.local':' · 🟡 Local (offline)',
-  'nav.reportes':'📋 Reports','nav.desap':'🧍 Missing','nav.hosp':'🏥 Hospitals','nav.acopio':'📦 Aid & supplies','nav.volun':'🙋 Searchers','nav.tel':'📞 Phones','nav.mapa':'🗺️ Map',
+  'nav.solicitudes':'🤝 Requests','nav.reportes':'📋 Reports','nav.desap':'🧍 Missing','nav.hosp':'🏥 Hospitals','nav.acopio':'📦 Aid & supplies','nav.volun':'🙋 Searchers','nav.tel':'📞 Phones','nav.mapa':'🗺️ Map',
+  'sol.title':'Help requests','sol.sub':'A needs board for the response: hands, water, food and supplies for teams and those affected. It is a board you check, not a guarantee someone will come. In a life-threatening emergency, call <b>171</b>.','sol.new':'Post a request','sol.publish':'Post request','sol.empty':'No requests posted yet. When an organization or team needs volunteers, water, food or supplies, they will appear here. Meanwhile, explore:',
+  'sol.f.all':'All','sol.f.allKinds':'All categories','sol.f.kind':'Category','sol.f.titulo':'What is needed?','sol.f.detalle':'Details (optional)','sol.f.sector':'Approximate area','sol.f.contacto':'Contact (how to coordinate)','sol.f.org':'Organization (optional)','sol.f.urgente':'Mark as urgent',
+  'sol.ph.titulo':'E.g.: 10 volunteers with gloves needed','sol.ph.detalle':'Quantity, schedule, who it goes to, etc.','sol.ph.sector':'E.g.: Caraballeda, La Guaira (no exact address)','sol.ph.contacto':'Phone / WhatsApp or the organization group','sol.ph.org':'E.g.: Comando ConVzla, Red Cross, parish…',
+  'sol.note':'Use an approximate area, not an exact address. The request is public. In a life-threatening emergency, call 171.',
+  'sol.st.abierta':'Open','sol.st.en_proceso':'In progress','sol.st.cumplida':'Fulfilled','sol.st.cancelada':'Cancelled','sol.urgente':'Urgent',
+  'sol.share':'Share','sol.contact':'Contact','sol.shareTxt':'Help request','sol.mark.proceso':'Mark in progress','sol.mark.cumplida':'Mark fulfilled',
+  'sol.errTitulo':'Briefly describe what is needed.','sol.wait':'Wait a few seconds before posting another.','sol.errBackend':'Could not post. If you are the admin, the “solicitudes” table must be created in Supabase (section 7).',
+  'sol.kind.voluntarios':'Volunteers / hands','sol.kind.agua':'Water','sol.kind.alimentos':'Food','sol.kind.insumos':'Supplies / materials','sol.kind.insumos_medicos':'Medical supplies','sol.kind.transporte':'Transport / logistics','sol.kind.refugio':'Shelter / lodging',
   'sect.reportes':'Active reports','sect.desap':'Missing persons','sect.hosp':'People located in health centers','sect.acopio':'Collection centers and humanitarian aid points','sect.volun':'Volunteer searchers','sect.tel':'Official emergency phone numbers',
   'search.miss':'Search by name, area or state…','search.hosp':'Search by name, hospital or state…','search.volun':'Search by area or state…','search.clear':'Clear',
   'ally.head':'Also in the partner directory (desaparecidosterremotovenezuela.com):','ally.searching':'Searching the partner directory…','ally.more':'See more at desaparecidosterremotovenezuela.com ↗',
@@ -1280,6 +1385,7 @@ function activateTab(name){
   if(typeof saveTab==='function') saveTab(name);
   if(name==='mapa' && map) setTimeout(()=>map.invalidateSize(),60);
   if(name==='apoyo'){ if(!apoyoLoaded) loadApoyo(); loadHope(); }
+  if(name==='solicitudes') loadSolicitudes();
 }
 
 function drawMunis(){
@@ -1428,7 +1534,7 @@ async function load(){
   updateCloudBadge();
   initMap();   // crea el mapa Leaflet (tiles desactivados por defecto)
   render();
-  if(savedTab) activateTab(savedTab);
+  if(savedTab) activateTab(savedTab); else loadSolicitudes();   // home = Solicitudes
   if(savedAuto) setAuto(true);
   // Enlace profundo: si la URL trae ?p=<id>, abrir la app enfocada en ese reporte
   try{ const pid=new URLSearchParams(location.search).get('p'); if(pid) focusReport(pid); }catch(e){}
@@ -1826,6 +1932,119 @@ renderMarquee(APOYO_SEED);
 loadPray();
 loadHope();   // tira de esperanza sobre el mapa (y tarjeta en Apoyo)
 { const hstrip=document.getElementById('hope-strip'); if(hstrip) hstrip.addEventListener('click',e=>{ e.preventDefault(); if(typeof activateTab==='function') activateTab('apoyo'); }); }
+
+// ---- Solicitudes de ayuda (vista principal: tablón de necesidades) ----
+const SOL_KINDS=[
+  {k:'voluntarios', e:'🙌'}, {k:'agua', e:'💧'}, {k:'alimentos', e:'🍲'},
+  {k:'insumos', e:'📦'}, {k:'insumos_medicos', e:'🩺'}, {k:'transporte', e:'🚚'}, {k:'refugio', e:'🏠'},
+];
+const SOL_KMAP=Object.fromEntries(SOL_KINDS.map(x=>[x.k,x]));
+let solLoaded=false, solList=[], lastSolTs=0;
+function solKindLabel(k){ return t('sol.kind.'+k); }
+function solKindEmoji(k){ return (SOL_KMAP[k]&&SOL_KMAP[k].e)||'🤝'; }
+function solToken(){ try{ let v=localStorage.getItem('vzla_sol_token'); if(!v){ v=Date.now().toString(36)+Math.random().toString(36).slice(2,10); localStorage.setItem('vzla_sol_token',v); } return v; }catch(e){ return ''; } }
+function solMine(){ try{ return new Set(JSON.parse(localStorage.getItem('vzla_sol_mine')||'[]')); }catch(e){ return new Set(); } }
+function solAddMine(id){ try{ const s=solMine(); s.add(String(id)); localStorage.setItem('vzla_sol_mine', JSON.stringify([...s])); }catch(e){} }
+function fillSolFilters(){
+  const fk=document.getElementById('sol-fk');
+  if(fk){ const cur=fk.value; fk.innerHTML='<option value="">'+esc(t('sol.f.allKinds'))+'</option>'+SOL_KINDS.map(x=>`<option value="${x.k}">${x.e} ${esc(solKindLabel(x.k))}</option>`).join(''); fk.value=cur; }
+  const sk=document.getElementById('sf-kind');
+  if(sk && !sk.options.length){ sk.innerHTML=SOL_KINDS.map(x=>`<option value="${x.k}">${x.e} ${esc(solKindLabel(x.k))}</option>`).join(''); }
+}
+async function loadSolicitudes(){
+  solLoaded=true; fillSolFilters();
+  const cols='id,kind,titulo,detalle,sector,contacto,organizacion,prioridad,estado,created_at';
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/solicitudes?select=${cols}&order=created_at.desc&limit=200`,{ headers:SB_HEAD });
+    solList = r.ok ? await r.json() : [];
+  }catch(e){ solList=[]; }
+  renderSolicitudes();
+}
+function renderSolicitudes(){
+  const box=document.getElementById('sol-list'); if(!box) return;
+  const fk=(document.getElementById('sol-fk')||{}).value||'', fe=(document.getElementById('sol-fe')||{}).value||'';
+  const mine=solMine();
+  let list=solList.filter(s=>(!fk||s.kind===fk) && (!fe||s.estado===fe));
+  const rank=s=>(s.estado==='cumplida'?2:0)+(s.prioridad==='urgente'?-1:0);
+  list=list.slice().sort((a,b)=>rank(a)-rank(b));
+  if(!list.length){
+    box.innerHTML=`<div class="sol-empty">${esc(t('sol.empty'))}
+      <div class="sol-quick">
+        <button data-go="mapa">🗺️ ${esc(t('nav.mapa').replace(/^\S+\s*/,''))}</button>
+        <button data-go="desap">🧍 ${esc(t('nav.desap').replace(/^\S+\s*/,''))}</button>
+        <button data-go="hosp">🏥 ${esc(t('nav.hosp').replace(/^\S+\s*/,''))}</button>
+        <button data-go="acopio">📦 ${esc(t('nav.acopio').replace(/^\S+\s*/,''))}</button>
+      </div></div>`;
+    box.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>activateTab(b.dataset.go)));
+    return;
+  }
+  box.innerHTML=list.map(s=>{
+    const isMine=mine.has(String(s.id)), wa=waPhone(s.contacto||'');
+    const urgent=s.prioridad==='urgente'&&s.estado!=='cumplida';
+    let badges=`<span class="sol-badge sb-${esc(s.estado)}">${esc(t('sol.st.'+s.estado))}</span>`;
+    if(urgent) badges+=`<span class="sol-badge sb-urgente">${esc(t('sol.urgente'))}</span>`;
+    if(s.organizacion) badges+=`<span class="sol-badge sb-org">✔ ${esc(s.organizacion)}</span>`;
+    let actions=`<button class="si-wa" data-solshare="${esc(String(s.id))}">${esc(t('sol.share'))}</button>`;
+    if(wa) actions+=`<button data-wa="${esc(wa)}">${esc(t('sol.contact'))}</button>`;
+    if(isMine && s.estado!=='cumplida' && s.estado!=='cancelada'){
+      if(s.estado==='abierta') actions+=`<button data-st="en_proceso" data-id="${esc(String(s.id))}">${esc(t('sol.mark.proceso'))}</button>`;
+      actions+=`<button data-st="cumplida" data-id="${esc(String(s.id))}">${esc(t('sol.mark.cumplida'))}</button>`;
+    }
+    return `<div class="sol-item${urgent?' urgente':''}">
+      <div class="si-top"><span class="si-ic">${solKindEmoji(s.kind)}</span>
+      <div style="min-width:0"><div class="si-title">${esc(s.titulo||'')}</div>${s.detalle?`<div class="si-detalle">${esc(s.detalle)}</div>`:''}</div></div>
+      <div class="si-meta">${badges}${s.sector?`<span>📍 ${esc(s.sector)}</span>`:''}${s.contacto&&!wa?`<span>✉️ ${esc(s.contacto)}</span>`:''}<span>${esc(relTime(s.created_at))}</span></div>
+      <div class="si-actions">${actions}</div></div>`;
+  }).join('');
+}
+function compartirSolicitud(id){
+  const s=solList.find(x=>String(x.id)===String(id)); if(!s) return;
+  const txt=`${solKindEmoji(s.kind)} ${t('sol.shareTxt')}: ${s.titulo}${s.sector?' ('+s.sector+')':''}${s.contacto?' · '+s.contacto:''}`;
+  const url=location.origin+'/';
+  if(navigator.share){ navigator.share({title:t('sol.title'), text:txt, url}).catch(()=>{}); return; }
+  window.open('https://wa.me/?text='+encodeURIComponent(txt+'\n'+url),'_blank','noopener');
+}
+async function estadoSolicitud(id, estado){
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/estado_solicitud`,{ method:'POST', headers:SB_HEAD, body:JSON.stringify({ p_id:String(id), p_estado:estado, p_owner:solToken() }) });
+    if(r.ok){ const row=await r.json(); const o=Array.isArray(row)?row[0]:row; const i=solList.findIndex(x=>String(x.id)===String(id)); if(i>=0&&o&&o.estado) solList[i].estado=o.estado; renderSolicitudes(); }
+  }catch(e){}
+}
+function abrirSolModal(){ fillSolFilters(); const m=document.getElementById('sol-modal'); if(m){ m.classList.add('on'); const st=document.getElementById('sf-status'); if(st) st.textContent=''; } }
+function cerrarSolModal(){ const m=document.getElementById('sol-modal'); if(m) m.classList.remove('on'); }
+async function publicarSolicitud(){
+  const g=id=>document.getElementById(id), st=g('sf-status');
+  const titulo=(g('sf-titulo').value||'').trim();
+  if(titulo.length<3){ st.style.color='var(--crit)'; st.textContent=t('sol.errTitulo'); return; }
+  const now=Date.now(); if(now-lastSolTs<8000){ st.style.color='var(--warn)'; st.textContent=t('sol.wait'); return; }
+  const payload={ p_kind:g('sf-kind').value, p_titulo:titulo, p_detalle:(g('sf-detalle').value||'').trim(),
+    p_sector:(g('sf-sector').value||'').trim(), p_contacto:(g('sf-contacto').value||'').trim(),
+    p_organizacion:(g('sf-org').value||'').trim(), p_prioridad:g('sf-urgente').checked?'urgente':'normal',
+    p_owner:solToken(), p_lon:null, p_lat:null };
+  st.style.color='var(--safe)'; const btn=g('sf-submit'); btn.disabled=true;
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/crear_solicitud`,{ method:'POST', headers:SB_HEAD, body:JSON.stringify(payload) });
+    if(!r.ok) throw new Error('rpc '+r.status);
+    const row=await r.json(); const o=Array.isArray(row)?row[0]:row;
+    if(o&&o.id) solAddMine(o.id);
+    lastSolTs=now;
+    ['sf-titulo','sf-detalle','sf-sector','sf-contacto','sf-org'].forEach(id=>g(id).value=''); g('sf-urgente').checked=false;
+    cerrarSolModal(); solLoaded=false; await loadSolicitudes();
+  }catch(e){ st.style.color='var(--crit)'; st.textContent=t('sol.errBackend'); }
+  btn.disabled=false;
+}
+{ const n=document.getElementById('sol-new'); if(n) n.addEventListener('click',abrirSolModal); }
+{ const x=document.getElementById('sol-close'); if(x) x.addEventListener('click',cerrarSolModal); }
+{ const m=document.getElementById('sol-modal'); if(m) m.addEventListener('click',e=>{ if(e.target===m) cerrarSolModal(); }); }
+{ const sb=document.getElementById('sf-submit'); if(sb) sb.addEventListener('click',publicarSolicitud); }
+{ const fk=document.getElementById('sol-fk'); if(fk) fk.addEventListener('change',renderSolicitudes); }
+{ const fe=document.getElementById('sol-fe'); if(fe) fe.addEventListener('change',renderSolicitudes); }
+{ const box=document.getElementById('sol-list'); if(box) box.addEventListener('click',e=>{
+  const sh=e.target.closest('[data-solshare]'); if(sh){ compartirSolicitud(sh.dataset.solshare); return; }
+  const w=e.target.closest('[data-wa]'); if(w){ window.open('https://wa.me/'+w.dataset.wa,'_blank','noopener'); return; }
+  const stt=e.target.closest('[data-st]'); if(stt){ estadoSolicitud(stt.dataset.id, stt.dataset.st); return; }
+}); }
+
 const hs=document.getElementById('hospSearch');
 if(hs){ hs.addEventListener('input',e=>{ hospQuery=e.target.value.trim(); render(); }); }
 document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''; hs.value=''; render(); });
@@ -1924,16 +2143,9 @@ function updateMatchUI(){
 }
 loadNotified();
 
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>{ x.classList.remove('on'); x.setAttribute('aria-selected','false'); });
-    document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
-    t.classList.add('on'); t.setAttribute('aria-selected','true');
-    document.getElementById('v-'+t.dataset.v).classList.add('on');
-    saveTab(t.dataset.v);
-    if(t.dataset.v==='mapa' && map){ setTimeout(()=>map.invalidateSize(),60); }
-  });
-});
+// Un solo camino para cambiar de pestaña: activateTab (toggla clases, guarda y dispara
+// los cargadores de cada sección: apoyo, esperanza, solicitudes…).
+document.querySelectorAll('.tab').forEach(t=>{ t.addEventListener('click',()=>activateTab(t.dataset.v)); });
 
 let selType='crit', wizStep=1, wizDraft={};
 const WZ_TOTAL=4;
