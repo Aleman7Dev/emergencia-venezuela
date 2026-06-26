@@ -95,13 +95,23 @@ const GENERIC='Centro de salud (no especificado)';
 const geo=h=>HOSP.find(x=>x.re.test(h||''))||{n:(h&&h.trim())||GENERIC,lat:10.4806,lon:-66.9036};
 const ageStr=e=>/^\d+$/.test(e)?e+' años':e;
 
-// ===== parser CSV RFC-4180 (respeta comillas y comas internas) =====
-function parseCSVText(text){
+// ===== parser CSV RFC-4180 (respeta comillas y separadores internos) =====
+// Detecta el separador real (coma, punto y coma, tabulador o barra). Excel/Sheets
+// en español suele exportar con ';', lo que antes hacía que NADA se leyera.
+function detectDelim(text){
+  const head=text.split(/\r?\n/).slice(0,5).join('\n');
+  const cand={',':0,';':0,'\t':0,'|':0}; let inQ=false;
+  for(let i=0;i<head.length;i++){ const c=head[i]; if(c==='"'){ inQ=!inQ; continue; } if(!inQ && cand[c]!=null) cand[c]++; }
+  let best=',',bestN=-1; for(const d in cand){ if(cand[d]>bestN){ bestN=cand[d]; best=d; } }
+  return bestN>0?best:',';
+}
+function parseCSVText(text, delim){
+  delim=delim||',';
   const rows=[]; let row=[], field='', inQ=false;
   for(let i=0;i<text.length;i++){ const c=text[i];
     if(inQ){ if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inQ=false; } else field+=c; continue; }
     if(c==='"'){ inQ=true; }
-    else if(c===','){ row.push(field); field=''; }
+    else if(c===delim){ row.push(field); field=''; }
     else if(c==='\r'){ /* ignora */ }
     else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=''; }
     else field+=c;
@@ -109,17 +119,45 @@ function parseCSVText(text){
   if(field.length||row.length){ row.push(field); rows.push(row); }
   return rows;
 }
+// Reconoce las columnas por el NOMBRE del encabezado (tolerante al orden y al
+// número de columnas). Solo es imprescindible la de "nombre".
+const HCOL=[
+  ['name', /nombre|apellido|paciente|persona|afectad/],
+  ['ci', /c[eé]dula|cedula|^ci$|documento|identificaci/],
+  ['edad', /edad/],
+  ['sexo', /sexo|g[eé]nero/],
+  ['proc', /procedencia|proviene|origen|sector|direcci|municipio|localidad|parroquia/],
+  ['hosp', /hospital|centro|cl[ií]nica|salud|ubicaci|sitio|instituci|recinto/],
+  ['fecha', /fecha|ingreso/],
+  ['hora', /hora/],
+  ['serv', /servicio|[aá]rea|piso|sala|unidad|pabell/],
+  ['estatus', /estatus|estado|condici[oó]n|situaci|observ|diagn/],
+];
+function mapColumns(header){
+  const norm=(header||[]).map(h=>normName(h)); const idx={};
+  HCOL.forEach(([key,re])=>{ const i=norm.findIndex(h=>h&&re.test(h)); if(i>=0 && !Object.values(idx).includes(i)) idx[key]=i; });
+  return idx;
+}
 
 let PENDING=[], REPORT_CONFLICTS=[], REPORT_SKIPPED=[], REPORT_GENERIC=0, REPORT_DEAD=[];
 
 function parseHospitalCSV(text, incDead){
-  const all=parseCSVText(text); all.shift(); // encabezado
+  const delim=detectDelim(text);
+  const all=parseCSVText(text, delim);
+  const header=all.length?all.shift():[];     // encabezado
+  const col=mapColumns(header);
+  const hasHdr = col.name!=null;              // ¿reconocimos columnas por nombre?
   const skipped=[]; const rows=[];
-  all.forEach((c,idx)=>{
+  all.forEach((c,i)=>{
     if(c.length===1 && c[0].trim()==='') return; // línea vacía
-    if(c.length!==11){ skipped.push({line:idx+2, n:c.length}); return; } // corrimiento de columnas -> NO mapear a ciegas
-    const r={name:(c[1]||'').trim(),ci:(c[2]||'').trim(),edad:(c[3]||'').trim(),sexo:(c[4]||'').trim(),proc:(c[5]||'').trim(),hosp:(c[6]||'').trim(),fecha:(c[7]||'').trim(),hora:(c[8]||'').trim(),serv:(c[9]||'').trim(),estatus:(c[10]||'').trim()};
-    if(r.name) rows.push(r);
+    let r=null;
+    if(hasHdr){                                // mapeo por encabezado (tolerante)
+      const g=k=> col[k]!=null ? (c[col[k]]||'').trim() : '';
+      r={name:g('name'),ci:g('ci'),edad:g('edad'),sexo:g('sexo'),proc:g('proc'),hosp:g('hosp'),fecha:g('fecha'),hora:g('hora'),serv:g('serv'),estatus:g('estatus')};
+    } else if(c.length===11){                  // layout clásico (11 columnas) sin encabezado reconocible
+      r={name:(c[1]||'').trim(),ci:(c[2]||'').trim(),edad:(c[3]||'').trim(),sexo:(c[4]||'').trim(),proc:(c[5]||'').trim(),hosp:(c[6]||'').trim(),fecha:(c[7]||'').trim(),hora:(c[8]||'').trim(),serv:(c[9]||'').trim(),estatus:(c[10]||'').trim()};
+    } else { skipped.push({line:i+2, n:c.length}); return; } // no sabemos mapear a ciegas
+    if(r && r.name) rows.push(r); else skipped.push({line:i+2, n:c.length});
   });
   // agrupar por cédula (válida) o por nombre canónico (tokens ordenados)
   const groups=new Map();
@@ -156,7 +194,7 @@ function parseHospitalCSV(text, incDead){
     if(/\d{6,10}/.test(m.name+' '+g.n+' '+stripped)){ leak.push(titleCase(m.name)); continue; }
     reps.push({type:'hosp',title:m.name,loc:g.n,need,lon:g.lon,lat:g.lat,precision:'approx'});
   }
-  return {rows:rows.length, merged:merged.length, deceased, reps, conflicts, skipped, generic, leak};
+  return {rows:rows.length, merged:merged.length, deceased, reps, conflicts, skipped, generic, leak, delim, headers:header, mapped:col, hasHdr};
 }
 
 // valida y normaliza un lote JSON pre-estructurado
@@ -175,7 +213,21 @@ document.getElementById('btnAnalizar').onclick=async()=>{
   const fc=document.getElementById('csv').files[0];
   if(fc){ hosp=parseHospitalCSV(await fc.text(), document.getElementById('incDead').checked); PENDING=PENDING.concat(hosp.reps);
     REPORT_CONFLICTS=hosp.conflicts; REPORT_SKIPPED=hosp.skipped; REPORT_GENERIC=hosp.generic; REPORT_DEAD=hosp.deceased; }
-  if(!PENDING.length){ alert('No hay datos: carga un JSON y/o un CSV.'); return; }
+  if(!PENDING.length){
+    if(fc && hosp){
+      const cols=(hosp.headers||[]).filter(Boolean);
+      const found=Object.keys(hosp.mapped||{});
+      alert('Cargué el CSV pero no pude extraer ninguna persona.\n\n'+
+        '• Separador detectado: "'+(hosp.delim==='\t'?'TAB':hosp.delim)+'"\n'+
+        '• Columnas por fila: '+cols.length+'\n'+
+        '• Encabezados: '+(cols.join(' | ')||'(ninguno)')+'\n'+
+        '• Columnas reconocidas: '+(found.join(', ')||'NINGUNA')+'\n\n'+
+        'Hace falta al menos una columna de NOMBRE. Si el encabezado se ve raro, compárteme la primera línea del archivo y lo ajusto.');
+    } else {
+      alert('No hay datos: carga un JSON y/o un CSV.');
+    }
+    return;
+  }
   const conCI=PENDING.filter(r=>/CIH:[a-f0-9]{8}/.test(r.need)).length;
   let s=`<span class="stat">Total a subir: <b>${PENDING.length}</b></span>`;
   if(jsonN)s+=`<span class="stat">Lote JSON: <b>${jsonN}</b></span>`;
@@ -183,6 +235,7 @@ document.getElementById('btnAnalizar').onclick=async()=>{
   s+=`<span class="stat">Con cédula→hash: <b>${conCI}</b></span>`;
   document.getElementById('stats').innerHTML=s;
   let b='';
+  if(hosp) b+=`<div class="box mut">📄 CSV: separador "<b>${esc(hosp.delim==='\t'?'TAB':hosp.delim)}</b>", ${hosp.headers.length} columnas; columnas reconocidas: <b>${esc(Object.keys(hosp.mapped).join(', ')||'—')}</b>${hosp.hasHdr?'':' <span class="warn">(sin encabezado reconocible: se usó el formato clásico de 11 columnas)</span>'}.</div>`;
   if(REPORT_DEAD.length) b+=`<div class="box warn">⚠️ ${REPORT_DEAD.length} fallecimiento(s) ${document.getElementById('incDead').checked?'INCLUIDO(S)':'excluido(s)'}: ${REPORT_DEAD.map(d=>esc(titleCase(d.name))).join(', ')}</div>`;
   if(REPORT_CONFLICTS.length) b+=`<div class="box warn">🔎 ${REPORT_CONFLICTS.length} cédula(s) compartida(s) por nombres distintos → se separaron como personas diferentes: ${REPORT_CONFLICTS.map(c=>esc(c.names.join(' / '))).join(' · ')}</div>`;
   if(REPORT_GENERIC) b+=`<div class="box warn">📍 ${REPORT_GENERIC} sin hospital especificado → pin genérico de Caracas (revisa antes/después).</div>`;
