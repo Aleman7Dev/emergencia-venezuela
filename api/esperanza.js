@@ -19,8 +19,8 @@ const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY ||
 
 // Cifra del directorio nacional (configurable). Si el scraping en vivo no da una
 // cifra fiable, se usa esta instantánea (actualizable sin tocar código).
-// Última cifra oficial de desaparecidosterremotovenezuela.com: 8.385 localizados (jun 2026).
-const ALIADO_BASE = parseInt(process.env.ALIADO_LOCALIZADOS || '8385', 10) || 0;
+// Última cifra oficial de desaparecidosterremotovenezuela.com: 8.665 localizados (jun 2026).
+const ALIADO_BASE = parseInt(process.env.ALIADO_LOCALIZADOS || '8665', 10) || 0;
 // Por debajo de esto consideramos que la respuesta es honeypot/ruido y la ignoramos.
 const ALIADO_MIN_FIABLE = 1000;
 
