@@ -1140,12 +1140,46 @@ const VEN_CENTER=[8.0,-66.3], VEN_BOUNDS=[[0.6,-73.4],[12.3,-59.8]];
 const TILE_URL='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 const TILE_ATTR='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
+// ---- Carga por estado: suma de TODOS los reportes (de cualquier tipo) por zona ----
+// Atribuye cada reporte a un estado por sus COORDENADAS (point-in-polygon); si no
+// hay coordenadas usables, cae al texto de ubicación. Así el mapa marca las zonas
+// más afectadas por el total de reportes, no solo por las emergencias críticas.
+function _ptInRing(x,y,ring){ let inside=false; for(let i=0,j=ring.length-1;i<ring.length;j=i++){ const xi=ring[i][0],yi=ring[i][1],xj=ring[j][0],yj=ring[j][1]; if(((yi>y)!==(yj>y)) && (x<(xj-xi)*(y-yi)/((yj-yi)||1e-12)+xi)) inside=!inside; } return inside; }
+function _ptInGeom(x,y,g){ if(!g) return false;
+  if(g.type==='Polygon'){ let c=false; for(const r of g.coordinates) if(_ptInRing(x,y,r)) c=!c; return c; }
+  if(g.type==='MultiPolygon'){ for(const poly of g.coordinates){ let c=false; for(const r of poly) if(_ptInRing(x,y,r)) c=!c; if(c) return true; } return false; }
+  return false; }
+function _featBBox(f){ if(f.__bb) return f.__bb; let a=Infinity,b=Infinity,c=-Infinity,d=-Infinity; const scan=r=>{ for(const p of r){ if(p[0]<a)a=p[0]; if(p[0]>c)c=p[0]; if(p[1]<b)b=p[1]; if(p[1]>d)d=p[1]; } }; const g=f.geometry; if(g&&g.type==='Polygon') g.coordinates.forEach(scan); else if(g&&g.type==='MultiPolygon') g.coordinates.forEach(p=>p.forEach(scan)); return f.__bb=[a,b,c,d]; }
+function stateAt(lon,lat){ if(!GEO||!isFinite(lon)||!isFinite(lat)) return null;
+  for(const f of GEO.features){ const bb=_featBBox(f); if(lon<bb[0]||lon>bb[2]||lat<bb[1]||lat>bb[3]) continue; if(_ptInGeom(lon,lat,f.geometry)) return f.properties&&f.properties.NAME_1; } return null; }
+function attributeState(r){
+  const st=stateAt(Number(r.lon), Number(r.lat));
+  if(st) return st;
+  const loc=(r.loc||'').toLowerCase();
+  if(GEO) for(const f of GEO.features){ const nm=f.properties&&f.properties.NAME_1; if(nm&&loc.includes(nm.toLowerCase())) return nm; }
+  if(/\b(caracas|chacao|libertador|baruta|el hatillo|petare|sucre)\b/.test(loc)) return 'Distrito Capital';
+  return null;
+}
+let stateLoad={}, stateLoadMax=0, _slKey='__';
+function refreshStateLoad(){
+  const key=reports.length+':'+((reports[0]&&reports[0].id)||'');
+  if(key===_slKey) return; _slKey=key;
+  const m={}; for(const r of reports){ const st=attributeState(r); if(st) m[st]=(m[st]||0)+1; }
+  stateLoad=m; stateLoadMax=Math.max(0,...Object.values(m));
+}
 function stateStyle(name){
-  const hot=HOT.includes(name);
-  // Con calles activadas: relleno casi nulo para que se vean cuadras/edificios; borde sí visible
-  return { color: hot?'#b91c1c':'#2b3848', weight: hot?1.4:0.8,
-           fillColor: hot?'#ef4444':'#1b2433',
-           fillOpacity: tilesOn?(hot?0.10:0):(hot?0.85:0.7) };
+  refreshStateLoad();
+  const n=stateLoad[name]||0;
+  if(n>0){
+    const inten=0.35+0.65*(n/(stateLoadMax||1));   // intensidad 0.35..1 según el total de reportes
+    return { color:'#b91c1c', weight:1.0+0.9*inten, fillColor:'#ef4444',
+             fillOpacity: tilesOn ? (0.05+0.25*inten) : (0.28+0.60*inten) };
+  }
+  // Si AÚN no hay reportes, resalta los estados conocidos (HOT) como respaldo informativo
+  if(stateLoadMax===0 && HOT.includes(name)){
+    return { color:'#b91c1c', weight:1.4, fillColor:'#ef4444', fillOpacity: tilesOn?0.10:0.85 };
+  }
+  return { color:'#2b3848', weight:0.8, fillColor:'#1b2433', fillOpacity: tilesOn?0:0.55 };
 }
 function muniStyle(){ return { color:'#3b82f6', weight:0.7, fillColor:'#3b82f6', fillOpacity: tilesOn?0:0.08 }; }
 
@@ -1167,8 +1201,7 @@ function initMap(){
     statesLayer=L.geoJSON(GEO,{
       style:f=>stateStyle(f.properties.NAME_1),
       onEachFeature:(f,layer)=>{
-        const nm=f.properties.NAME_1;
-        if(HOT.includes(nm)) layer.bindTooltip(nm,{permanent:true,direction:'center',className:'muni-tip',opacity:.9});
+        // los tooltips por estado (con su nº de reportes) los gestiona buildMap()
         layer.on('click',async()=>{
           if(pickMode) return;   // en modo "marcar punto" no hacemos zoom
           map.fitBounds(layer.getBounds(),{padding:[20,20]});
@@ -1289,8 +1322,21 @@ function refreshMarkers(){
 
 // buildMap() conserva su nombre porque render() lo llama: ahora refresca capas Leaflet
 function buildMap(){
-  if(!map){ initMap(); return; }
-  if(statesLayer) statesLayer.setStyle(f=>stateStyle(f.properties.NAME_1));
+  if(!map){ initMap(); }
+  if(!map) return;   // Leaflet no cargó (CDN/red)
+  refreshStateLoad();
+  if(statesLayer){
+    statesLayer.setStyle(f=>stateStyle(f.properties.NAME_1));
+    // Tooltips por estado: nombre · nº de reportes (permanente en los 5 más afectados)
+    const top=new Set(Object.entries(stateLoad).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([s])=>s));
+    statesLayer.eachLayer(layer=>{
+      const nm=layer.feature&&layer.feature.properties&&layer.feature.properties.NAME_1; if(!nm) return;
+      const n=stateLoad[nm]||0;
+      if(layer.getTooltip()) layer.unbindTooltip();
+      if(n>0) layer.bindTooltip(nm+' · '+n,{permanent:top.has(nm),direction:'center',className:'muni-tip',opacity:.9});
+      else if(stateLoadMax===0 && HOT.includes(nm)) layer.bindTooltip(nm,{permanent:true,direction:'center',className:'muni-tip',opacity:.9});
+    });
+  }
   if(munisLayer) munisLayer.setStyle(muniStyle);
   refreshMarkers();
 }
@@ -1480,17 +1526,10 @@ function renderChart(){
     .sort((a,b)=>b.n-a.n);
   const maxCat=Math.max(1,...cats.map(c=>c.n));
 
-  // 2) Zonas (estados) más afectadas — detecta el estado dentro del texto de ubicación
-  const stateNames=GEO?GEO.features.map(f=>f.properties&&f.properties.NAME_1).filter(Boolean):[];
-  const stCount={};
-  reports.forEach(r=>{
-    const loc=(r.loc||'').toLowerCase();
-    let hit=null;
-    for(const s of stateNames){ if(loc.includes(s.toLowerCase())){ hit=s; break; } }
-    if(!hit && (loc.includes('caracas')||loc.includes('chacao')||loc.includes('libertador'))) hit='Distrito Capital';
-    if(hit) stCount[hit]=(stCount[hit]||0)+1;
-  });
-  const zonas=Object.entries(stCount).map(([s,n])=>({s,n})).sort((a,b)=>b.n-a.n).slice(0,6);
+  // 2) Zonas (estados) más afectadas — misma cuenta que el mapa: suma de TODOS los
+  //    reportes por estado, atribuidos por coordenadas (incluye hospitales, acopios, etc.).
+  refreshStateLoad();
+  const zonas=Object.entries(stateLoad).map(([s,n])=>({s,n})).sort((a,b)=>b.n-a.n).slice(0,6);
   const maxZ=Math.max(1,...zonas.map(z=>z.n));
 
   if(!total){ wrap.innerHTML='<div class="chart-empty">'+t('chart.empty')+'</div>'; return; }
