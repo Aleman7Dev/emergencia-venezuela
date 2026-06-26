@@ -56,6 +56,7 @@
   html,body{ background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior:none; }
   body{ max-width:520px; margin:0 auto; min-height:100vh; position:relative; }
   header{ position:sticky; top:0; z-index:30; background:var(--header-bg); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 16px; }
+  header::before{ content:''; position:absolute; left:0; right:0; top:0; height:3px; background:linear-gradient(90deg,#FCD116 0 33.3%,#003893 33.3% 66.6%,#CF142B 66.6% 100%); }
   .htop{ display:flex; align-items:center; gap:10px; }
   .pulse{ width:10px; height:10px; border-radius:50%; background:var(--crit); flex:none; }
   h1{ font-size:17px; font-weight:700; letter-spacing:.2px; }
@@ -64,7 +65,7 @@
 
   nav{ display:flex; flex-wrap:wrap; gap:7px; padding:11px 12px; border-bottom:1px solid var(--line); justify-content:center; }
   .tab{ flex:0 1 auto; min-height:40px; padding:9px 15px; border-radius:20px; background:var(--panel2); color:var(--muted); font-size:13px; font-weight:600; border:1px solid transparent; cursor:pointer; transition:color .15s,background .15s; white-space:nowrap; }
-  .tab.on{ background:var(--acc); color:#fff; }
+  .tab.on{ background:linear-gradient(135deg,#003893,#CF142B); color:#fff; border-color:transparent; box-shadow:0 2px 10px rgba(0,56,147,.35); }
 
   main{ padding:14px 16px 90px; }
   .view{ display:none; } .view.on{ display:block; }
@@ -127,7 +128,8 @@
   .stat{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 8px; text-align:center; }
   .stat .n{ font-size:24px; font-weight:800; } .stat .l{ font-size:11.5px; color:var(--muted); margin-top:3px; }
 
-  .sectitle{ font-size:13px; font-weight:700; margin:18px 0 10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  .sectitle{ position:relative; font-size:13px; font-weight:700; margin:18px 0 10px; padding-left:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  .sectitle::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:2px; background:linear-gradient(180deg,#FCD116,#003893,#CF142B); }
 
   .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:10px; scroll-margin-top:74px; }
   .card.card-focus{ border-color:var(--acc); box-shadow:0 0 0 3px rgba(59,130,246,.45); animation:cardpulse 1.4s ease-out 1; }
@@ -142,7 +144,7 @@
   .phone .pl{ font-size:14.5px; font-weight:600; color:var(--txt); } .phone .ps{ font-size:12px; color:var(--muted); margin-top:3px; }
   .phone .pn{ font-size:19px; font-weight:800; color:var(--crit); white-space:nowrap; }
 
-  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1100; background:var(--crit); color:#fff; border:none; padding:15px 26px; border-radius:30px; font-size:15.5px; font-weight:700; box-shadow:0 6px 22px rgba(239,68,68,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
+  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1100; background:linear-gradient(90deg,#CF142B,#9e1020); color:#fff; border:none; padding:15px 26px; border-radius:30px; font-size:15.5px; font-weight:700; box-shadow:0 6px 22px rgba(207,20,43,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
   .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; display:none; align-items:flex-end; justify-content:center; }
   .overlay.on{ display:flex; }
   .sheet{ background:var(--panel); width:100%; max-width:520px; border-radius:18px 18px 0 0; border-top:1px solid var(--line); padding:18px 18px 26px; max-height:88vh; overflow-y:auto; }
@@ -212,6 +214,11 @@
   .hope-num{ font-size:34px; font-weight:900; line-height:1.05; margin:3px 0 2px; color:var(--safe); }
   .hope-label{ font-size:13.5px; color:var(--txt); font-weight:700; }
   .hope-break{ font-size:11.5px; color:var(--muted); margin-top:7px; line-height:1.5; }
+  /* Tira compacta del contador de esperanza, sobre el mapa (portada) */
+  .hope-strip{ display:flex; align-items:center; justify-content:center; gap:7px; flex-wrap:wrap; margin-bottom:10px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; background:linear-gradient(90deg,rgba(252,209,22,.12),rgba(0,56,147,.09),rgba(207,20,43,.12)); font-size:12.5px; color:var(--txt); text-align:center; text-decoration:none; cursor:pointer; }
+  .hope-strip b{ color:var(--safe); font-size:16px; font-weight:900; }
+  .hope-strip-ic{ font-size:15px; }
+  .hope-strip:active{ transform:scale(.99); }
   /* Dedicatorias rápidas (a quién va el mensaje) */
   .dedic-row{ display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:10px; }
   .dedic-label{ font-size:12px; color:var(--muted); font-weight:700; }
@@ -219,7 +226,8 @@
   .dedic-chip.on{ border-color:transparent; background:linear-gradient(90deg,#CF142B,#003893); color:#fff; font-weight:800; }
   .dedic-chip:active{ transform:scale(.96); }
   /* Marquesina + banda de oración por Venezuela (portada, sobre el mapa) */
-  .pray-band{ border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:10px; background:linear-gradient(180deg,rgba(252,209,22,.06),rgba(0,56,147,.05)); }
+  .pray-band{ position:relative; border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:10px; background:linear-gradient(180deg,rgba(252,209,22,.10),rgba(0,56,147,.06) 55%,rgba(207,20,43,.07)); }
+  .pray-band::before{ content:''; position:absolute; left:0; right:0; top:0; height:3px; background:linear-gradient(90deg,#FCD116 0 33.3%,#003893 33.3% 66.6%,#CF142B 66.6% 100%); z-index:1; }
   .pray-marquee{ overflow:hidden; white-space:nowrap; border-bottom:1px solid var(--line); }
   .pray-track{ display:inline-flex; padding:8px 0; animation:praymarquee 60s linear infinite; will-change:transform; }
   .pray-track:hover{ animation-play-state:paused; }
@@ -231,7 +239,12 @@
   .pray-count b{ color:#FCD116; font-size:16px; }
   .pray-actions{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
   .pray-btn{ border:none; border-radius:20px; padding:9px 15px; font-size:13px; font-weight:800; color:#fff; cursor:pointer; background:linear-gradient(90deg,#CF142B,#003893); box-shadow:0 2px 10px rgba(207,20,43,.28); }
-  .pray-react{ border:1px solid var(--line); background:var(--panel2); border-radius:50%; width:38px; height:38px; font-size:17px; cursor:pointer; line-height:1; }
+  .pray-btn.done{ opacity:.78; }
+  .pray-btn.done::after{ content:'✓'; margin-left:6px; font-weight:900; }
+  .pray-react{ border:1.5px solid var(--line); background:var(--panel2); border-radius:50%; width:38px; height:38px; font-size:17px; cursor:pointer; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
+  .pray-react.r-y{ border-color:#FCD116; background:rgba(252,209,22,.18); }
+  .pray-react.r-b{ border-color:#0a44a8; background:#003893; }   /* paloma blanca sobre azul: ahora tiene color */
+  .pray-react.r-r{ border-color:#CF142B; background:rgba(207,20,43,.18); }
   .pray-btn:active,.pray-react:active{ transform:scale(.94); }
   .pray-float{ position:fixed; pointer-events:none; font-size:26px; z-index:3000; animation:prayfloat 1s ease-out forwards; }
   @keyframes prayfloat{ from{ opacity:1; transform:translateY(0) scale(1); } to{ opacity:0; transform:translateY(-64px) scale(1.6); } }
@@ -403,15 +416,20 @@
   <section class="view on" id="v-mapa">
     <div class="map-grid">
       <div class="map-main">
+        <a class="hope-strip" id="hope-strip" href="#v-apoyo" data-goapoyo="1" hidden>
+          <span class="hope-strip-ic">🕊️</span>
+          <b id="hopeTotalTop">—</b>
+          <span data-i18n="hope.labelShort">personas localizadas a salvo</span>
+        </a>
         <div class="pray-band">
           <div class="pray-marquee"><div class="pray-track" id="prayTrack"></div></div>
           <div class="pray-bar">
             <div class="pray-count">🙏 <b id="prayTotal">170</b> <span data-i18n="pray.count">personas están orando por Venezuela</span></div>
             <div class="pray-actions">
-              <button class="pray-btn" id="prayBtn" data-react="🙏"><span data-i18n="pray.btn">Orar por Venezuela</span> 🙏🇻🇪</button>
-              <button class="pray-react" data-react="💛" aria-label="💛">💛</button>
-              <button class="pray-react" data-react="🕊️" aria-label="🕊️">🕊️</button>
-              <button class="pray-react" data-react="🤍" aria-label="🤍">🤍</button>
+              <button class="pray-btn" id="prayBtn"><span data-i18n="pray.btn">Orar por Venezuela</span> 🙏🇻🇪</button>
+              <button class="pray-react r-y" data-react="💛" aria-label="Reacción corazón amarillo">💛</button>
+              <button class="pray-react r-b" data-react="🕊️" aria-label="Reacción paloma de la paz">🕊️</button>
+              <button class="pray-react r-r" data-react="❤️" aria-label="Reacción corazón rojo">❤️</button>
             </div>
           </div>
         </div>
@@ -691,7 +709,7 @@ const I18N={
   'search.miss':'Buscar por nombre, zona o estado…','search.hosp':'Buscar por nombre, hospital o estado…','search.volun':'Buscar por zona o estado…','search.clear':'Limpiar',
   'ally.head':'También en el directorio aliado (desaparecidosterremotovenezuela.com):','ally.searching':'Buscando en el directorio aliado…','ally.more':'Ver más en desaparecidosterremotovenezuela.com ↗',
   'nav.apoyo':'💛 Apoyo','apoyo.title':'Mensajes de apoyo y oraciones por Venezuela','apoyo.sub':'Un muro de aliento para los rescatistas, los voluntarios que levantan escombros, quienes buscan personas, y los médicos, enfermeras y personal de salud. Para llenar de esperanza cada vida que puede ser rescatada.','apoyo.name':'Tu nombre (opcional)','apoyo.ph':'Escribe tu mensaje de aliento u oración por Venezuela…','apoyo.send':'Mis oraciones por Venezuela','apoyo.fixed':'Una oración no se ve, pero sostiene. Unas palabras no levantan escombros, pero levantan el alma de quien sí los levanta. Gracias a los <b>rescatistas</b> que no descansan, a los <b>voluntarios</b> que remueven escombros con sus propias manos, a quienes <b>buscan sin rendirse</b>, y a los <b>médicos, enfermeras y personal de salud</b> que sostienen cada vida. Por cada persona rescatada, cada herido atendido y cada familia que vuelve a abrazarse: <b>Venezuela no está sola.</b> 💛💙❤️','apoyo.thanks':'🤍 Gracias. Tu mensaje quedó registrado.','apoyo.short':'Escribe al menos unas palabras.','apoyo.wait':'Gracias por tu mensaje. Espera unos segundos antes de enviar otro.','apoyo.now':'ahora','apoyo.count':'mensajes de aliento','apoyo.anon':'Anónimo','pray.count':'personas están orando por Venezuela','pray.btn':'Orar por Venezuela',
-  'hope.head':'Contador de esperanza','hope.label':'personas reportadas localizadas a salvo','hope.loading':'Calculando…','hope.allied':'del directorio nacional','hope.own':'confirmadas aquí',
+  'hope.head':'Contador de esperanza','hope.label':'personas reportadas localizadas a salvo','hope.labelShort':'localizadas a salvo · ver apoyo','hope.loading':'Calculando…','hope.allied':'del directorio nacional','hope.own':'confirmadas aquí',
   'dedic.label':'Dedicar a:','dedic.resc':'Rescatistas','dedic.med':'Médicos y enfermeras','dedic.fam':'Familias','dedic.vol':'Voluntarios','dedic.pre.rescatistas':'🦺 Para los rescatistas','dedic.pre.medicos':'⛑️ Para los médicos y enfermeras','dedic.pre.familias':'👨‍👩‍👧 Para las familias','dedic.pre.voluntarios':'🙌 Para los voluntarios',
   'apoyo.report':'⚑ Reportar','apoyo.reportTitle':'Ocultar este mensaje en este dispositivo','apoyo.hidden':'Mensaje oculto en este dispositivo.','apoyo.blocked':'Tu mensaje contiene lenguaje no permitido. Mantengamos este muro lleno de aliento. 🤍',
   'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','fab':'＋ Reportar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
@@ -743,7 +761,7 @@ const I18N={
   'search.miss':'Search by name, area or state…','search.hosp':'Search by name, hospital or state…','search.volun':'Search by area or state…','search.clear':'Clear',
   'ally.head':'Also in the partner directory (desaparecidosterremotovenezuela.com):','ally.searching':'Searching the partner directory…','ally.more':'See more at desaparecidosterremotovenezuela.com ↗',
   'nav.apoyo':'💛 Support','apoyo.title':'Messages of support and prayers for Venezuela','apoyo.sub':'A wall of encouragement for rescuers, the volunteers clearing rubble, those searching for people, and the doctors, nurses and health workers. To bring hope to every life that can be saved.','apoyo.name':'Your name (optional)','apoyo.ph':'Write your message of encouragement or prayer for Venezuela…','apoyo.send':'My prayers for Venezuela','apoyo.fixed':'A prayer is unseen, yet it holds. Words don’t lift rubble, but they lift the spirit of those who do. Thank you to the <b>rescuers</b> who never rest, the <b>volunteers</b> clearing rubble with their own hands, those who <b>search without giving up</b>, and the <b>doctors, nurses and health workers</b> who hold every life. For every person rescued, every injured person cared for, and every family reunited: <b>Venezuela is not alone.</b> 💛💙❤️','apoyo.thanks':'🤍 Thank you. Your message was saved.','apoyo.short':'Write at least a few words.','apoyo.wait':'Thank you. Please wait a few seconds before sending another.','apoyo.now':'now','apoyo.count':'messages of encouragement','apoyo.anon':'Anonymous','pray.count':'people are praying for Venezuela','pray.btn':'Pray for Venezuela',
-  'hope.head':'Hope counter','hope.label':'people reported located safe','hope.loading':'Calculating…','hope.allied':'from the national directory','hope.own':'confirmed here',
+  'hope.head':'Hope counter','hope.label':'people reported located safe','hope.labelShort':'located safe · see support','hope.loading':'Calculating…','hope.allied':'from the national directory','hope.own':'confirmed here',
   'dedic.label':'Dedicate to:','dedic.resc':'Rescuers','dedic.med':'Doctors & nurses','dedic.fam':'Families','dedic.vol':'Volunteers','dedic.pre.rescatistas':'🦺 For the rescuers','dedic.pre.medicos':'⛑️ For the doctors & nurses','dedic.pre.familias':'👨‍👩‍👧 For the families','dedic.pre.voluntarios':'🙌 For the volunteers',
   'apoyo.report':'⚑ Report','apoyo.reportTitle':'Hide this message on this device','apoyo.hidden':'Message hidden on this device.','apoyo.blocked':'Your message contains language that isn’t allowed. Let’s keep this wall full of encouragement. 🤍',
   'near':'📍 Near me','near.on':'📍 Near me ✓','fab':'＋ Report','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
@@ -1641,21 +1659,31 @@ async function loadApoyo(){
   renderApoyo(list);
 }
 // Contador de esperanza: localizados del directorio aliado + confirmados aquí (vía /api/esperanza).
+// Actualiza la tarjeta en Apoyo y la tira compacta sobre el mapa (portada).
 async function loadHope(){
-  const card=document.getElementById('hope-card'), el=document.getElementById('hopeTotal'), br=document.getElementById('hopeBreak');
-  if(!card||!el) return;
+  const card=document.getElementById('hope-card'), strip=document.getElementById('hope-strip');
+  if(!card && !strip) return;
+  let total=0, a=0, p=0;
   try{
     const r=await fetch('/api/esperanza',{cache:'no-store'});
-    if(!r.ok) throw 0;
-    const d=await r.json();
-    const total=Number(d.total)||0; if(!(total>0)) throw 0;
-    el.textContent=total.toLocaleString('es-VE');
-    const a=Number(d.aliado)||0, p=Number(d.propio)||0, parts=[];
-    if(a>0) parts.push(a.toLocaleString('es-VE')+' '+t('hope.allied'));
-    if(p>0) parts.push(p.toLocaleString('es-VE')+' '+t('hope.own'));
-    if(br) br.textContent=parts.join(' · ');
-    card.hidden=false;
-  }catch(e){ card.hidden=true; }   // sin dato fiable: no mostramos un contador roto
+    if(r.ok){ const d=await r.json(); total=Number(d.total)||0; a=Number(d.aliado)||0; p=Number(d.propio)||0; }
+  }catch(e){}
+  const ok = total>0;
+  if(card){
+    const el=document.getElementById('hopeTotal'), br=document.getElementById('hopeBreak');
+    if(ok){
+      if(el) el.textContent=total.toLocaleString('es-VE');
+      const parts=[];
+      if(a>0) parts.push(a.toLocaleString('es-VE')+' '+t('hope.allied'));
+      if(p>0) parts.push(p.toLocaleString('es-VE')+' '+t('hope.own'));
+      if(br) br.textContent=parts.join(' · ');
+    }
+    card.hidden=!ok;
+  }
+  if(strip){
+    if(ok){ const elT=document.getElementById('hopeTotalTop'); if(elT) elT.textContent=total.toLocaleString('es-VE'); }
+    strip.hidden=!ok;   // sin dato fiable: no mostramos un contador roto
+  }
 }
 // Dedicatorias: selección única (toca de nuevo para quitar). Prefija el mensaje al enviar.
 function setDed(el){
@@ -1692,32 +1720,47 @@ function renderMarquee(list){
   const one=msgs.map(sx=>`<span class="pray-item">${esc(sx)}</span>`).join('');
   tr.innerHTML=one+one;   // duplicado para un bucle continuo y sin saltos
 }
-// El contador es INDEPENDIENTE del nº de mensajes: cuenta toques al botón de oración. Arranca en 170.
-let prayBase=170, prayLocal=0, prayCloud=null, lastPray=0;
+// El contador es INDEPENDIENTE del nº de mensajes. Arranca en 170 y suma UNA vez
+// por dispositivo y por día al tocar "Orar" (así no se infla con clics repetidos).
+let prayBase=170, prayLocal=0, prayCloud=null, lastReact=0;
 function prayShow(){ const el=document.getElementById('prayTotal'); if(el) el.textContent=(prayCloud!=null?prayCloud:(prayBase+prayLocal)).toLocaleString('es-VE'); }
+function prayDayKey(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function prayedToday(){ try{ return localStorage.getItem('vzla_prayed_day')===prayDayKey(); }catch(e){ return false; } }
+function prayBtnState(){ const b=document.getElementById('prayBtn'); if(b) b.classList.toggle('done', prayedToday()); }
+// Emoji flotante que sube y se desvanece al tocar (deleite, sin coste de red).
+function prayFloat(emoji, ev){
+  try{ const f=document.createElement('div'); f.className='pray-float'; f.textContent=emoji||'🙏';
+    const x=(ev&&ev.clientX)||(window.innerWidth/2), y=(ev&&ev.clientY)||120; f.style.left=(x-13)+'px'; f.style.top=(y-20)+'px';
+    document.body.appendChild(f); setTimeout(()=>f.remove(),1000); }catch(e){}
+}
 async function loadPray(){
   try{ prayLocal=parseInt(localStorage.getItem('vzla_pray')||'0',10)||0; }catch(e){ prayLocal=0; }
-  prayShow();
+  prayShow(); prayBtnState();
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/oraciones?select=total&id=eq.1`,{ headers:SB_HEAD });
     if(r.ok){ const a=await r.json(); if(a&&a[0]&&a[0].total!=null){ const n=Number(a[0].total); if(isFinite(n)){ prayCloud=n; prayShow(); } } }
   }catch(e){}
 }
-async function pray(emoji, ev){
-  const now=Date.now(); if(now-lastPray<1200) return; lastPray=now;
-  try{ const f=document.createElement('div'); f.className='pray-float'; f.textContent=emoji||'🙏';
-    const x=(ev&&ev.clientX)||(window.innerWidth/2), y=(ev&&ev.clientY)||120; f.style.left=(x-13)+'px'; f.style.top=(y-20)+'px';
-    document.body.appendChild(f); setTimeout(()=>f.remove(),1000); }catch(e){}
+// Orar por Venezuela: cuenta una sola vez por dispositivo cada día.
+async function orarVE(ev){
+  prayFloat('🙏', ev);
+  if(prayedToday()) return;          // ya sumaste hoy: solo la animación, no vuelve a contar
+  try{ localStorage.setItem('vzla_prayed_day', prayDayKey()); }catch(e){}
   if(prayCloud!=null){ prayCloud++; } else { prayLocal++; try{ localStorage.setItem('vzla_pray',String(prayLocal)); }catch(e){} }
-  prayShow();
+  prayShow(); prayBtnState();
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/orar`,{ method:'POST', headers:SB_HEAD, body:'{}' });
     if(r.ok){ const v=await r.json(); const n=Number(v); if(isFinite(n)){ prayCloud=n; prayShow(); } }
   }catch(e){}
 }
-document.querySelectorAll('.pray-band [data-react]').forEach(b=>b.addEventListener('click',e=>pray(b.dataset.react,e)));
+// Reacciones (💛 paloma ❤️): expresión de un toque; NO suman al contador, solo animan.
+function reactVE(emoji, ev){ const now=Date.now(); if(now-lastReact<500) return; lastReact=now; prayFloat(emoji, ev); }
+{ const pb=document.getElementById('prayBtn'); if(pb) pb.addEventListener('click',e=>orarVE(e)); }
+document.querySelectorAll('.pray-react[data-react]').forEach(b=>b.addEventListener('click',e=>reactVE(b.dataset.react,e)));
 renderMarquee(APOYO_SEED);
 loadPray();
+loadHope();   // tira de esperanza sobre el mapa (y tarjeta en Apoyo)
+{ const hstrip=document.getElementById('hope-strip'); if(hstrip) hstrip.addEventListener('click',e=>{ e.preventDefault(); if(typeof activateTab==='function') activateTab('apoyo'); }); }
 const hs=document.getElementById('hospSearch');
 if(hs){ hs.addEventListener('input',e=>{ hospQuery=e.target.value.trim(); render(); }); }
 document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''; hs.value=''; render(); });
