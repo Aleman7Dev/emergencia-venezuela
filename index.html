@@ -53,8 +53,11 @@
   :root[data-theme="light"] .leaflet-popup-content-wrapper, :root[data-theme="light"] .leaflet-popup-tip{ background:#161d29; border-color:#2b3848; }
   :root[data-theme="light"] .leaflet-popup-content-wrapper, :root[data-theme="light"] .leaflet-popup-content a{ color:#e6edf3; }
   :root[data-theme="light"] .leaflet-bar a{ background:rgba(17,22,31,.9); color:#e6edf3; border-color:#2b3848; }
-  html,body{ background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior:none; }
-  body{ max-width:520px; margin:0 auto; min-height:100vh; position:relative; }
+  html,body{ color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior:none; }
+  /* Fondo con los colores de la bandera de Venezuela (fijo, detrás del contenido).
+     Cuesta un poco más de batería que el fondo plano, pero da ánimo con los colores patrios. */
+  html{ min-height:100vh; background:linear-gradient(180deg, rgba(252,209,22,.24) 0%, rgba(252,209,22,.10) 24%, rgba(0,56,147,.16) 50%, rgba(207,20,43,.14) 76%, rgba(207,20,43,.28) 100%), var(--bg); background-attachment:fixed; }
+  body{ background:transparent; max-width:520px; margin:0 auto; min-height:100vh; position:relative; }
   header{ position:sticky; top:0; z-index:30; background:var(--header-bg); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 16px; }
   header::before{ content:''; position:absolute; left:0; right:0; top:0; height:3px; background:linear-gradient(90deg,#FCD116 0 33.3%,#003893 33.3% 66.6%,#CF142B 66.6% 100%); }
   .htop{ display:flex; align-items:center; gap:10px; }
@@ -215,10 +218,15 @@
   .hope-label{ font-size:13.5px; color:var(--txt); font-weight:700; }
   .hope-break{ font-size:11.5px; color:var(--muted); margin-top:7px; line-height:1.5; }
   /* Tira compacta del contador de esperanza, sobre el mapa (portada) */
-  .hope-strip{ display:flex; align-items:center; justify-content:center; gap:7px; flex-wrap:wrap; margin-bottom:10px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; background:linear-gradient(90deg,rgba(252,209,22,.12),rgba(0,56,147,.09),rgba(207,20,43,.12)); font-size:12.5px; color:var(--txt); text-align:center; text-decoration:none; cursor:pointer; }
+  .hope-strip{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:3px 7px; margin-bottom:10px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; background:linear-gradient(90deg,rgba(252,209,22,.14),rgba(0,56,147,.11),rgba(207,20,43,.14)); font-size:12.5px; color:var(--txt); text-align:center; text-decoration:none; cursor:pointer; }
+  .hope-strip[hidden]{ display:none; }   /* el atributo hidden debe ganar al display:flex */
   .hope-strip b{ color:var(--safe); font-size:16px; font-weight:900; }
   .hope-strip-ic{ font-size:15px; }
+  .hope-strip .hope-src{ flex-basis:100%; font-size:10.5px; color:var(--muted); font-weight:600; }
   .hope-strip:active{ transform:scale(.99); }
+  /* Atribución de fuente bajo el contador (tarjeta de Apoyo) */
+  .hope-src-card{ font-size:11px; color:var(--muted); margin-top:8px; line-height:1.5; }
+  .hope-src-card a{ color:var(--acc); }
   /* Dedicatorias rápidas (a quién va el mensaje) */
   .dedic-row{ display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:10px; }
   .dedic-label{ font-size:12px; color:var(--muted); font-weight:700; }
@@ -419,7 +427,8 @@
         <a class="hope-strip" id="hope-strip" href="#v-apoyo" data-goapoyo="1" hidden>
           <span class="hope-strip-ic">🕊️</span>
           <b id="hopeTotalTop">—</b>
-          <span data-i18n="hope.labelShort">personas localizadas a salvo</span>
+          <span data-i18n="hope.labelShort">localizadas a salvo · ver apoyo</span>
+          <span class="hope-src" data-i18n="hope.srcShort">Fuente: desaparecidosterremotovenezuela.com + nuestros datos</span>
         </a>
         <div class="pray-band">
           <div class="pray-marquee"><div class="pray-track" id="prayTrack"></div></div>
@@ -639,6 +648,7 @@
       <div class="hope-num"><b id="hopeTotal">—</b></div>
       <div class="hope-label" data-i18n="hope.label">personas reportadas localizadas a salvo</div>
       <div class="hope-break" id="hopeBreak" data-i18n="hope.loading">Calculando…</div>
+      <div class="hope-src-card" data-i18n-html="hope.src"></div>
     </div>
     <div class="apoyo-form">
       <div class="dedic-row" id="dedic-row" role="group" aria-label="Dedicar a">
@@ -709,7 +719,7 @@ const I18N={
   'search.miss':'Buscar por nombre, zona o estado…','search.hosp':'Buscar por nombre, hospital o estado…','search.volun':'Buscar por zona o estado…','search.clear':'Limpiar',
   'ally.head':'También en el directorio aliado (desaparecidosterremotovenezuela.com):','ally.searching':'Buscando en el directorio aliado…','ally.more':'Ver más en desaparecidosterremotovenezuela.com ↗',
   'nav.apoyo':'💛 Apoyo','apoyo.title':'Mensajes de apoyo y oraciones por Venezuela','apoyo.sub':'Un muro de aliento para los rescatistas, los voluntarios que levantan escombros, quienes buscan personas, y los médicos, enfermeras y personal de salud. Para llenar de esperanza cada vida que puede ser rescatada.','apoyo.name':'Tu nombre (opcional)','apoyo.ph':'Escribe tu mensaje de aliento u oración por Venezuela…','apoyo.send':'Mis oraciones por Venezuela','apoyo.fixed':'Una oración no se ve, pero sostiene. Unas palabras no levantan escombros, pero levantan el alma de quien sí los levanta. Gracias a los <b>rescatistas</b> que no descansan, a los <b>voluntarios</b> que remueven escombros con sus propias manos, a quienes <b>buscan sin rendirse</b>, y a los <b>médicos, enfermeras y personal de salud</b> que sostienen cada vida. Por cada persona rescatada, cada herido atendido y cada familia que vuelve a abrazarse: <b>Venezuela no está sola.</b> 💛💙❤️','apoyo.thanks':'🤍 Gracias. Tu mensaje quedó registrado.','apoyo.short':'Escribe al menos unas palabras.','apoyo.wait':'Gracias por tu mensaje. Espera unos segundos antes de enviar otro.','apoyo.now':'ahora','apoyo.count':'mensajes de aliento','apoyo.anon':'Anónimo','pray.count':'personas están orando por Venezuela','pray.btn':'Orar por Venezuela',
-  'hope.head':'Contador de esperanza','hope.label':'personas reportadas localizadas a salvo','hope.labelShort':'localizadas a salvo · ver apoyo','hope.loading':'Calculando…','hope.allied':'del directorio nacional','hope.own':'confirmadas aquí',
+  'hope.head':'Contador de esperanza','hope.label':'personas reportadas localizadas a salvo','hope.labelShort':'localizadas a salvo · ver apoyo','hope.loading':'Calculando…','hope.allied':'del directorio nacional','hope.own':'confirmadas aquí','hope.srcShort':'Fuente: desaparecidosterremotovenezuela.com + nuestros datos','hope.src':'Datos extraídos de <a href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">desaparecidosterremotovenezuela.com</a> más los reportes confirmados en nuestro sitio.',
   'dedic.label':'Dedicar a:','dedic.resc':'Rescatistas','dedic.med':'Médicos y enfermeras','dedic.fam':'Familias','dedic.vol':'Voluntarios','dedic.pre.rescatistas':'🦺 Para los rescatistas','dedic.pre.medicos':'⛑️ Para los médicos y enfermeras','dedic.pre.familias':'👨‍👩‍👧 Para las familias','dedic.pre.voluntarios':'🙌 Para los voluntarios',
   'apoyo.report':'⚑ Reportar','apoyo.reportTitle':'Ocultar este mensaje en este dispositivo','apoyo.hidden':'Mensaje oculto en este dispositivo.','apoyo.blocked':'Tu mensaje contiene lenguaje no permitido. Mantengamos este muro lleno de aliento. 🤍',
   'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','fab':'＋ Reportar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
@@ -761,7 +771,7 @@ const I18N={
   'search.miss':'Search by name, area or state…','search.hosp':'Search by name, hospital or state…','search.volun':'Search by area or state…','search.clear':'Clear',
   'ally.head':'Also in the partner directory (desaparecidosterremotovenezuela.com):','ally.searching':'Searching the partner directory…','ally.more':'See more at desaparecidosterremotovenezuela.com ↗',
   'nav.apoyo':'💛 Support','apoyo.title':'Messages of support and prayers for Venezuela','apoyo.sub':'A wall of encouragement for rescuers, the volunteers clearing rubble, those searching for people, and the doctors, nurses and health workers. To bring hope to every life that can be saved.','apoyo.name':'Your name (optional)','apoyo.ph':'Write your message of encouragement or prayer for Venezuela…','apoyo.send':'My prayers for Venezuela','apoyo.fixed':'A prayer is unseen, yet it holds. Words don’t lift rubble, but they lift the spirit of those who do. Thank you to the <b>rescuers</b> who never rest, the <b>volunteers</b> clearing rubble with their own hands, those who <b>search without giving up</b>, and the <b>doctors, nurses and health workers</b> who hold every life. For every person rescued, every injured person cared for, and every family reunited: <b>Venezuela is not alone.</b> 💛💙❤️','apoyo.thanks':'🤍 Thank you. Your message was saved.','apoyo.short':'Write at least a few words.','apoyo.wait':'Thank you. Please wait a few seconds before sending another.','apoyo.now':'now','apoyo.count':'messages of encouragement','apoyo.anon':'Anonymous','pray.count':'people are praying for Venezuela','pray.btn':'Pray for Venezuela',
-  'hope.head':'Hope counter','hope.label':'people reported located safe','hope.labelShort':'located safe · see support','hope.loading':'Calculating…','hope.allied':'from the national directory','hope.own':'confirmed here',
+  'hope.head':'Hope counter','hope.label':'people reported located safe','hope.labelShort':'located safe · see support','hope.loading':'Calculating…','hope.allied':'from the national directory','hope.own':'confirmed here','hope.srcShort':'Source: desaparecidosterremotovenezuela.com + our data','hope.src':'Data from <a href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">desaparecidosterremotovenezuela.com</a> plus reports confirmed on our site.',
   'dedic.label':'Dedicate to:','dedic.resc':'Rescuers','dedic.med':'Doctors & nurses','dedic.fam':'Families','dedic.vol':'Volunteers','dedic.pre.rescatistas':'🦺 For the rescuers','dedic.pre.medicos':'⛑️ For the doctors & nurses','dedic.pre.familias':'👨‍👩‍👧 For the families','dedic.pre.voluntarios':'🙌 For the volunteers',
   'apoyo.report':'⚑ Report','apoyo.reportTitle':'Hide this message on this device','apoyo.hidden':'Message hidden on this device.','apoyo.blocked':'Your message contains language that isn’t allowed. Let’s keep this wall full of encouragement. 🤍',
   'near':'📍 Near me','near.on':'📍 Near me ✓','fab':'＋ Report','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',

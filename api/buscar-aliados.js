@@ -20,14 +20,20 @@ module.exports = async function handler(req, res) {
     if (!r.ok) { res.status(200).json({ ok: false, q, error: 'API ' + r.status, items: [] }); return; }
     const b = await r.json();
     const arr = Array.isArray(b.items) ? b.items : [];
-    const items = arr.map((it) => ({
+    // El directorio sirve registros "honeypot"/de prueba a los scrapers: descártalos
+    // para no mostrarle datos falsos a quien busca a un ser querido.
+    const real = arr.filter((it) => {
+      const n = s(it.nombre).toLowerCase(), d = s(it.descripcion).toLowerCase();
+      return !(/registro de prueba|punto de prueba|^prueba$/.test(n) || /honeypot/.test(d));
+    });
+    const items = real.map((it) => ({
       nombre: s(it.nombre),
       ubicacion: s(it.ubicacion),
       edad: it.edad != null ? it.edad : null,
       descripcion: s(it.descripcion),
       estado: s(it.estado),
     }));
-    res.status(200).json({ ok: true, q, total: b.total != null ? b.total : items.length, items });
+    res.status(200).json({ ok: true, q, total: items.length, items });
   } catch (e) {
     res.status(200).json({ ok: false, q, error: String((e && e.message) || e), items: [] });
   }

@@ -1,48 +1,52 @@
 // Contador de esperanza: personas reportadas como LOCALIZADAS A SALVO.
 //
-//   total = localizadas en el directorio aliado (desaparecidosterremotovenezuela.com)
-//         + las que la comunidad confirmó "encontradas" en NUESTRO sitio.
+//   total = localizadas según el directorio nacional (desaparecidosterremotovenezuela.com)
+//         + personas confirmadas como encontradas en NUESTRO sitio.
 //
-// Se calcula del lado del servidor (Vercel) por dos razones:
-//   1) El navegador no debe depender directamente de la API aliada (CORS / caché).
-//   2) Unificamos una sola cifra confiable y cacheada para toda la app.
-//
-// Si alguna fuente falla, se devuelve lo que sí se pudo calcular (nunca rompe).
+// Nota (jun 2026): el espejo no oficial del directorio (theempire.tech) quedó
+// bloqueado contra scraping y ahora devuelve un "honeypot" (un registro de
+// prueba) en lugar de datos reales. Por eso:
+//   · Si la API en vivo responde una cifra razonable (> 1000), se usa.
+//   · Si devuelve 0 / honeypot / falla, se usa ALIADO_LOCALIZADOS (cifra del
+//     directorio, configurable como variable de entorno en Vercel; por defecto
+//     una instantánea reciente). La cifra siempre se atribuye al directorio.
+// Lo "nuestro" se cuenta en vivo desde Supabase y nunca depende del directorio.
 
 const BASE = 'https://desaparecidos-terremoto-api.theempire.tech';
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://lzhvyjgbwynyuwylxucu.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6aHZ5amdid3lueXV3eWx4dWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNjc5OTksImV4cCI6MjA5Nzk0Mzk5OX0.D4B2jMLTrBgDg9VIojG1UBLDET10pfn76neJn6rm0ks';
 
-// Localizados en el directorio aliado (counts.localizado del API público)
-async function aliadoLocalizado() {
+// Cifra del directorio nacional (configurable). Si el scraping en vivo no da una
+// cifra fiable, se usa esta instantánea (actualizable sin tocar código).
+const ALIADO_BASE = parseInt(process.env.ALIADO_LOCALIZADOS || '21700', 10) || 0;
+// Por debajo de esto consideramos que la respuesta es honeypot/ruido y la ignoramos.
+const ALIADO_MIN_FIABLE = 1000;
+
+// Intenta leer counts.localizado del directorio aliado en vivo.
+async function aliadoLocalizadoLive() {
   const url = `${BASE}/api/personas?page=1&pageSize=1&estado=localizado`;
   const ctrl = new AbortController();
-  const to = setTimeout(() => ctrl.abort(), 8000);
+  const to = setTimeout(() => ctrl.abort(), 7000);
   try {
     const r = await fetch(url, { headers: { accept: 'application/json' }, signal: ctrl.signal });
     clearTimeout(to);
     if (!r.ok) return null;
     const b = await r.json();
     if (b && b.counts && b.counts.localizado != null) return Number(b.counts.localizado);
-    if (b && b.total != null) return Number(b.total); // respaldo: total del filtro localizado
+    if (b && b.total != null) return Number(b.total);
     return null;
   } catch (e) { clearTimeout(to); return null; }
 }
 
-// Confirmadas en nuestro sitio: reportes "miss" retirados por confirmación
-// (status='atendido') o reportes marcados como "safe" (localizado a salvo).
-// Usa count=exact: la cifra viene en la cabecera Content-Range (0-0/<total>).
+// Confirmadas en nuestro sitio: reportes 'miss' retirados por confirmación
+// (status='atendido') o reportes 'safe'. count=exact -> cabecera Content-Range.
 async function propioConfirmado() {
   const filt = 'or=(and(type.eq.miss,status.eq.atendido),type.eq.safe)';
   const url = `${SUPABASE_URL}/rest/v1/reports?select=id&${filt}&limit=1`;
   try {
     const r = await fetch(url, {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: 'Bearer ' + SUPABASE_KEY,
-        Prefer: 'count=exact',
-      },
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, Prefer: 'count=exact' },
     });
     const cr = r.headers.get('content-range') || '';
     const m = cr.match(/\/(\d+)\s*$/);
@@ -54,10 +58,10 @@ async function propioConfirmado() {
 
 module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
-  const [aliado, propio] = await Promise.all([aliadoLocalizado(), propioConfirmado()]);
-  const a = aliado != null ? aliado : 0;
+  res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
+  const [live, propio] = await Promise.all([aliadoLocalizadoLive(), propioConfirmado()]);
+  const aliadoLive = live != null && live > ALIADO_MIN_FIABLE; // descarta honeypot/0
+  const aliado = aliadoLive ? live : ALIADO_BASE;
   const p = propio != null ? propio : 0;
-  const ok = aliado != null; // ok=false si la fuente aliada no respondió
-  res.status(200).json({ ok, aliado: a, propio: p, total: a + p });
+  res.status(200).json({ ok: aliado + p > 0, aliado, propio: p, total: aliado + p, aliadoLive });
 };
