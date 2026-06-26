@@ -115,6 +115,27 @@ $$;
 grant execute on function public.orar() to anon, authenticated;
 
 -- ----------------------------------------------------------------------------
+-- 6) Contador de esperanza (sección "Apoyo")
+-- ----------------------------------------------------------------------------
+-- La cifra la calcula la función serverless /api/esperanza (en Vercel), así:
+--      total = localizados en el directorio aliado (desaparecidosterremotovenezuela.com)
+--            + personas confirmadas como encontradas EN NUESTRO sitio.
+-- "Confirmadas aquí" = reportes 'miss' retirados por confirmación (status='atendido')
+-- o reportes 'safe'. NO requiere cambios de esquema y funciona tal cual.
+--
+-- Para que los reportes ya confirmados (status='atendido') SÍ se cuenten con la
+-- clave pública, la política de lectura de "reports" debe permitir verlos. Si tu
+-- política de SELECT filtra solo status='activo', los 'atendido' no se contarán.
+-- Los reportes ciudadanos son públicos, así que puedes permitir su lectura:
+--
+-- drop policy if exists "lee reports" on public.reports;
+-- create policy "lee reports" on public.reports
+--   for select to anon, authenticated using (true);
+--
+-- (La app igualmente solo PINTA en el mapa los status='activo'; esto solo habilita
+--  el conteo de los ya encontrados para el contador de esperanza.)
+
+-- ----------------------------------------------------------------------------
 -- Notas
 -- ----------------------------------------------------------------------------
 -- · El cruce hospital ↔ desaparecidos (cédula/nombre) NO requiere cambios de
