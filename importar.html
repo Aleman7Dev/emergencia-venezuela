@@ -272,7 +272,7 @@ document.getElementById('btnSubir').onclick=async()=>{
   // dedupe contra lo existente (por hash de cédula primero; si no hay, por nombre canónico)
   const existN=new Set(), existCIH=new Set();
   try{
-    for(const t of ['miss','hosp']){
+    for(const t of [...new Set(PENDING.map(r=>r.type))]){   // dedup contra los tipos que se están subiendo (miss, hosp, acopio…)
       const res=await fetch(`${URL}/rest/v1/reports?type=eq.${t}&select=title,need&limit=20000`,{headers:H});
       if(res.ok)(await res.json()).forEach(x=>{ existN.add(nameKey(x.title)); const m=String(x.need||'').match(/CIH:([a-f0-9]{8})/i); if(m)existCIH.add(m[1].toLowerCase()); });
       else put('warn',`No pude leer existentes type=${t} (HTTP ${res.status}).`);
