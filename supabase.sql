@@ -38,11 +38,12 @@ grant execute on function public.mark_road_open(text) to anon, authenticated;
 --
 -- alter table public.reports drop constraint if exists reports_type_check;
 -- alter table public.reports add constraint reports_type_check
---   check (type in ('crit','build','road','miss','hosp','acopio','aid',
+--   check (type in ('crit','build','escombros','road','miss','hosp','acopio','aid',
 --                   'dark','water','volunteer','safe'));
 --
 -- b) Si "type" es un ENUM de Postgres, añade el valor:
 -- alter type report_type add value if not exists 'volunteer';
+-- alter type report_type add value if not exists 'escombros';
 
 -- ----------------------------------------------------------------------------
 -- 3) Fotos de personas (bucket de Storage)  ← NECESARIO para la foto del reporte

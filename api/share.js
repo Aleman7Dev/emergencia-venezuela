@@ -16,14 +16,14 @@ const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6aHZ5amdid3lueXV3eWx4dWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNjc5OTksImV4cCI6MjA5Nzk0Mzk5OX0.D4B2jMLTrBgDg9VIojG1UBLDET10pfn76neJn6rm0ks';
 
 const TYPE_LABEL = {
-  crit: 'Emergencia crítica', build: 'Edificio dañado', road: 'Estado de vialidad',
-  miss: 'Persona desaparecida', hosp: 'Persona en centro de salud',
+  crit: 'Emergencia crítica', build: 'Edificio dañado', escombros: 'Remoción de escombros',
+  road: 'Estado de vialidad', miss: 'Persona desaparecida', hosp: 'Persona en centro de salud',
   acopio: 'Centro de acopio', aid: 'Punto de ayuda humanitaria',
   dark: 'Zona sin luz', water: 'Zona sin agua', volunteer: 'Buscador voluntario',
   safe: 'Persona a salvo'
 };
 const TYPE_EMOJI = {
-  crit: '🚨', build: '🏚️', road: '🛣️', miss: '🧍', hosp: '🏥', acopio: '📦',
+  crit: '🚨', build: '🏚️', escombros: '🧱', road: '🛣️', miss: '🧍', hosp: '🏥', acopio: '📦',
   aid: '⛑️', dark: '🌑', water: '💧', volunteer: '🙋', safe: '✅'
 };
 const DEFAULT_DESC = {
