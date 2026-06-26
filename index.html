@@ -69,6 +69,11 @@
   nav{ display:flex; flex-wrap:wrap; gap:7px; padding:11px 12px; border-bottom:1px solid var(--line); justify-content:center; }
   .tab{ flex:0 1 auto; min-height:40px; padding:9px 15px; border-radius:20px; background:var(--panel2); color:var(--muted); font-size:13px; font-weight:600; border:1px solid transparent; cursor:pointer; transition:color .15s,background .15s; white-space:nowrap; }
   .tab.on{ background:linear-gradient(135deg,#003893,#CF142B); color:#fff; border-color:transparent; box-shadow:0 2px 10px rgba(0,56,147,.35); }
+  .subnav{ display:flex; flex-wrap:wrap; gap:6px; padding:8px 12px 10px; border-bottom:1px solid var(--line); justify-content:center; }
+  .subnav[hidden]{ display:none; }
+  .subtab{ min-height:34px; padding:6px 13px; border-radius:16px; background:var(--panel2); color:var(--muted); font-size:12.5px; font-weight:600; border:1px solid transparent; cursor:pointer; transition:color .15s,background .15s; white-space:nowrap; }
+  .subtab.on{ background:var(--panel2); color:var(--acc); border-color:var(--acc); }
+  .subtab:focus-visible{ outline:2px solid var(--acc); outline-offset:2px; }
 
   main{ padding:14px 16px 90px; }
   .view{ display:none; } .view.on{ display:block; }
@@ -456,15 +461,16 @@
 
 <nav role="tablist" aria-label="Secciones de la aplicación">
   <button class="tab on" role="tab" aria-selected="true" data-v="solicitudes" data-i18n="nav.solicitudes">🤝 Solicitudes</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="mapa" data-i18n="nav.mapa">🗺️ Mapa</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="reportes" data-i18n="nav.reportes">📋 Reportes</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="desap" data-i18n="nav.desap">🧍 Desaparecidos</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="hosp" data-i18n="nav.hosp">🏥 Hospitales</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="acopio" data-i18n="nav.acopio">📦 Acopio y ayuda</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="volun" data-i18n="nav.volun">🙋 Buscadores</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="tel" data-i18n="nav.tel">📞 Teléfonos</button>
-  <button class="tab" role="tab" aria-selected="false" data-v="apoyo" data-i18n="nav.apoyo">💛 Apoyo</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="volun" data-i18n="nav.volun">🙋 Voluntarios</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="mas" data-i18n="nav.mas">🗺️ Mapa y más</button>
 </nav>
+<div class="subnav" id="subnav" role="tablist" aria-label="Mapa y más secciones" hidden>
+  <button class="subtab on" role="tab" aria-selected="true" data-v="mapa" data-i18n="nav.mapa">🗺️ Mapa</button>
+  <button class="subtab" role="tab" aria-selected="false" data-v="reportes" data-i18n="nav.reportes">📋 Reportes</button>
+  <button class="subtab" role="tab" aria-selected="false" data-v="acopio" data-i18n="nav.acopio">📦 Acopio y ayuda</button>
+  <button class="subtab" role="tab" aria-selected="false" data-v="tel" data-i18n="nav.tel">📞 Teléfonos</button>
+  <button class="subtab" role="tab" aria-selected="false" data-v="apoyo" data-i18n="nav.apoyo">💛 Apoyo</button>
+</div>
 
 <main>
   <section class="view on" id="v-solicitudes">
@@ -521,7 +527,7 @@
         <div class="legend">
           <span class="lg"><span class="dot" style="background:var(--crit)"></span><span data-i18n="legend.crit">Emergencia crítica</span></span>
           <span class="lg"><span class="dot" style="background:var(--build)"></span><span data-i18n="legend.build">Edificio/acceso dañado</span></span>
-          <span class="lg"><span class="dot" style="background:var(--miss)"></span><span data-i18n="legend.miss">Desaparecido</span></span>
+          <span class="lg"><span class="dot" style="background:#a16207"></span><span data-i18n="legend.escombros">Remoción de escombros</span></span>
           <span class="lg"><span class="dot" style="background:var(--acopio)"></span><span data-i18n="legend.acopio">Centro de acopio</span></span>
           <span class="lg"><span class="dot" style="background:var(--aid)"></span><span data-i18n="legend.aid">Ayuda humanitaria</span></span>
           <span class="lg"><span class="dot" style="background:var(--dark)"></span><span data-i18n="legend.dark">Zona sin luz</span></span>
@@ -534,7 +540,7 @@
         <div class="stats">
           <div class="stat"><div class="n" id="s-crit" style="color:var(--crit)">0</div><div class="l" data-i18n="stat.crit">Críticas</div></div>
           <div class="stat"><div class="n" id="s-build" style="color:var(--build)">0</div><div class="l" data-i18n="stat.build">Daños/servicios</div></div>
-          <div class="stat"><div class="n" id="s-miss" style="color:var(--miss)">0</div><div class="l" data-i18n="stat.miss">Buscados</div></div>
+          <div class="stat"><div class="n" id="s-esc" style="color:#a16207">0</div><div class="l" data-i18n="stat.esc">Escombros</div></div>
         </div>
         <div class="chart-card">
           <h3 data-i18n="chart.title">📊 Estadísticas de reportes</h3>
@@ -549,31 +555,6 @@
     <div class="sectitle" data-i18n="sect.reportes">Reportes activos</div>
     <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-rep" class="list-grid"></div>
-  </section>
-
-  <section class="view" id="v-desap">
-    <div class="sectitle" data-i18n="sect.desap">Personas desaparecidas</div>
-    <div id="match-banner-desap" class="match-banner" style="display:none" role="status"></div>
-    <div class="searchbar">
-      <input id="missSearch" data-i18n-ph="search.miss" placeholder="Buscar por nombre, zona o estado…">
-      <button class="sclear" id="missClear" data-i18n="search.clear">Limpiar</button>
-    </div>
-    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
-    <div id="list-miss" class="list-grid"></div>
-    <div id="ally-results" class="ally-results"></div>
-    <div class="note" data-i18n="note.desap">Si encuentras a alguien a salvo, repórtalo para retirarlo de la lista y enfocar la búsqueda.</div>
-  </section>
-
-  <section class="view" id="v-hosp">
-    <div class="sectitle" data-i18n="sect.hosp">Personas ubicadas en centros de salud</div>
-    <div id="match-banner-hosp" class="match-banner" style="display:none" role="status"></div>
-    <div class="searchbar">
-      <input id="hospSearch" data-i18n-ph="search.hosp" placeholder="Buscar por nombre, hospital o estado…">
-      <button class="sclear" id="hospClear" data-i18n="search.clear">Limpiar</button>
-    </div>
-    <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
-    <div id="list-hosp" class="list-grid"></div>
-    <div class="note" data-i18n-html="note.hosp">🏥 Reporta aquí a personas que están vivas y atendidas en un hospital o centro de salud. Esto ayuda a las familias a localizar a sus seres queridos y a despejar la lista de desaparecidos.</div>
   </section>
 
   <section class="view" id="v-acopio">
@@ -803,7 +784,7 @@ try{ const sl=localStorage.getItem('vzla_lang'); if(sl==='en'||sl==='es') lang=s
 const I18N={
  es:{
   'status.base':'Estado de Emergencia Nacional','status.online':' · 🟢 En línea','status.local':' · 🟡 Local (sin conexión)',
-  'nav.solicitudes':'🤝 Solicitudes','nav.reportes':'📋 Reportes','nav.desap':'🧍 Desaparecidos','nav.hosp':'🏥 Hospitales','nav.acopio':'📦 Acopio y ayuda','nav.volun':'🙋 Buscadores','nav.tel':'📞 Teléfonos','nav.mapa':'🗺️ Mapa',
+  'nav.solicitudes':'🤝 Solicitudes','nav.reportes':'📋 Reportes','nav.acopio':'📦 Acopio y ayuda','nav.volun':'🙋 Voluntarios','nav.mas':'🗺️ Mapa y más','nav.tel':'📞 Teléfonos','nav.mapa':'🗺️ Mapa',
   'sol.title':'Solicitudes de ayuda','sol.sub':'Tablón de necesidades de la respuesta: brazos, agua, alimentos e insumos para equipos y afectados. Es un tablón que revisas, no garantiza que alguien irá. Ante peligro de vida, llama al <b>171</b>.','sol.new':'Publicar solicitud','sol.publish':'Publicar solicitud','sol.empty':'Aún no hay solicitudes publicadas. Cuando una organización o un equipo necesite voluntarios, agua, alimentos o insumos, aparecerán aquí. Mientras tanto, explora:',
   'sol.f.all':'Todas','sol.f.allKinds':'Todas las categorías','sol.f.kind':'Categoría','sol.f.titulo':'¿Qué se necesita?','sol.f.detalle':'Detalle (opcional)','sol.f.sector':'Zona aproximada','sol.f.contacto':'Contacto (cómo coordinar)','sol.f.org':'Organización (opcional)','sol.f.urgente':'Marcar como urgente',
   'sol.ph.titulo':'Ej.: Se necesitan 10 voluntarios con guantes','sol.ph.detalle':'Cantidad, horario, a quién se entrega, etc.','sol.ph.sector':'Ej.: Caraballeda, La Guaira (sin dirección exacta)','sol.ph.contacto':'Teléfono / WhatsApp o grupo de la organización','sol.ph.org':'Ej.: Comando ConVzla, Cruz Roja, parroquia…',
@@ -812,7 +793,7 @@ const I18N={
   'sol.share':'Compartir','sol.contact':'Contactar','sol.shareTxt':'Solicitud de ayuda','sol.mark.proceso':'Marcar en proceso','sol.mark.cumplida':'Marcar cumplida',
   'sol.errTitulo':'Describe brevemente qué se necesita.','sol.wait':'Espera unos segundos antes de publicar otra.','sol.errBackend':'No se pudo publicar. Si eres el administrador, falta crear la tabla «solicitudes» en Supabase (sección 7).',
   'sol.kind.voluntarios':'Voluntarios / brazos','sol.kind.agua':'Agua','sol.kind.alimentos':'Alimentos','sol.kind.insumos':'Insumos / materiales','sol.kind.insumos_medicos':'Insumos médicos','sol.kind.transporte':'Transporte / logística','sol.kind.refugio':'Refugio / alojamiento',
-  'sect.reportes':'Reportes activos','sect.desap':'Personas desaparecidas','sect.hosp':'Personas ubicadas en centros de salud','sect.acopio':'Centros de acopio y puntos de ayuda humanitaria','sect.volun':'Buscadores voluntarios','sect.tel':'Teléfonos de emergencia oficiales',
+  'sect.reportes':'Reportes activos','sect.acopio':'Centros de acopio y puntos de ayuda humanitaria','sect.volun':'Voluntarios disponibles','sect.tel':'Teléfonos de emergencia oficiales',
   'search.miss':'Buscar por nombre, zona o estado…','search.hosp':'Buscar por nombre, hospital o estado…','search.volun':'Buscar por zona o estado…','search.clear':'Limpiar',
   'ally.head':'También en el directorio aliado (desaparecidosterremotovenezuela.com):','ally.searching':'Buscando en el directorio aliado…','ally.more':'Ver más en desaparecidosterremotovenezuela.com ↗',
   'nav.apoyo':'💛 Apoyo','apoyo.title':'Mensajes de apoyo y oraciones por Venezuela','apoyo.sub':'Un muro de aliento para los rescatistas, los voluntarios que levantan escombros, quienes buscan personas, y los médicos, enfermeras y personal de salud. Para llenar de esperanza cada vida que puede ser rescatada.','apoyo.name':'Tu nombre (opcional)','apoyo.ph':'Escribe tu mensaje de aliento u oración por Venezuela…','apoyo.send':'Mis oraciones por Venezuela','apoyo.fixed':'Una oración no se ve, pero sostiene. Unas palabras no levantan escombros, pero levantan el alma de quien sí los levanta. Gracias a los <b>rescatistas</b> que no descansan, a los <b>voluntarios</b> que remueven escombros con sus propias manos, a quienes <b>buscan sin rendirse</b>, y a los <b>médicos, enfermeras y personal de salud</b> que sostienen cada vida. Por cada persona rescatada, cada herido atendido y cada familia que vuelve a abrazarse: <b>Venezuela no está sola.</b> 💛💙❤️','apoyo.thanks':'🤍 Gracias. Tu mensaje quedó registrado.','apoyo.short':'Escribe al menos unas palabras.','apoyo.wait':'Gracias por tu mensaje. Espera unos segundos antes de enviar otro.','apoyo.now':'ahora','apoyo.count':'mensajes de aliento','apoyo.anon':'Anónimo','pray.count':'personas están orando por Venezuela','pray.btn':'Orar por Venezuela',
@@ -821,7 +802,7 @@ const I18N={
   'apoyo.report':'⚑ Reportar','apoyo.reportTitle':'Ocultar este mensaje en este dispositivo','apoyo.hidden':'Mensaje oculto en este dispositivo.','apoyo.blocked':'Tu mensaje contiene lenguaje no permitido. Mantengamos este muro lleno de aliento. 🤍',
   'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','fab':'＋ Reportar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
   'legend.crit':'Emergencia crítica','legend.build':'Edificio/acceso dañado','legend.escombros':'Remoción de escombros','legend.miss':'Desaparecido','legend.acopio':'Centro de acopio','legend.aid':'Ayuda humanitaria','legend.dark':'Zona sin luz','legend.water':'Sin agua potable','legend.volun':'Buscador voluntario',
-  'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.miss':'Buscados',
+  'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.esc':'Escombros','stat.miss':'Buscados',
   'chart.title':'📊 Estadísticas de reportes','chart.sub':'Distribución en vivo de los reportes activos por categoría y zona.','chart.total':'reportes activos en total','chart.byCat':'Por categoría','chart.byZone':'Zonas más afectadas','chart.loading':'Cargando estadísticas…','chart.empty':'Aún no hay reportes activos para graficar.',
   'tel.sub.op':'📡 Líneas de emergencia por operadora · Caracas','tel.sub.ambu':'🚑 Ambulancias · Caracas',
   'tel.sub.hosp':'🏥 Hospitales y clínicas con emergencia · Caracas','tel.sub.bomberos':'🚒 Bomberos · Caracas','tel.sub.pc':'🛡️ Protección Civil','tel.sub.policia':'👮 Policía','tel.sub.rescate':'⛑️ Rescate','tel.sub.transito':'🚦 Tránsito',
@@ -863,7 +844,7 @@ const I18N={
  },
  en:{
   'status.base':'National State of Emergency','status.online':' · 🟢 Online','status.local':' · 🟡 Local (offline)',
-  'nav.solicitudes':'🤝 Requests','nav.reportes':'📋 Reports','nav.desap':'🧍 Missing','nav.hosp':'🏥 Hospitals','nav.acopio':'📦 Aid & supplies','nav.volun':'🙋 Searchers','nav.tel':'📞 Phones','nav.mapa':'🗺️ Map',
+  'nav.solicitudes':'🤝 Requests','nav.reportes':'📋 Reports','nav.acopio':'📦 Aid & supplies','nav.volun':'🙋 Volunteers','nav.mas':'🗺️ Map & more','nav.tel':'📞 Phones','nav.mapa':'🗺️ Map',
   'sol.title':'Help requests','sol.sub':'A needs board for the response: hands, water, food and supplies for teams and those affected. It is a board you check, not a guarantee someone will come. In a life-threatening emergency, call <b>171</b>.','sol.new':'Post a request','sol.publish':'Post request','sol.empty':'No requests posted yet. When an organization or team needs volunteers, water, food or supplies, they will appear here. Meanwhile, explore:',
   'sol.f.all':'All','sol.f.allKinds':'All categories','sol.f.kind':'Category','sol.f.titulo':'What is needed?','sol.f.detalle':'Details (optional)','sol.f.sector':'Approximate area','sol.f.contacto':'Contact (how to coordinate)','sol.f.org':'Organization (optional)','sol.f.urgente':'Mark as urgent',
   'sol.ph.titulo':'E.g.: 10 volunteers with gloves needed','sol.ph.detalle':'Quantity, schedule, who it goes to, etc.','sol.ph.sector':'E.g.: Caraballeda, La Guaira (no exact address)','sol.ph.contacto':'Phone / WhatsApp or the organization group','sol.ph.org':'E.g.: Comando ConVzla, Red Cross, parish…',
@@ -872,7 +853,7 @@ const I18N={
   'sol.share':'Share','sol.contact':'Contact','sol.shareTxt':'Help request','sol.mark.proceso':'Mark in progress','sol.mark.cumplida':'Mark fulfilled',
   'sol.errTitulo':'Briefly describe what is needed.','sol.wait':'Wait a few seconds before posting another.','sol.errBackend':'Could not post. If you are the admin, the “solicitudes” table must be created in Supabase (section 7).',
   'sol.kind.voluntarios':'Volunteers / hands','sol.kind.agua':'Water','sol.kind.alimentos':'Food','sol.kind.insumos':'Supplies / materials','sol.kind.insumos_medicos':'Medical supplies','sol.kind.transporte':'Transport / logistics','sol.kind.refugio':'Shelter / lodging',
-  'sect.reportes':'Active reports','sect.desap':'Missing persons','sect.hosp':'People located in health centers','sect.acopio':'Collection centers and humanitarian aid points','sect.volun':'Volunteer searchers','sect.tel':'Official emergency phone numbers',
+  'sect.reportes':'Active reports','sect.acopio':'Collection centers and humanitarian aid points','sect.volun':'Available volunteers','sect.tel':'Official emergency phone numbers',
   'search.miss':'Search by name, area or state…','search.hosp':'Search by name, hospital or state…','search.volun':'Search by area or state…','search.clear':'Clear',
   'ally.head':'Also in the partner directory (desaparecidosterremotovenezuela.com):','ally.searching':'Searching the partner directory…','ally.more':'See more at desaparecidosterremotovenezuela.com ↗',
   'nav.apoyo':'💛 Support','apoyo.title':'Messages of support and prayers for Venezuela','apoyo.sub':'A wall of encouragement for rescuers, the volunteers clearing rubble, those searching for people, and the doctors, nurses and health workers. To bring hope to every life that can be saved.','apoyo.name':'Your name (optional)','apoyo.ph':'Write your message of encouragement or prayer for Venezuela…','apoyo.send':'My prayers for Venezuela','apoyo.fixed':'A prayer is unseen, yet it holds. Words don’t lift rubble, but they lift the spirit of those who do. Thank you to the <b>rescuers</b> who never rest, the <b>volunteers</b> clearing rubble with their own hands, those who <b>search without giving up</b>, and the <b>doctors, nurses and health workers</b> who hold every life. For every person rescued, every injured person cared for, and every family reunited: <b>Venezuela is not alone.</b> 💛💙❤️','apoyo.thanks':'🤍 Thank you. Your message was saved.','apoyo.short':'Write at least a few words.','apoyo.wait':'Thank you. Please wait a few seconds before sending another.','apoyo.now':'now','apoyo.count':'messages of encouragement','apoyo.anon':'Anonymous','pray.count':'people are praying for Venezuela','pray.btn':'Pray for Venezuela',
@@ -881,7 +862,7 @@ const I18N={
   'apoyo.report':'⚑ Report','apoyo.reportTitle':'Hide this message on this device','apoyo.hidden':'Message hidden on this device.','apoyo.blocked':'Your message contains language that isn’t allowed. Let’s keep this wall full of encouragement. 🤍',
   'near':'📍 Near me','near.on':'📍 Near me ✓','fab':'＋ Report','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
   'legend.crit':'Critical emergency','legend.build':'Damaged building/access','legend.escombros':'Rubble removal','legend.miss':'Missing person','legend.acopio':'Collection center','legend.aid':'Humanitarian aid','legend.dark':'No power','legend.water':'No drinking water','legend.volun':'Volunteer searcher',
-  'stat.crit':'Critical','stat.build':'Damage/utilities','stat.miss':'Searched',
+  'stat.crit':'Critical','stat.build':'Damage/utilities','stat.esc':'Rubble','stat.miss':'Searched',
   'chart.title':'📊 Report statistics','chart.sub':'Live distribution of active reports by category and area.','chart.total':'active reports in total','chart.byCat':'By category','chart.byZone':'Most affected areas','chart.loading':'Loading statistics…','chart.empty':'No active reports to chart yet.',
   'tel.sub.op':'📡 Emergency lines by carrier · Caracas','tel.sub.ambu':'🚑 Ambulances · Caracas',
   'tel.sub.hosp':'🏥 Hospitals & clinics with ER · Caracas','tel.sub.bomberos':'🚒 Firefighters · Caracas','tel.sub.pc':'🛡️ Civil Protection','tel.sub.policia':'👮 Police','tel.sub.rescate':'⛑️ Rescue','tel.sub.transito':'🚦 Traffic',
@@ -949,6 +930,10 @@ const TYPES = {
   volunteer:{e:'🙋', t:'Buscador voluntario', c:'#0ea5e9'},
   safe:   {e:'✅', t:'Localizado a salvo', c:'#10b981'},
 };
+// Tipos retirados de la interfaz (creación, filtros, mapa, leyenda): desaparecidos y
+// centros de salud los cubren otras plataformas; 'safe' nunca fue un marcador visible.
+// Se conservan en TYPES para no romper reportes antiguos ni la vista previa (share.js).
+const RETIRED = new Set(['safe','miss','hosp']);
 // Estados de paso para vialidad
 const ROAD_STATUS = {
   closed:  {t:'Cerrada / intransitable', c:'#ef4444', e:'⛔'},
@@ -1021,8 +1006,8 @@ function relTime(iso){
 let GEO=null, VB={w:600,h:420}, BOUNDS=null;
 let reports=[], selState=null, selMuni=null;
 let zoom=1, panX=0, panY=0;
-let activeFilters=new Set(Object.keys(TYPES).filter(k=>k!=='safe'));
-let missQuery='', hospQuery='', volunQuery='';
+let activeFilters=new Set(Object.keys(TYPES).filter(k=>!RETIRED.has(k)));
+let volunQuery='';
 let nearMode=false, userLoc=null;   // ordenar listas por cercanía (GPS)
 let currentMatches={};              // coincidencias hospital ↔ desaparecido (por id)
 let notifiedMatches=new Set();      // pares ya notificados (evita repetir avisos)
@@ -1130,23 +1115,9 @@ function reportCedHash(rp){ const m=String(rp&&rp.need||'').match(/\bCIH:([a-f0-
 function isGenericTitle(rp){ return !rp||rp.title===TYPES.miss.t||rp.title===TYPES.hosp.t; }
 // Devuelve { id -> [{rp, strong}] } cruzando desaparecidos (miss) con hospital (hosp).
 function computeMatches(){
-  const miss=reports.filter(r=>r.type==='miss');
-  const hosp=reports.filter(r=>r.type==='hosp');
-  const out={};
-  const add=(a,b,strong)=>{ (out[a.id]=out[a.id]||[]).push({rp:b,strong}); };
-  miss.forEach(m=>hosp.forEach(h=>{
-    const mh=reportCedHash(m), hh=reportCedHash(h);
-    let ok=false, strong=false;
-    if(mh&&hh&&mh===hh){ ok=true; strong=true; }                       // misma cédula => fuerte
-    else if(!isGenericTitle(m)&&!isGenericTitle(h)){
-      // comparación invariante al orden Apellido/Nombre (los hospitales suelen venir "Apellido Nombre")
-      const nm=normName(m.title).split(' ').filter(Boolean).sort().join(' ');
-      const nh=normName(h.title).split(' ').filter(Boolean).sort().join(' ');
-      if(nm && nm===nh){ ok=true; strong=false; }                      // mismo nombre => posible
-    }
-    if(ok){ add(m,h,strong); add(h,m,strong); }
-  }));
-  return out;
+  // Desaparecidos y centros de salud se retiraron de la app (los cubren otras
+  // plataformas), así que el cruce hospital ↔ desaparecido ya no aplica.
+  return {};
 }
 
 function shareLinks(rp){
@@ -1160,9 +1131,10 @@ function shareLinks(rp){
 // Enlace profundo a un reporte concreto (abre la app directamente en esa persona/punto)
 function deepLink(rp){ return `${location.origin}/?p=${encodeURIComponent(rp.id)}`; }
 // Pestaña en la que vive cada tipo de reporte (para enfocar al abrir un enlace ?p=)
-const TYPE_TAB={ miss:'desap', hosp:'hosp', acopio:'acopio', aid:'acopio', volunteer:'volun' };
+const TYPE_TAB={ acopio:'acopio', aid:'acopio', volunteer:'volun' };
 function focusReport(id){
   const rp=reports.find(r=>String(r.id)===String(id)); if(!rp) return false;
+  if(RETIRED.has(rp.type)){ activateTab('solicitudes'); return false; }   // tipo retirado: abre el inicio
   activateTab(TYPE_TAB[rp.type]||'reportes');
   // esperar a que la pestaña pinte y luego resaltar/desplazar la tarjeta
   setTimeout(()=>{
@@ -1280,7 +1252,7 @@ function attributeState(r){
 // Solo cuentan para la INTENSIDAD los reportes de afectación (daño/emergencia).
 // Los puntos de ayuda/positivos —acopio, ayuda humanitaria, voluntarios y "a salvo"—
 // se ven en el mapa como pines, pero NO pintan la zona de rojo.
-const AFFECTED_TYPES=new Set(['crit','build','escombros','miss','hosp','road','dark','water']);
+const AFFECTED_TYPES=new Set(['crit','build','escombros','road','dark','water']);
 let stateLoad={}, stateLoadMax=0, _slKey='__';
 function refreshStateLoad(){
   const key=reports.length+':'+((reports[0]&&reports[0].id)||'');
@@ -1378,10 +1350,22 @@ function useGPS(){
     { enableHighAccuracy:true, timeout:10000, maximumAge:0 }
   );
 }
+// Pestañas dentro del grupo "Mapa y más" (nav de segundo nivel)
+const INFO_TABS=['mapa','reportes','acopio','tel','apoyo'];
+let lastInfoTab='mapa';
 function activateTab(name){
-  document.querySelectorAll('.tab').forEach(x=>{ const on=x.dataset.v===name; x.classList.toggle('on', on); x.setAttribute('aria-selected', on?'true':'false'); });
+  if(name==='mas') name=lastInfoTab||'mapa';            // pestaña-grupo → última/def. del grupo
+  const inInfo=INFO_TABS.includes(name);
+  if(inInfo) lastInfoTab=name;
+  // Nav primaria: 'mas' queda resaltada mientras esté activa cualquier sección del grupo
+  document.querySelectorAll('nav .tab').forEach(x=>{ const v=x.dataset.v; const on=(v===name)||(v==='mas'&&inInfo); x.classList.toggle('on', on); x.setAttribute('aria-selected', on?'true':'false'); });
+  // Subnav: visible solo dentro del grupo, resalta la sección activa
+  const sub=document.getElementById('subnav');
+  if(sub){ sub.hidden=!inInfo; sub.querySelectorAll('.subtab').forEach(x=>{ const on=x.dataset.v===name; x.classList.toggle('on', on); x.setAttribute('aria-selected', on?'true':'false'); }); }
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
-  document.getElementById('v-'+name).classList.add('on');
+  const view=document.getElementById('v-'+name); if(view) view.classList.add('on');
+  // El FAB de reporte estorba en Solicitudes (tiene su propio botón) y en Apoyo
+  const fab=document.getElementById('fab'); if(fab) fab.style.display=(name==='solicitudes'||name==='apoyo')?'none':'';
   if(typeof saveTab==='function') saveTab(name);
   if(name==='mapa' && map) setTimeout(()=>map.invalidateSize(),60);
   if(name==='apoyo'){ if(!apoyoLoaded) loadApoyo(); loadHope(); }
@@ -1528,13 +1512,13 @@ async function load(){
   try{ const c=await window.storage.get('vzla_confirmed'); if(c&&c.value) confirmedByMe=new Set(JSON.parse(c.value)); }catch(e){}
   // preferencias guardadas: filtros, última pestaña y auto-actualización
   let savedTab=null, savedAuto=false;
-  try{ const f=await window.storage.get('vzla_filters'); if(f&&f.value){ const arr=JSON.parse(f.value).filter(k=>TYPES[k]&&k!=='safe'); if(arr.length) activeFilters=new Set(arr); } }catch(e){}
+  try{ const f=await window.storage.get('vzla_filters'); if(f&&f.value){ const arr=JSON.parse(f.value).filter(k=>TYPES[k]&&!RETIRED.has(k)); if(arr.length) activeFilters=new Set(arr); } }catch(e){}
   try{ const tb=await window.storage.get('vzla_tab'); if(tb&&tb.value&&document.getElementById('v-'+tb.value)) savedTab=tb.value; }catch(e){}
   try{ const ar=await window.storage.get('vzla_autoref'); savedAuto=!!(ar&&ar.value==='1'); }catch(e){}
   updateCloudBadge();
   initMap();   // crea el mapa Leaflet (tiles desactivados por defecto)
   render();
-  if(savedTab) activateTab(savedTab); else loadSolicitudes();   // home = Solicitudes
+  activateTab(savedTab || 'solicitudes');   // home = Solicitudes (activateTab también oculta el FAB allí)
   if(savedAuto) setAuto(true);
   // Enlace profundo: si la URL trae ?p=<id>, abrir la app enfocada en ese reporte
   try{ const pid=new URLSearchParams(location.search).get('p'); if(pid) focusReport(pid); }catch(e){}
@@ -1557,7 +1541,7 @@ function fmtClock(){
 function buildFilters(){
   const el=document.getElementById('filters');
   const counts={}; reports.forEach(r=>counts[r.type]=(counts[r.type]||0)+1);
-  el.innerHTML=Object.entries(TYPES).filter(([k])=>k!=='safe').map(([k,v])=>{
+  el.innerHTML=Object.entries(TYPES).filter(([k])=>!RETIRED.has(k)).map(([k,v])=>{
     const on=activeFilters.has(k);
     return `<div class="fchip ${on?'on':''}" data-f="${k}" style="${on?`border-color:${v.c};background:${v.c}22`:''}">
       <span class="fdot" style="background:${v.c}"></span>${v.e} ${counts[k]||0}</div>`;
@@ -1565,7 +1549,7 @@ function buildFilters(){
   el.querySelectorAll('.fchip').forEach(c=>c.addEventListener('click',()=>{
     const k=c.dataset.f;
     if(activeFilters.has(k)) activeFilters.delete(k); else activeFilters.add(k);
-    if(activeFilters.size===0) activeFilters=new Set(Object.keys(TYPES).filter(x=>x!=='safe'));
+    if(activeFilters.size===0) activeFilters=new Set(Object.keys(TYPES).filter(x=>!RETIRED.has(x)));
     if(typeof saveFilters==='function') saveFilters();
     buildFilters(); buildMap();
   }));
@@ -1643,7 +1627,7 @@ function renderChart(){
 
   // 1) Reportes por categoría
   const counts={}; reports.forEach(r=>counts[r.type]=(counts[r.type]||0)+1);
-  const cats=Object.keys(TYPES).filter(k=>k!=='safe'&&counts[k])
+  const cats=Object.keys(TYPES).filter(k=>!RETIRED.has(k)&&counts[k])
     .map(k=>({n:counts[k], c:TYPES[k].c, e:TYPES[k].e, l:t('short.'+k)}))
     .sort((a,b)=>b.n-a.n);
   const maxCat=Math.max(1,...cats.map(c=>c.n));
@@ -1680,17 +1664,11 @@ function render(){
   buildMap();
   document.getElementById('s-crit').textContent=reports.filter(r=>r.type==='crit').length;
   document.getElementById('s-build').textContent=reports.filter(r=>['build','dark','water'].includes(r.type)).length;
-  document.getElementById('s-miss').textContent=reports.filter(r=>r.type==='miss').length;
+  document.getElementById('s-esc').textContent=reports.filter(r=>r.type==='escombros').length;
   renderChart();
   const all=reports.filter(r=>!['miss','acopio','hosp','aid','volunteer'].includes(r.type));
   const nm=(q)=>t('empty.nomatch')+' “'+esc(q)+'”.';
   document.getElementById('list-rep').innerHTML=all.length?sortNear(all).map(card).join(''):'<div class="empty">'+t('empty.rep')+'</div>';
-  let miss=reports.filter(r=>r.type==='miss');
-  if(missQuery){ const q=normName(missQuery); miss=miss.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
-  document.getElementById('list-miss').innerHTML=miss.length?sortNear(miss).map(card).join(''):'<div class="empty">'+(missQuery?nm(missQuery):t('empty.miss'))+'</div>';
-  let hosp=reports.filter(r=>r.type==='hosp');
-  if(hospQuery){ const q=normName(hospQuery); hosp=hosp.filter(r=>normName(r.title+' '+r.loc+' '+r.need).includes(q)); }
-  document.getElementById('list-hosp').innerHTML=hosp.length?sortNear(hosp).map(card).join(''):'<div class="empty">'+(hospQuery?nm(hospQuery):t('empty.hosp'))+'</div>';
   const aco=reports.filter(r=>r.type==='acopio'||r.type==='aid');
   document.getElementById('list-acopio').innerHTML=aco.length?sortNear(aco).map(card).join(''):'<div class="empty">'+t('empty.acopio')+'</div>';
   let volun=reports.filter(r=>r.type==='volunteer');
@@ -1735,38 +1713,6 @@ function render(){
     if(cloudOK && !isLocal){ try{ await sbMarkRoadOpen(id); }catch(e){ /* sin RPC mark_road_open: queda en local */ } }
     rp.need=newNeed; save(); render();
   }); });
-}
-
-const ms=document.getElementById('missSearch');
-if(ms){ ms.addEventListener('input',e=>{ missQuery=e.target.value.trim(); render(); searchAllies(missQuery); }); }
-document.getElementById('missClear').addEventListener('click',()=>{ missQuery=''; ms.value=''; render(); searchAllies(''); });
-// Búsqueda federada EN VIVO en el directorio aliado (sin copiar datos): consulta su API
-// al vuelo y muestra coincidencias frescas de personas aún no encontradas.
-let allyTimer=null, allyLastQ=null;
-function searchAllies(q){
-  const box=document.getElementById('ally-results'); if(!box) return;
-  q=String(q||'').trim();
-  if(q.length<2){ clearTimeout(allyTimer); box.innerHTML=''; allyLastQ=null; return; }
-  clearTimeout(allyTimer);
-  allyTimer=setTimeout(async()=>{
-    if(q===allyLastQ) return; allyLastQ=q;
-    box.innerHTML=`<div class="ally-head">${t('ally.searching')}</div>`;
-    try{
-      const r=await fetch('/api/buscar-aliados?q='+encodeURIComponent(q));
-      const d=await r.json();
-      if(q!==allyLastQ) return;               // llegó una respuesta vieja
-      if(!d || !d.ok || !d.items || !d.items.length){ box.innerHTML=''; return; }
-      const rows=d.items.slice(0,10).map(it=>{
-        const edad=it.edad!=null?` · ${esc(String(it.edad))}${lang==='en'?' yrs':' años'}`:'';
-        const desc=esc(String(it.descripcion||'').slice(0,130));
-        return `<div class="ally-card"><div class="ally-name">${esc(it.nombre||'')}${edad}</div>`+
-          (it.ubicacion?`<div class="ally-meta">📍 ${esc(it.ubicacion)}</div>`:'')+
-          (desc?`<div class="ally-meta">${desc}</div>`:'')+`</div>`;
-      }).join('');
-      box.innerHTML=`<div class="ally-head">${t('ally.head')} <span class="ally-count">${esc(String(d.total!=null?d.total:d.items.length))}</span></div>${rows}`+
-        `<a class="ally-link" href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">${t('ally.more')}</a>`;
-    }catch(e){ if(q===allyLastQ) box.innerHTML=''; }
-  },450);
 }
 
 // ---- Muro de apoyo / oraciones por Venezuela ----
@@ -1970,9 +1916,8 @@ function renderSolicitudes(){
   if(!list.length){
     box.innerHTML=`<div class="sol-empty">${esc(t('sol.empty'))}
       <div class="sol-quick">
+        <button data-go="volun">🙋 ${esc(t('nav.volun').replace(/^\S+\s*/,''))}</button>
         <button data-go="mapa">🗺️ ${esc(t('nav.mapa').replace(/^\S+\s*/,''))}</button>
-        <button data-go="desap">🧍 ${esc(t('nav.desap').replace(/^\S+\s*/,''))}</button>
-        <button data-go="hosp">🏥 ${esc(t('nav.hosp').replace(/^\S+\s*/,''))}</button>
         <button data-go="acopio">📦 ${esc(t('nav.acopio').replace(/^\S+\s*/,''))}</button>
       </div></div>`;
     box.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>activateTab(b.dataset.go)));
@@ -2045,9 +1990,6 @@ async function publicarSolicitud(){
   const stt=e.target.closest('[data-st]'); if(stt){ estadoSolicitud(stt.dataset.id, stt.dataset.st); return; }
 }); }
 
-const hs=document.getElementById('hospSearch');
-if(hs){ hs.addEventListener('input',e=>{ hospQuery=e.target.value.trim(); render(); }); }
-document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''; hs.value=''; render(); });
 const vs=document.getElementById('volunSearch');
 if(vs){ vs.addEventListener('input',e=>{ volunQuery=e.target.value.trim(); render(); }); }
 const vc=document.getElementById('volunClear'); if(vc){ vc.addEventListener('click',()=>{ volunQuery=''; vs.value=''; render(); }); }
@@ -2145,7 +2087,7 @@ loadNotified();
 
 // Un solo camino para cambiar de pestaña: activateTab (toggla clases, guarda y dispara
 // los cargadores de cada sección: apoyo, esperanza, solicitudes…).
-document.querySelectorAll('.tab').forEach(t=>{ t.addEventListener('click',()=>activateTab(t.dataset.v)); });
+document.querySelectorAll('.tab, .subtab').forEach(t=>{ t.addEventListener('click',()=>activateTab(t.dataset.v)); });
 
 let selType='crit', wizStep=1, wizDraft={};
 const WZ_TOTAL=4;
@@ -2168,7 +2110,7 @@ function buildSheet(){
   const locPh = selType==='hosp' ? t('fph.loc.hosp') : (isVolun ? t('fph.loc.volun') : t('fph.loc.def'));
   const needLabel = isVolun ? t('f.need.volun') : (isPerson ? t('f.need.person') : (isOffer ? t('f.need.offer') : t('f.need.def')));
   const needPh = isVolun ? t('fph.need.volun') : (isPerson ? t('fph.need.person') : (isOffer ? (selType==='aid' ? t('fph.need.aid') : t('fph.need.acopio')) : t('fph.need.def')));
-  const typeCards = Object.entries(TYPES).filter(([k])=>k!=='safe').map(([k,v])=>
+  const typeCards = Object.entries(TYPES).filter(([k])=>!RETIRED.has(k)).map(([k,v])=>
     `<div class="tcard ${k===selType?'sel':''}" data-t="${k}"><div class="te">${v.e}</div><div class="tt">${t('type.'+k)}</div></div>`).join('');
   const personFields = isPerson ? `
     <label class="fl">${t('f.name')} <span style="font-weight:400;color:var(--muted)">${t('f.name.hint')}</span></label>
