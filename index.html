@@ -106,7 +106,7 @@
   .dot{ width:10px; height:10px; border-radius:50%; flex:none; }
   .mapctl{ position:absolute; top:8px; right:8px; z-index:1000; display:flex; flex-direction:column; gap:4px; }
   .mapctl button{ width:32px; height:32px; border-radius:8px; background:rgba(17,22,31,.9); border:1px solid #2b3848; color:#e6edf3; font-size:16px; cursor:pointer; }
-  .filters{ display:flex; gap:6px; overflow-x:auto; padding:0 0 10px; scrollbar-width:none; }
+  .filters{ display:flex; flex-wrap:wrap; gap:6px; padding:0 0 10px; }
   .filters::-webkit-scrollbar{ display:none; }
   .fchip{ flex:none; display:flex; align-items:center; gap:6px; min-height:38px; padding:8px 13px; border-radius:19px; background:var(--panel2); border:1px solid var(--line); font-size:12.5px; font-weight:600; color:var(--muted); cursor:pointer; }
   .fchip.on{ color:#fff; }
@@ -184,6 +184,24 @@
   .ally-name{ font-weight:600; font-size:14px; }
   .ally-meta{ font-size:12px; color:var(--muted); margin-top:2px; }
   .ally-link{ display:inline-block; margin:4px 2px 2px; font-size:12px; color:var(--acc); text-decoration:none; }
+  /* Sección de apoyo / oraciones por Venezuela (colores de la bandera) */
+  .apoyo-hero{ text-align:center; padding:18px 14px 4px; }
+  .apoyo-stripe{ height:7px; border-radius:6px; max-width:420px; margin:0 auto 14px; background:linear-gradient(90deg,#FCD116 0 33.3%,#003893 33.3% 66.6%,#CF142B 66.6% 100%); }
+  .apoyo-title{ font-size:19px; margin:.2em 0; }
+  .apoyo-sub{ color:var(--muted); font-size:13px; max-width:580px; margin:6px auto 0; line-height:1.5; }
+  .apoyo-form{ max-width:580px; margin:16px auto 0; }
+  .apoyo-form input, .apoyo-form textarea{ width:100%; padding:11px 13px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:14px; margin-bottom:9px; font-family:inherit; }
+  .apoyo-form textarea{ resize:vertical; min-height:70px; }
+  .apoyo-send{ width:100%; border:none; border-radius:12px; padding:14px; font-size:15px; font-weight:800; color:#fff; cursor:pointer; background:linear-gradient(90deg,#CF142B,#003893); box-shadow:0 2px 14px rgba(207,20,43,.30); display:flex; align-items:center; justify-content:center; gap:8px; }
+  .apoyo-send:disabled{ opacity:.6; cursor:not-allowed; }
+  .apoyo-status{ text-align:center; font-size:12.5px; color:var(--safe); min-height:18px; margin-top:8px; }
+  .apoyo-fixed{ max-width:600px; margin:18px auto; padding:14px 16px; background:linear-gradient(180deg,rgba(252,209,22,.07),transparent); border:1px solid var(--line); border-left:4px solid #FCD116; border-radius:12px; font-size:13.5px; line-height:1.6; }
+  .apoyo-count{ text-align:center; color:var(--muted); font-size:12px; font-weight:600; margin:8px 0 12px; }
+  .apoyo-wall{ max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:9px; padding-bottom:10px; }
+  .apoyo-msg{ background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:11px; padding:11px 13px; }
+  .apoyo-msg.c0{ border-left-color:#FCD116; } .apoyo-msg.c1{ border-left-color:#003893; } .apoyo-msg.c2{ border-left-color:#CF142B; }
+  .apoyo-msg .am-text{ font-size:14px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+  .apoyo-msg .am-meta{ font-size:11px; color:var(--muted); margin-top:5px; }
   .close{ position:absolute; right:16px; top:14px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; }
   .empty{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 10px; }
   .note{ font-size:11.5px; color:var(--muted); line-height:1.6; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:14px; }
@@ -344,6 +362,7 @@
   <button class="tab" role="tab" aria-selected="false" data-v="acopio" data-i18n="nav.acopio">📦 Acopio y ayuda</button>
   <button class="tab" role="tab" aria-selected="false" data-v="volun" data-i18n="nav.volun">🙋 Buscadores</button>
   <button class="tab" role="tab" aria-selected="false" data-v="tel" data-i18n="nav.tel">📞 Teléfonos</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="apoyo" data-i18n="nav.apoyo">💛 Apoyo</button>
 </nav>
 
 <main>
@@ -544,6 +563,23 @@
     <div class="note" data-i18n-html="note.tel">📌 El <b>171</b> es la línea integrada nacional. Este directorio es <b>referencial para Caracas</b>: <b>verifica</b> los números antes de difundirlos. Esta app coordina reportes ciudadanos y <b>no reemplaza</b> a las autoridades.</div>
   </section>
 
+  <section class="view" id="v-apoyo">
+    <div class="apoyo-hero">
+      <div class="apoyo-stripe"></div>
+      <h2 class="apoyo-title" data-i18n="apoyo.title">Mensajes de apoyo y oraciones por Venezuela</h2>
+      <p class="apoyo-sub" data-i18n="apoyo.sub">Un muro de aliento para los rescatistas, los voluntarios que levantan escombros, quienes buscan personas, y los médicos, enfermeras y personal de salud. Para llenar de esperanza cada vida que puede ser rescatada.</p>
+    </div>
+    <div class="apoyo-form">
+      <input id="apoyo-name" maxlength="40" data-i18n-ph="apoyo.name" placeholder="Tu nombre (opcional)">
+      <textarea id="apoyo-msg" maxlength="280" rows="3" data-i18n-ph="apoyo.ph" placeholder="Escribe tu mensaje de aliento u oración por Venezuela…"></textarea>
+      <button class="apoyo-send" id="apoyo-send"><span data-i18n="apoyo.send">Mis oraciones por Venezuela</span> <span class="apoyo-heart">🤍🇻🇪</span></button>
+      <div id="apoyo-status" class="apoyo-status" role="status"></div>
+    </div>
+    <div class="apoyo-fixed" data-i18n-html="apoyo.fixed"></div>
+    <div class="apoyo-count" id="apoyo-count"></div>
+    <div id="apoyo-wall" class="apoyo-wall"></div>
+  </section>
+
   <footer class="appfoot">
     <p data-i18n-html="footer.1">Esta es una herramienta <b>ciudadana y no partidista</b>. Ante una emergencia médica, llama a los organismos de rescate. <b>Verifica siempre la información antes de difundirla.</b></p>
     <p class="appfoot-sub" data-i18n="footer.2">Hecha de manera voluntaria para apoyar la localización de personas. No solicitamos ni gestionamos dinero, donaciones ni ayudas de ningún tipo.</p>
@@ -594,6 +630,7 @@ const I18N={
   'sect.reportes':'Reportes activos','sect.desap':'Personas desaparecidas','sect.hosp':'Personas ubicadas en centros de salud','sect.acopio':'Centros de acopio y puntos de ayuda humanitaria','sect.volun':'Buscadores voluntarios','sect.tel':'Teléfonos de emergencia oficiales',
   'search.miss':'Buscar por nombre, zona o estado…','search.hosp':'Buscar por nombre, hospital o estado…','search.volun':'Buscar por zona o estado…','search.clear':'Limpiar',
   'ally.head':'También en el directorio aliado (desaparecidosterremotovenezuela.com):','ally.searching':'Buscando en el directorio aliado…','ally.more':'Ver más en desaparecidosterremotovenezuela.com ↗',
+  'nav.apoyo':'💛 Apoyo','apoyo.title':'Mensajes de apoyo y oraciones por Venezuela','apoyo.sub':'Un muro de aliento para los rescatistas, los voluntarios que levantan escombros, quienes buscan personas, y los médicos, enfermeras y personal de salud. Para llenar de esperanza cada vida que puede ser rescatada.','apoyo.name':'Tu nombre (opcional)','apoyo.ph':'Escribe tu mensaje de aliento u oración por Venezuela…','apoyo.send':'Mis oraciones por Venezuela','apoyo.fixed':'Una oración no se ve, pero sostiene. Unas palabras no levantan escombros, pero levantan el alma de quien sí los levanta. Gracias a los <b>rescatistas</b> que no descansan, a los <b>voluntarios</b> que remueven escombros con sus propias manos, a quienes <b>buscan sin rendirse</b>, y a los <b>médicos, enfermeras y personal de salud</b> que sostienen cada vida. Por cada persona rescatada, cada herido atendido y cada familia que vuelve a abrazarse: <b>Venezuela no está sola.</b> 💛💙❤️','apoyo.thanks':'🤍 Gracias. Tu mensaje quedó registrado.','apoyo.short':'Escribe al menos unas palabras.','apoyo.wait':'Gracias por tu mensaje. Espera unos segundos antes de enviar otro.','apoyo.now':'ahora','apoyo.count':'mensajes de aliento','apoyo.anon':'Anónimo',
   'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','fab':'＋ Reportar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
   'legend.crit':'Emergencia crítica','legend.build':'Edificio/acceso dañado','legend.miss':'Desaparecido','legend.acopio':'Centro de acopio','legend.aid':'Ayuda humanitaria','legend.dark':'Zona sin luz','legend.water':'Sin agua potable','legend.volun':'Buscador voluntario',
   'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.miss':'Buscados',
@@ -642,6 +679,7 @@ const I18N={
   'sect.reportes':'Active reports','sect.desap':'Missing persons','sect.hosp':'People located in health centers','sect.acopio':'Collection centers and humanitarian aid points','sect.volun':'Volunteer searchers','sect.tel':'Official emergency phone numbers',
   'search.miss':'Search by name, area or state…','search.hosp':'Search by name, hospital or state…','search.volun':'Search by area or state…','search.clear':'Clear',
   'ally.head':'Also in the partner directory (desaparecidosterremotovenezuela.com):','ally.searching':'Searching the partner directory…','ally.more':'See more at desaparecidosterremotovenezuela.com ↗',
+  'nav.apoyo':'💛 Support','apoyo.title':'Messages of support and prayers for Venezuela','apoyo.sub':'A wall of encouragement for rescuers, the volunteers clearing rubble, those searching for people, and the doctors, nurses and health workers. To bring hope to every life that can be saved.','apoyo.name':'Your name (optional)','apoyo.ph':'Write your message of encouragement or prayer for Venezuela…','apoyo.send':'My prayers for Venezuela','apoyo.fixed':'A prayer is unseen, yet it holds. Words don’t lift rubble, but they lift the spirit of those who do. Thank you to the <b>rescuers</b> who never rest, the <b>volunteers</b> clearing rubble with their own hands, those who <b>search without giving up</b>, and the <b>doctors, nurses and health workers</b> who hold every life. For every person rescued, every injured person cared for, and every family reunited: <b>Venezuela is not alone.</b> 💛💙❤️','apoyo.thanks':'🤍 Thank you. Your message was saved.','apoyo.short':'Write at least a few words.','apoyo.wait':'Thank you. Please wait a few seconds before sending another.','apoyo.now':'now','apoyo.count':'messages of encouragement','apoyo.anon':'Anonymous',
   'near':'📍 Near me','near.on':'📍 Near me ✓','fab':'＋ Report','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
   'legend.crit':'Critical emergency','legend.build':'Damaged building/access','legend.miss':'Missing person','legend.acopio':'Collection center','legend.aid':'Humanitarian aid','legend.dark':'No power','legend.water':'No drinking water','legend.volun':'Volunteer searcher',
   'stat.crit':'Critical','stat.build':'Damage/utilities','stat.miss':'Searched',
@@ -1098,6 +1136,7 @@ function activateTab(name){
   document.getElementById('v-'+name).classList.add('on');
   if(typeof saveTab==='function') saveTab(name);
   if(name==='mapa' && map) setTimeout(()=>map.invalidateSize(),60);
+  if(name==='apoyo' && !apoyoLoaded) loadApoyo();
 }
 
 function drawMunis(){
@@ -1474,6 +1513,46 @@ function searchAllies(q){
     }catch(e){ if(q===allyLastQ) box.innerHTML=''; }
   },450);
 }
+
+// ---- Muro de apoyo / oraciones por Venezuela ----
+const APOYO_SEED=[
+  { nombre:'Equipo Emergencia Venezuela', mensaje:'Fuerza, Venezuela. Cada vida cuenta y nadie está solo. 🇻🇪', when:'' },
+  { nombre:'Una familia', mensaje:'Gracias a los rescatistas y voluntarios. Que cada persona vuelva a casa. 🙏', when:'' },
+  { nombre:'Anónimo', mensaje:'Oramos por los heridos, por quienes buscan y por quienes esperan. No se rindan. 💛💙❤️', when:'' },
+];
+let apoyoLoaded=false, lastApoyoTs=0;
+function apoyoLocal(){ try{ const v=localStorage.getItem('vzla_apoyo'); return v?JSON.parse(v):[]; }catch(e){ return []; } }
+function apoyoSaveLocal(a){ try{ localStorage.setItem('vzla_apoyo', JSON.stringify(a.slice(0,50))); }catch(e){} }
+function renderApoyo(list){
+  const wall=document.getElementById('apoyo-wall'); if(!wall) return;
+  const cnt=document.getElementById('apoyo-count'); if(cnt) cnt.textContent = list.length ? (list.length+' '+t('apoyo.count')) : '';
+  wall.innerHTML = list.map((m,i)=>`<div class="apoyo-msg c${i%3}"><div class="am-text">${esc(m.mensaje||'')}</div><div class="am-meta">— ${esc(m.nombre||t('apoyo.anon'))}${m.when?' · '+esc(m.when):''}</div></div>`).join('');
+}
+async function loadApoyo(){
+  apoyoLoaded=true; let cloud=null;
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/mensajes?select=nombre,mensaje,created_at&order=created_at.desc&limit=100`,{ headers:SB_HEAD });
+    if(r.ok) cloud=(await r.json()).map(x=>({ nombre:x.nombre, mensaje:x.mensaje, when:relTime(x.created_at) }));
+  }catch(e){}
+  let list = cloud!=null ? cloud.slice() : apoyoLocal().concat(APOYO_SEED);
+  if(cloud!=null && !cloud.length) list = APOYO_SEED.slice();
+  renderApoyo(list);
+}
+async function sendApoyo(){
+  const msgEl=document.getElementById('apoyo-msg'), nameEl=document.getElementById('apoyo-name'), st=document.getElementById('apoyo-status'), btn=document.getElementById('apoyo-send');
+  const mensaje=(msgEl.value||'').trim(), nombre=(nameEl.value||'').trim();
+  if(mensaje.length<3){ st.style.color='var(--crit)'; st.textContent=t('apoyo.short'); return; }
+  const now=Date.now(); if(now-lastApoyoTs<30000){ st.style.color='var(--warn)'; st.textContent=t('apoyo.wait'); return; }
+  st.style.color='var(--safe)'; btn.disabled=true;
+  const rec={ nombre:nombre.slice(0,40), mensaje:mensaje.slice(0,280) };
+  let ok=false;
+  try{ const r=await fetch(`${SUPABASE_URL}/rest/v1/mensajes`,{ method:'POST', headers:{...SB_HEAD, Prefer:'return=minimal'}, body:JSON.stringify(rec) }); ok=r.ok; }catch(e){}
+  lastApoyoTs=now;
+  if(!ok){ const loc=apoyoLocal(); loc.unshift({...rec, when:t('apoyo.now')}); apoyoSaveLocal(loc); }
+  msgEl.value=''; nameEl.value=''; st.textContent=t('apoyo.thanks'); btn.disabled=false;
+  apoyoLoaded=false; await loadApoyo();
+}
+{ const ab=document.getElementById('apoyo-send'); if(ab) ab.addEventListener('click',sendApoyo); }
 const hs=document.getElementById('hospSearch');
 if(hs){ hs.addEventListener('input',e=>{ hospQuery=e.target.value.trim(); render(); }); }
 document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''; hs.value=''; render(); });
