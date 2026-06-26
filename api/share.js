@@ -35,6 +35,7 @@ const DEFAULT_DESC = {
 // Quita tokens internos y enlaces del texto antes de mostrarlo públicamente
 function stripTokens(s) {
   return String(s == null ? '' : s)
+    .replace(/\bIMG:https?:\/\/\S+/gi, '')
     .replace(/https?:\/\/\S+/gi, '')
     .replace(/\bCIH:[0-9a-f]+\b/gi, '')
     .replace(/\bRS:(closed|partial|moto|foot|open)\b/gi, '')
@@ -132,6 +133,10 @@ module.exports = async function handler(req, res) {
     const titleClean = stripTokens(rp.title) || label;
     const locClean = stripTokens(rp.loc);
     const needClean = stripTokens(rp.need);
+    // Foto (si existe y es de nuestro bucket público): se usará como imagen de la vista previa
+    let photo = null;
+    const pm = String(rp.need || '').match(/\bIMG:(https:\/\/[^\s"'<>]+)/i);
+    if (pm) { try { const u = new URL(pm[1]); if (u.protocol === 'https:' && u.hostname === new URL(SUPABASE_URL).hostname && u.pathname.startsWith('/storage/v1/object/public/')) photo = u.href; } catch (e) {} }
 
     const ogTitle = emoji + ' ' + clip(titleClean, 70) + ' — ' + label;
     let desc = '';
@@ -150,6 +155,11 @@ module.exports = async function handler(req, res) {
     html = setMeta(html, 'property', 'og:url', ogUrl);
     html = setMeta(html, 'name', 'twitter:title', ogTitle);
     html = setMeta(html, 'name', 'twitter:description', desc);
+    if (photo) {
+      html = setMeta(html, 'property', 'og:image', photo);
+      html = setMeta(html, 'name', 'twitter:image', photo);
+      html = setMeta(html, 'name', 'twitter:card', 'summary_large_image');
+    }
   }
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');

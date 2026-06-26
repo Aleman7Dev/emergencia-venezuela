@@ -45,6 +45,29 @@ grant execute on function public.mark_road_open(text) to anon, authenticated;
 -- alter type report_type add value if not exists 'volunteer';
 
 -- ----------------------------------------------------------------------------
+-- 3) Fotos de personas (bucket de Storage)  ← NECESARIO para la foto del reporte
+-- ----------------------------------------------------------------------------
+-- La app sube una foto (reducida y sin metadatos GPS) al bucket público "fotos"
+-- y guarda su URL dentro del reporte. Sin este bucket + permiso, la foto no se
+-- sube (el reporte igual se publica, pero sin imagen).
+--
+-- a) Crear el bucket "fotos" público, con límite de 5 MB y solo imágenes:
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('fotos', 'fotos', true, 5242880, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+-- b) Permitir SUBIR (insert) al bucket "fotos" con la clave pública (rol anon).
+--    La LECTURA ya es pública porque el bucket es público.
+drop policy if exists "anon sube fotos" on storage.objects;
+create policy "anon sube fotos"
+  on storage.objects for insert
+  to anon, authenticated
+  with check ( bucket_id = 'fotos' );
+
+-- ----------------------------------------------------------------------------
 -- Notas
 -- ----------------------------------------------------------------------------
 -- · El cruce hospital ↔ desaparecidos (cédula/nombre) NO requiere cambios de
