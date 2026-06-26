@@ -155,6 +155,22 @@
   input,textarea,select{ width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:11px; color:var(--txt); font-size:14px; font-family:inherit; }
   textarea{ resize:vertical; min-height:64px; }
   .submit{ width:100%; margin-top:16px; background:var(--acc); color:#fff; border:none; padding:14px; border-radius:11px; font-size:15px; font-weight:700; cursor:pointer; }
+  /* Wizard de reporte (paso a paso) */
+  .wz-prog{ display:flex; gap:6px; margin:2px 0 8px; }
+  .wz-prog .wz-dot{ flex:1; height:5px; border-radius:3px; background:var(--line); transition:background .2s; }
+  .wz-prog .wz-dot.on{ background:var(--acc); }
+  .wz-prog .wz-dot.done{ background:var(--safe); }
+  .wz-steplabel{ font-size:12px; color:var(--muted); margin-bottom:12px; font-weight:600; }
+  .wz-step{ display:none; }
+  .wz-step.on{ display:block; animation:wzin .18s ease-out; }
+  @keyframes wzin{ from{ opacity:0; transform:translateX(8px); } to{ opacity:1; transform:none; } }
+  .wz-nav{ display:flex; gap:10px; margin-top:18px; }
+  .wz-nav button{ flex:1; padding:14px; border-radius:11px; font-size:15px; font-weight:700; cursor:pointer; }
+  .wz-nav .wz-back{ background:var(--panel2); color:var(--txt); border:1px solid var(--line); flex:0 0 38%; }
+  .wz-nav .wz-next, .wz-nav .submit{ background:var(--acc); color:#fff; border:none; margin-top:0; }
+  .wz-review .rrow{ padding:9px 2px; border-bottom:1px solid var(--line); font-size:14px; }
+  .wz-review .rk{ color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:2px; }
+  .wz-priv{ font-size:11.5px; color:var(--muted); margin-top:12px; line-height:1.45; }
   .close{ position:absolute; right:16px; top:14px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; }
   .empty{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 10px; }
   .note{ font-size:11.5px; color:var(--muted); line-height:1.6; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:14px; }
@@ -540,9 +556,10 @@
     <button class="close" id="closeSheet" aria-label="Cerrar">✕</button>
     <h2 id="sheetTitle" data-i18n="sheet.title">Nuevo reporte</h2>
     <p class="h" data-i18n="sheet.sub">Tu reporte aparece en el mapa para los equipos de rescate.</p>
-    <div class="typegrid" id="typegrid"></div>
-    <div id="formfields"></div>
-    <button class="submit" id="submitRep" data-i18n="sheet.submit">Publicar reporte</button>
+    <div class="wz-prog" id="wzProg"></div>
+    <div class="wz-steplabel" id="wzLabel"></div>
+    <div id="wzBody"></div>
+    <div class="wz-nav" id="wzNav"></div>
   </div>
 </div>
 
@@ -584,6 +601,7 @@ const I18N={
   'priv.3':'Al reportar personas <b>se sugiere la cédula</b> (opcional): ayuda a verificar si la persona aparece a la vez como desaparecida y en un centro de salud. Puedes reportar <b>sin cédula</b> (p. ej. menores o personas no identificadas). <b>La cédula no se muestra públicamente</b> — se guarda cifrada y solo se usa para cruzar coincidencias.',
   'priv.4':'Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.',
   'sheet.title':'Nuevo reporte','sheet.sub':'Tu reporte aparece en el mapa para los equipos de rescate.','sheet.submit':'Publicar reporte','sheet.publishing':'Publicando…',
+  'wz.step':'Paso','wz.of':'de','wz.next':'Siguiente →','wz.back':'← Atrás','wz.t1':'¿Qué reportas?','wz.t2':'Detalles','wz.t3':'¿Dónde?','wz.t4':'Revisar','wz.sum.type':'Tipo','wz.sum.loc':'Ubicación','wz.sum.detail':'Detalle','wz.sum.none':'(sin indicar)','wz.sum.approx':'ubicación aproximada','wz.privacy':'Todo lo que publicas es visible públicamente. No incluyas datos sensibles innecesarios; reporta de buena fe.','f.locReq':'Indica la ubicación para continuar.',
   'f.loc.hosp':'Hospital o centro de salud','f.loc.volun':'Zona que puedes cubrir','f.loc.def':'Ubicación / dirección',
   'fph.loc.hosp':'Ej.: Hospital Vargas, San José, Caracas','fph.loc.volun':'Ej.: Municipio Chacao y este de Caracas','fph.loc.def':'Ej.: Av. Francisco de Miranda, Chacao',
   'f.need.volun':'Cómo puedes ayudar y cómo contactarte','f.need.person':'Nombre y descripción de la persona','f.need.offer':'Qué se ofrece / horario','f.need.def':'Qué se necesita / detalle',
@@ -630,6 +648,7 @@ const I18N={
   'priv.3':'When reporting people, <b>the ID number is suggested</b> (optional): it helps check whether the person appears both as missing and in a health center. You can report <b>without an ID</b> (e.g. minors or unidentified people). <b>The ID is not shown publicly</b> — it is stored encrypted and only used to cross-match.',
   'priv.4':'When reporting people, do so in good faith and with their interest in mind. False reports can cost lives by diverting resources.',
   'sheet.title':'New report','sheet.sub':'Your report appears on the map for rescue teams.','sheet.submit':'Publish report','sheet.publishing':'Publishing…',
+  'wz.step':'Step','wz.of':'of','wz.next':'Next →','wz.back':'← Back','wz.t1':'What are you reporting?','wz.t2':'Details','wz.t3':'Where?','wz.t4':'Review','wz.sum.type':'Type','wz.sum.loc':'Location','wz.sum.detail':'Detail','wz.sum.none':'(not provided)','wz.sum.approx':'approximate location','wz.privacy':'Everything you publish is publicly visible. Don’t include unnecessary sensitive data; report in good faith.','f.locReq':'Enter a location to continue.',
   'f.loc.hosp':'Hospital or health center','f.loc.volun':'Area you can cover','f.loc.def':'Location / address',
   'fph.loc.hosp':'e.g. Vargas Hospital, San José, Caracas','fph.loc.volun':'e.g. Chacao municipality and east Caracas','fph.loc.def':'e.g. Francisco de Miranda Ave., Chacao',
   'f.need.volun':'How you can help and how to reach you','f.need.person':'Name and description of the person','f.need.offer':'What is offered / schedule','f.need.def':'What is needed / details',
@@ -1474,25 +1493,29 @@ document.querySelectorAll('.tab').forEach(t=>{
   });
 });
 
-let selType='crit';
+let selType='crit', wizStep=1, wizDraft={};
+const WZ_TOTAL=4;
+// Conserva lo escrito al reconstruir el sheet (cambio de tipo, GPS, marcar en mapa…)
+function captureDraft(){ document.querySelectorAll('#wzBody [id^="f-"]').forEach(el=>{ wizDraft[el.id]=el.value; }); }
+function restoreDraft(){ Object.entries(wizDraft).forEach(([id,v])=>{ if(v==null||v==='') return; const el=document.getElementById(id); if(!el) return; if(el.tagName==='SELECT'){ if([...el.options].some(o=>o.value===v)) el.value=v; } else el.value=v; }); }
 function buildSheet(){
-  const tg=document.getElementById('typegrid');
-  tg.innerHTML=Object.entries(TYPES).filter(([k])=>k!=='safe').map(([k,v])=>
-    `<div class="tcard ${k===selType?'sel':''}" data-t="${k}"><div class="te">${v.e}</div><div class="tt">${t('type.'+k)}</div></div>`).join('');
-  tg.querySelectorAll('.tcard').forEach(c=>c.addEventListener('click',()=>{ selType=c.dataset.t; buildSheet(); }));
+  captureDraft();
   const states = GEO?GEO.features.filter(f=>f.properties.NAME_1).map(f=>f.properties.NAME_1):HOT;
   const isPerson = (selType==='miss'||selType==='hosp');
   const isVolun = (selType==='volunteer');
+  const isOffer = (selType==='aid'||selType==='acopio');
+  const isRoad = (selType==='road');
+  const ciSuggest = (selType==='miss');   // opcional, pero recomendada al reportar desaparecidos
   const pl=precLabel(pickedSrc);
   const locStatus = pickedLat!=null
     ? `<div class="loc-ok">${pl.exact?'✓':'≈'} ${pl.t}<br><span style="color:var(--muted)">lat ${pickedLat.toFixed(5)}, lon ${pickedLon.toFixed(5)}</span> · <button type="button" class="loc-clear" id="locClear">${t('f.remove')}</button></div>`
     : `<div class="loc-warn">${t('f.locWarn')}</div>`;
-  const isOffer = (selType==='aid'||selType==='acopio');
   const locLabel = selType==='hosp' ? t('f.loc.hosp') : (isVolun ? t('f.loc.volun') : t('f.loc.def'));
   const locPh = selType==='hosp' ? t('fph.loc.hosp') : (isVolun ? t('fph.loc.volun') : t('fph.loc.def'));
   const needLabel = isVolun ? t('f.need.volun') : (isPerson ? t('f.need.person') : (isOffer ? t('f.need.offer') : t('f.need.def')));
   const needPh = isVolun ? t('fph.need.volun') : (isPerson ? t('fph.need.person') : (isOffer ? (selType==='aid' ? t('fph.need.aid') : t('fph.need.acopio')) : t('fph.need.def')));
-  const ciSuggest = (selType==='miss');   // opcional, pero recomendada al reportar desaparecidos
+  const typeCards = Object.entries(TYPES).filter(([k])=>k!=='safe').map(([k,v])=>
+    `<div class="tcard ${k===selType?'sel':''}" data-t="${k}"><div class="te">${v.e}</div><div class="tt">${t('type.'+k)}</div></div>`).join('');
   const personFields = isPerson ? `
     <label class="fl">${t('f.name')} <span style="font-weight:400;color:var(--muted)">${t('f.name.hint')}</span></label>
     <input id="f-name" placeholder="${t('fph.name')}">
@@ -1503,32 +1526,42 @@ function buildSheet(){
     <label class="fl">${t('f.ficha')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
     <input id="f-link" type="url" inputmode="url" placeholder="https://desaparecidosterremotovenezuela.com/?persona=...">
     <div style="font-size:11px;color:var(--muted);margin-top:4px">${t('f.ficha.hint')}</div>` : '';
-  // Vialidad: estado de paso + causa (estructurados)
-  const isRoad = (selType==='road');
   const roadFields = isRoad ? `
     <label class="fl">${t('f.roadStatus')}</label>
     <select id="f-rstatus">${Object.entries(ROAD_STATUS).map(([k,v])=>`<option value="${k}" ${k==='closed'?'selected':''}>${v.e} ${t('road.'+k)}</option>`).join('')}</select>
     <label class="fl">${t('f.cause')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
     <select id="f-rcause"><option value="">${t('f.cause.none')}</option>${ROAD_CAUSE.map(c=>`<option>${esc(c)}</option>`).join('')}</select>` : '';
-  document.getElementById('formfields').innerHTML=`
-    ${personFields}
-    <label class="fl">${locLabel}</label>
-    <input id="f-loc" placeholder="${locPh}">
-    <label class="fl">${needLabel}</label>
-    <textarea id="f-need" placeholder="${needPh}"></textarea>
-    ${roadFields}
-    ${fichaField}
-    <label class="fl">${t('f.mapLabel')} <span style="font-weight:400;color:var(--muted)">${t('f.mapRec')}</span></label>
-    <div class="loc-btns">
-      <button type="button" class="loc-btn" id="gpsBtn">${t('f.gps')}</button>
-      <button type="button" class="loc-btn" id="mapBtn">${t('f.mapBtn')}</button>
+  document.getElementById('wzBody').innerHTML=`
+    <div class="wz-step" data-step="1">
+      <div class="typegrid" id="typegrid">${typeCards}</div>
     </div>
-    <div id="gpsStatus" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
-    ${locStatus}
-    <label class="fl">${t('f.state')}</label>
-    <select id="f-state">${[...new Set(states)].sort().map(s=>`<option ${HOT.includes(s)?'selected':''}>${s}</option>`).join('')}</select>
-    <label class="fl">${t('f.muni')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
-    <select id="f-muni"><option value="">${t('f.muni.pick')}</option></select>`;
+    <div class="wz-step" data-step="2">
+      ${personFields}
+      <label class="fl">${needLabel}</label>
+      <textarea id="f-need" placeholder="${needPh}"></textarea>
+      ${roadFields}
+      ${fichaField}
+    </div>
+    <div class="wz-step" data-step="3">
+      <label class="fl">${locLabel}</label>
+      <input id="f-loc" placeholder="${locPh}">
+      <label class="fl">${t('f.mapLabel')} <span style="font-weight:400;color:var(--muted)">${t('f.mapRec')}</span></label>
+      <div class="loc-btns">
+        <button type="button" class="loc-btn" id="gpsBtn">${t('f.gps')}</button>
+        <button type="button" class="loc-btn" id="mapBtn">${t('f.mapBtn')}</button>
+      </div>
+      <div id="gpsStatus" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
+      ${locStatus}
+      <label class="fl">${t('f.state')}</label>
+      <select id="f-state">${[...new Set(states)].sort().map(s=>`<option ${HOT.includes(s)?'selected':''}>${s}</option>`).join('')}</select>
+      <label class="fl">${t('f.muni')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
+      <select id="f-muni"><option value="">${t('f.muni.pick')}</option></select>
+    </div>
+    <div class="wz-step" data-step="4">
+      <div class="wz-review" id="wzReview"></div>
+      <div class="wz-priv">${t('wz.privacy')}</div>
+    </div>`;
+  document.getElementById('typegrid').querySelectorAll('.tcard').forEach(c=>c.addEventListener('click',()=>{ selType=c.dataset.t; buildSheet(); }));
   document.getElementById('gpsBtn').addEventListener('click',useGPS);
   document.getElementById('mapBtn').addEventListener('click',enterPickMode);
   const lc=document.getElementById('locClear'); if(lc) lc.addEventListener('click',()=>{ clearPicked(); buildSheet(); });
@@ -1540,12 +1573,47 @@ function buildSheet(){
     const list=(MUNIS&&MUNIS[stateSel.value])?MUNIS[stateSel.value].map(m=>m[0]).sort():[];
     if(muniError||!list.length){ muniSel.innerHTML='<option value="">'+t('f.muni.na')+'</option>'; return; }
     muniSel.innerHTML='<option value="">'+t('f.muni.none')+'</option>'+list.map(n=>`<option>${esc(n)}</option>`).join('');
+    const dv=wizDraft['f-muni']; if(dv && [...muniSel.options].some(o=>o.value===dv)) muniSel.value=dv;
   }
   stateSel.addEventListener('change',fillMunis);
+  restoreDraft();   // restaura valores (incl. f-state) ANTES de poblar municipios
   fillMunis();
+  showStep(wizStep);
+}
+// Navegación paso a paso del wizard
+function showStep(n){
+  wizStep=Math.max(1,Math.min(WZ_TOTAL,n));
+  document.querySelectorAll('#wzBody .wz-step').forEach(s=>s.classList.toggle('on', +s.dataset.step===wizStep));
+  document.getElementById('wzProg').innerHTML=Array.from({length:WZ_TOTAL},(_,i)=>`<div class="wz-dot ${i+1<wizStep?'done':''} ${i+1===wizStep?'on':''}"></div>`).join('');
+  const titles=[t('wz.t1'),t('wz.t2'),t('wz.t3'),t('wz.t4')];
+  document.getElementById('wzLabel').textContent=`${t('wz.step')} ${wizStep} ${t('wz.of')} ${WZ_TOTAL} · ${titles[wizStep-1]}`;
+  if(wizStep===WZ_TOTAL) buildReview();
+  const back = wizStep>1 ? `<button type="button" class="wz-back" id="wzBack">${t('wz.back')}</button>` : '';
+  const fwd = wizStep<WZ_TOTAL ? `<button type="button" class="wz-next" id="wzNext">${t('wz.next')}</button>` : `<button class="submit" id="submitRep">${t('sheet.submit')}</button>`;
+  document.getElementById('wzNav').innerHTML=back+fwd;
+  const bb=document.getElementById('wzBack'); if(bb) bb.addEventListener('click',()=>showStep(wizStep-1));
+  const nx=document.getElementById('wzNext'); if(nx) nx.addEventListener('click',()=>{ if(validateStep(wizStep)) showStep(wizStep+1); });
+  const sb=document.getElementById('submitRep'); if(sb) sb.addEventListener('click',submitReport);
+}
+function validateStep(n){
+  if(n===3){ const el=document.getElementById('f-loc'); if(!el||!el.value.trim()){ alert(t('f.locReq')); if(el) el.focus(); return false; } }
+  return true;
+}
+function buildReview(){
+  const g=id=>{ const el=document.getElementById(id); return el?el.value.trim():''; };
+  const name=g('f-name'), loc=g('f-loc'), need=g('f-need'), st=g('f-state'), muni=g('f-muni');
+  const none=t('wz.sum.none');
+  const locFull = loc ? (muni? `${loc} — ${muni}, ${st}` : `${loc}${st?', '+st:''}`) : none;
+  const pl=precLabel(pickedSrc);
+  const precTxt = pickedLat!=null ? `${pl.exact?'✓':'≈'} ${pl.t}` : t('wz.sum.approx');
+  const rows=[[t('wz.sum.type'), `${TYPES[selType].e} ${esc(t('type.'+selType))}`]];
+  if(name) rows.push([t('f.name'), esc(name)]);
+  rows.push([t('wz.sum.loc'), esc(locFull)+` <span style="color:var(--muted)">· ${esc(precTxt)}</span>`]);
+  rows.push([t('wz.sum.detail'), need? esc(need) : none]);
+  document.getElementById('wzReview').innerHTML=rows.map(([k,v])=>`<div class="rrow"><span class="rk">${k}</span>${v}</div>`).join('');
 }
 const overlay=document.getElementById('overlay');
-document.getElementById('fab').addEventListener('click',()=>{ clearPicked(); buildSheet(); overlay.classList.add('on'); anime({targets:'.sheet',translateY:['100%','0%'],duration:280,easing:'easeOutCubic'}); });
+document.getElementById('fab').addEventListener('click',()=>{ clearPicked(); wizStep=1; wizDraft={}; buildSheet(); overlay.classList.add('on'); anime({targets:'.sheet',translateY:['100%','0%'],duration:280,easing:'easeOutCubic'}); });
 document.getElementById('closeSheet').addEventListener('click',()=>overlay.classList.remove('on'));
 overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.classList.remove('on'); });
 document.getElementById('pickCancel').addEventListener('click',()=>exitPickMode(true));
@@ -1558,7 +1626,7 @@ function stateCentroidLonLat(name){
   return polyCentroid(coords);
 }
 let lastSubmitTs=0;
-document.getElementById('submitRep').addEventListener('click',async()=>{
+async function submitReport(){
   // Anti-flood en cliente: 1 reporte cada 20 s desde este navegador
   const now=Date.now();
   if(now-lastSubmitTs < 20000){
@@ -1600,23 +1668,23 @@ document.getElementById('submitRep').addEventListener('click',async()=>{
   else { const [clon,clat]=stateCentroidLonLat(st); const jit=()=>(Math.random()-.5)*0.25; lon=clon+jit(); lat=clat+jit(); precision='approx'; }
   const rep={ type:selType, title:(personName || TYPES[selType].t), loc, need:needFinal, lon, lat, precision };
   const btn=document.getElementById('submitRep');
-  btn.textContent='Publicando…'; btn.disabled=true;
+  btn.textContent=t('sheet.publishing'); btn.disabled=true;
   if(cloudOK){
     try{ const saved=await sbInsert(rep); reports.unshift({...rep, id:saved.id, confirms:0, when:'ahora'}); lastSubmitTs=Date.now(); }
     catch(e){
       // si el backend rechaza (p.ej. duplicado o límite), avisar y no duplicar local
       const msg=(''+e).includes('429')||(''+e).includes('duplic')?'Reporte rechazado: posible duplicado o límite alcanzado. Revisa si ya existe.':'No se pudo publicar en la nube; se guardó localmente.';
-      if((''+e).includes('429')||(''+e).includes('409')){ alert(msg); btn.textContent='Publicar reporte'; btn.disabled=false; return; }
+      if((''+e).includes('429')||(''+e).includes('409')){ alert(msg); btn.textContent=t('sheet.submit'); btn.disabled=false; return; }
       reports.unshift({...rep, id:'u'+Date.now(), confirms:0, when:'ahora'}); lastSubmitTs=Date.now();
     }
   } else {
     reports.unshift({...rep, id:'u'+Date.now(), confirms:0, when:'ahora'}); save(); lastSubmitTs=Date.now();
   }
-  clearPicked();
-  btn.textContent='Publicar reporte'; btn.disabled=false;
+  clearPicked(); wizStep=1; wizDraft={};
+  btn.textContent=t('sheet.submit'); btn.disabled=false;
   render(); overlay.classList.remove('on');
   anime({targets:'#pulse',scale:[1,2.2,1],duration:600,easing:'easeOutQuad'});
-});
+}
 
 // Respeta "reducir movimiento": no animar el pulso de forma infinita
 if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
