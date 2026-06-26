@@ -258,6 +258,17 @@ document.getElementById('btnAnalizar').onclick=async()=>{
   document.getElementById('preview').style.display='';
 };
 
+// Inserta un reporte de forma SEGURA: vía RPC con validación (crear_reporte). Si el RPC
+// aún no existe (404), respaldo temporal al POST directo, para no romper la importación
+// durante la transición. Una vez creado el RPC y revocado el INSERT anónimo, todo pasa por él.
+async function postReporte(URL, H, r){
+  const body = JSON.stringify({ p_type:r.type, p_title:r.title, p_loc:r.loc||'', p_need:r.need||'',
+    p_lon:r.lon, p_lat:r.lat, p_precision:r.precision||'approx' });
+  let res = await fetch(`${URL}/rest/v1/rpc/crear_reporte`, { method:'POST', headers:{...H, Prefer:'return=minimal'}, body });
+  if(res.status===404) res = await fetch(`${URL}/rest/v1/reports`, { method:'POST', headers:{...H, Prefer:'return=minimal'}, body:JSON.stringify(r) });
+  return res;
+}
+
 document.getElementById('btnSubir').onclick=async()=>{
   const URL=document.getElementById('url').value.trim().replace(/\/$/,'');
   const KEY=document.getElementById('key').value.trim();
@@ -288,7 +299,7 @@ document.getElementById('btnSubir').onclick=async()=>{
       let done=false;
       for(let attempt=0; !done; attempt++){
         try{
-          const res=await fetch(`${URL}/rest/v1/reports`,{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify(r)});
+          const res=await postReporte(URL, H, r);
           if(res.ok){ ok++; if(cih)existCIH.add(cih.toLowerCase()); existN.add(nameKey(r.title)); done=true; }
           else if(res.status===429 && attempt<3){ const ra=parseInt(res.headers.get('Retry-After')||'2',10); await sleep((isNaN(ra)?2:ra)*1000); }
           else if(res.status===429){ rl++; done=true; }
