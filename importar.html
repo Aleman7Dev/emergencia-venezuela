@@ -122,12 +122,11 @@ function parseCSVText(text, delim){
 // Reconoce las columnas por el NOMBRE del encabezado (tolerante al orden y al
 // número de columnas). Solo es imprescindible la de "nombre".
 const HCOL=[
-  ['name', /nombre|apellido|paciente|persona|afectad/],
   ['ci', /c[eé]dula|cedula|^ci$|documento|identificaci/],
   ['edad', /edad/],
   ['sexo', /sexo|g[eé]nero/],
   ['proc', /procedencia|proviene|origen|sector|direcci|municipio|localidad|parroquia/],
-  ['hosp', /hospital|centro|cl[ií]nica|salud|ubicaci|sitio|instituci|recinto/],
+  ['hosp', /hospital|centro|cl[ií]nica|salud|ubicaci|sitio|instituci|recinto|ingresad/],
   ['fecha', /fecha|ingreso/],
   ['hora', /hora/],
   ['serv', /servicio|[aá]rea|piso|sala|unidad|pabell/],
@@ -135,7 +134,16 @@ const HCOL=[
 ];
 function mapColumns(header){
   const norm=(header||[]).map(h=>normName(h)); const idx={};
-  HCOL.forEach(([key,re])=>{ const i=norm.findIndex(h=>h&&re.test(h)); if(i>=0 && !Object.values(idx).includes(i)) idx[key]=i; });
+  // Nombre: puede venir en UNA columna, o separado en APELLIDOS + NOMBRES (formato consolidado).
+  const iApe=norm.findIndex(h=>/apellido/.test(h));
+  const iNom=norm.findIndex(h=>/nombre/.test(h));
+  const iPac=norm.findIndex(h=>/paciente|persona|afectad|identidad/.test(h));
+  if(iApe>=0 && iNom>=0 && iApe!==iNom){ idx.ape=iApe; idx.nom=iNom; } // dos columnas
+  else if(iNom>=0) idx.name=iNom;
+  else if(iApe>=0) idx.name=iApe;
+  else if(iPac>=0) idx.name=iPac;
+  const used=new Set(Object.values(idx));
+  HCOL.forEach(([key,re])=>{ const i=norm.findIndex(h=>h&&re.test(h)); if(i>=0 && !used.has(i)){ idx[key]=i; used.add(i); } });
   return idx;
 }
 
@@ -146,14 +154,15 @@ function parseHospitalCSV(text, incDead){
   const all=parseCSVText(text, delim);
   const header=all.length?all.shift():[];     // encabezado
   const col=mapColumns(header);
-  const hasHdr = col.name!=null;              // ¿reconocimos columnas por nombre?
+  const hasHdr = col.name!=null || col.nom!=null || col.ape!=null;  // ¿reconocimos el nombre?
   const skipped=[]; const rows=[];
   all.forEach((c,i)=>{
     if(c.length===1 && c[0].trim()==='') return; // línea vacía
     let r=null;
     if(hasHdr){                                // mapeo por encabezado (tolerante)
       const g=k=> col[k]!=null ? (c[col[k]]||'').trim() : '';
-      r={name:g('name'),ci:g('ci'),edad:g('edad'),sexo:g('sexo'),proc:g('proc'),hosp:g('hosp'),fecha:g('fecha'),hora:g('hora'),serv:g('serv'),estatus:g('estatus')};
+      const nm = col.name!=null ? g('name') : [g('nom'),g('ape')].filter(Boolean).join(' '); // NOMBRES + APELLIDOS
+      r={name:nm,ci:g('ci'),edad:g('edad'),sexo:g('sexo'),proc:g('proc'),hosp:g('hosp'),fecha:g('fecha'),hora:g('hora'),serv:g('serv'),estatus:g('estatus')};
     } else if(c.length===11){                  // layout clásico (11 columnas) sin encabezado reconocible
       r={name:(c[1]||'').trim(),ci:(c[2]||'').trim(),edad:(c[3]||'').trim(),sexo:(c[4]||'').trim(),proc:(c[5]||'').trim(),hosp:(c[6]||'').trim(),fecha:(c[7]||'').trim(),hora:(c[8]||'').trim(),serv:(c[9]||'').trim(),estatus:(c[10]||'').trim()};
     } else { skipped.push({line:i+2, n:c.length}); return; } // no sabemos mapear a ciegas
