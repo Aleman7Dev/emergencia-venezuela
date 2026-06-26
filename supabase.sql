@@ -28,6 +28,51 @@ $$;
 grant execute on function public.mark_road_open(text) to anon, authenticated;
 
 -- ----------------------------------------------------------------------------
+-- 1.bis) Crear reportes SOLO por función validada (cierra el hueco de seguridad)
+-- ----------------------------------------------------------------------------
+-- Hoy la app crea reportes con un POST directo a /rest/v1/reports usando la clave
+-- pública (anon) que está en el HTML. Eso permite que CUALQUIERA inserte o falsee
+-- reportes en masa. Esta función valida en el servidor y es el único camino de
+-- inserción una vez que revoques el INSERT anónimo (paso c). La app y el importador
+-- ya usan esta función primero y caen al POST directo solo mientras no exista (404),
+-- así que puedes crearla sin romper nada y revocar el INSERT al final.
+create or replace function public.crear_reporte(
+  p_type text, p_title text, p_loc text, p_need text,
+  p_lon double precision, p_lat double precision, p_precision text
+) returns public.reports
+language plpgsql security definer set search_path = public as $$
+declare r public.reports;
+begin
+  if p_type is null or p_type not in
+     ('crit','build','escombros','road','miss','hosp','acopio','aid','dark','water','volunteer','safe') then
+    raise exception 'tipo invalido';
+  end if;
+  if p_title is null or length(btrim(p_title)) = 0 then raise exception 'titulo requerido'; end if;
+  if p_lon is null or p_lat is null
+     or p_lon not between -74 and -59 or p_lat not between 0 and 16 then
+    raise exception 'coordenadas fuera de rango (Venezuela)';
+  end if;
+  insert into public.reports(type, title, loc, need, lon, lat, precision, status)
+  values (p_type, left(btrim(p_title),160), left(coalesce(p_loc,''),300),
+          left(coalesce(p_need,''),2000), p_lon, p_lat, coalesce(p_precision,'approx'), 'activo')
+  returning * into r;
+  return r;
+end $$;
+grant execute on function public.crear_reporte(text,text,text,text,double precision,double precision,text)
+  to anon, authenticated;
+
+-- c) AL FINAL (después de desplegar la app nueva y probar que crear un reporte funciona,
+--    y de haber aplicado la sección 2 — CHECK/ENUM con 'escombros' y 'volunteer' — para que
+--    crear_reporte no rechace tipos válidos):
+--    cierra la inserción directa con la clave pública. Mira el nombre real de la
+--    política de INSERT en Database -> reports -> Policies y elimínala:
+-- drop policy if exists "anon inserta reports" on public.reports;   -- ajusta el nombre
+--    (o, si el INSERT no se controla por política sino por permiso de tabla:)
+-- revoke insert on public.reports from anon;
+--    Tras esto, SOLO crear_reporte() puede insertar (corre como definer y no pasa por RLS).
+--    La LECTURA (select) sigue pública; no la toques.
+
+-- ----------------------------------------------------------------------------
 -- 2) Permitir el tipo de reporte "volunteer" (buscadores voluntarios)
 -- ----------------------------------------------------------------------------
 -- Solo es necesario SI la columna "type" tiene una restricción CHECK o un ENUM
