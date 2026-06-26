@@ -90,6 +90,31 @@ create policy "inserta mensajes" on public.mensajes
   with check (char_length(mensaje) between 1 and 280 and char_length(coalesce(nombre,'')) <= 40);
 
 -- ----------------------------------------------------------------------------
+-- 5) Contador de "personas orando por Venezuela" (botón de oración en portada)
+--    Es un contador COMPARTIDO que arranca en 170 y solo sube de 1 en 1 al tocar
+--    el botón. Independiente del nº de mensajes. Sin esto, cada dispositivo lleva
+--    su propio conteo local (igual funciona, pero no se comparte).
+-- ----------------------------------------------------------------------------
+create table if not exists public.oraciones (
+  id    int primary key,
+  total bigint not null default 0
+);
+insert into public.oraciones (id, total) values (1, 170)
+  on conflict (id) do nothing;
+
+alter table public.oraciones enable row level security;
+drop policy if exists "lee oraciones" on public.oraciones;
+create policy "lee oraciones" on public.oraciones
+  for select to anon, authenticated using (true);
+
+-- Solo se puede sumar +1 a través de esta función (no UPDATE libre con la clave pública).
+create or replace function public.orar()
+  returns bigint language sql security definer set search_path = public as $$
+  update public.oraciones set total = total + 1 where id = 1 returning total;
+$$;
+grant execute on function public.orar() to anon, authenticated;
+
+-- ----------------------------------------------------------------------------
 -- Notas
 -- ----------------------------------------------------------------------------
 -- · El cruce hospital ↔ desaparecidos (cédula/nombre) NO requiere cambios de

@@ -202,6 +202,24 @@
   .apoyo-msg.c0{ border-left-color:#FCD116; } .apoyo-msg.c1{ border-left-color:#003893; } .apoyo-msg.c2{ border-left-color:#CF142B; }
   .apoyo-msg .am-text{ font-size:14px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
   .apoyo-msg .am-meta{ font-size:11px; color:var(--muted); margin-top:5px; }
+  /* Marquesina + banda de oración por Venezuela (portada, sobre el mapa) */
+  .pray-band{ border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:10px; background:linear-gradient(180deg,rgba(252,209,22,.06),rgba(0,56,147,.05)); }
+  .pray-marquee{ overflow:hidden; white-space:nowrap; border-bottom:1px solid var(--line); }
+  .pray-track{ display:inline-flex; padding:8px 0; animation:praymarquee 60s linear infinite; will-change:transform; }
+  .pray-track:hover{ animation-play-state:paused; }
+  .pray-item{ display:inline-flex; align-items:center; padding:0 16px; font-size:12.5px; color:var(--txt); }
+  .pray-item::after{ content:'•'; margin-left:16px; color:var(--miss); opacity:.7; }
+  @keyframes praymarquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  .pray-bar{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; }
+  .pray-count{ font-size:13px; }
+  .pray-count b{ color:#FCD116; font-size:16px; }
+  .pray-actions{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .pray-btn{ border:none; border-radius:20px; padding:9px 15px; font-size:13px; font-weight:800; color:#fff; cursor:pointer; background:linear-gradient(90deg,#CF142B,#003893); box-shadow:0 2px 10px rgba(207,20,43,.28); }
+  .pray-react{ border:1px solid var(--line); background:var(--panel2); border-radius:50%; width:38px; height:38px; font-size:17px; cursor:pointer; line-height:1; }
+  .pray-btn:active,.pray-react:active{ transform:scale(.94); }
+  .pray-float{ position:fixed; pointer-events:none; font-size:26px; z-index:3000; animation:prayfloat 1s ease-out forwards; }
+  @keyframes prayfloat{ from{ opacity:1; transform:translateY(0) scale(1); } to{ opacity:0; transform:translateY(-64px) scale(1.6); } }
+  @media (prefers-reduced-motion: reduce){ .pray-track{ animation:none; } }
   .close{ position:absolute; right:16px; top:14px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; }
   .empty{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 10px; }
   .note{ font-size:11.5px; color:var(--muted); line-height:1.6; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:14px; }
@@ -369,6 +387,18 @@
   <section class="view on" id="v-mapa">
     <div class="map-grid">
       <div class="map-main">
+        <div class="pray-band">
+          <div class="pray-marquee"><div class="pray-track" id="prayTrack"></div></div>
+          <div class="pray-bar">
+            <div class="pray-count">🙏 <b id="prayTotal">170</b> <span data-i18n="pray.count">personas están orando por Venezuela</span></div>
+            <div class="pray-actions">
+              <button class="pray-btn" id="prayBtn" data-react="🙏"><span data-i18n="pray.btn">Orar por Venezuela</span> 🙏🇻🇪</button>
+              <button class="pray-react" data-react="💛" aria-label="💛">💛</button>
+              <button class="pray-react" data-react="🕊️" aria-label="🕊️">🕊️</button>
+              <button class="pray-react" data-react="🤍" aria-label="🤍">🤍</button>
+            </div>
+          </div>
+        </div>
         <div class="filters" id="filters"></div>
         <div class="mapwrap">
           <div id="map"></div>
@@ -630,7 +660,7 @@ const I18N={
   'sect.reportes':'Reportes activos','sect.desap':'Personas desaparecidas','sect.hosp':'Personas ubicadas en centros de salud','sect.acopio':'Centros de acopio y puntos de ayuda humanitaria','sect.volun':'Buscadores voluntarios','sect.tel':'Teléfonos de emergencia oficiales',
   'search.miss':'Buscar por nombre, zona o estado…','search.hosp':'Buscar por nombre, hospital o estado…','search.volun':'Buscar por zona o estado…','search.clear':'Limpiar',
   'ally.head':'También en el directorio aliado (desaparecidosterremotovenezuela.com):','ally.searching':'Buscando en el directorio aliado…','ally.more':'Ver más en desaparecidosterremotovenezuela.com ↗',
-  'nav.apoyo':'💛 Apoyo','apoyo.title':'Mensajes de apoyo y oraciones por Venezuela','apoyo.sub':'Un muro de aliento para los rescatistas, los voluntarios que levantan escombros, quienes buscan personas, y los médicos, enfermeras y personal de salud. Para llenar de esperanza cada vida que puede ser rescatada.','apoyo.name':'Tu nombre (opcional)','apoyo.ph':'Escribe tu mensaje de aliento u oración por Venezuela…','apoyo.send':'Mis oraciones por Venezuela','apoyo.fixed':'Una oración no se ve, pero sostiene. Unas palabras no levantan escombros, pero levantan el alma de quien sí los levanta. Gracias a los <b>rescatistas</b> que no descansan, a los <b>voluntarios</b> que remueven escombros con sus propias manos, a quienes <b>buscan sin rendirse</b>, y a los <b>médicos, enfermeras y personal de salud</b> que sostienen cada vida. Por cada persona rescatada, cada herido atendido y cada familia que vuelve a abrazarse: <b>Venezuela no está sola.</b> 💛💙❤️','apoyo.thanks':'🤍 Gracias. Tu mensaje quedó registrado.','apoyo.short':'Escribe al menos unas palabras.','apoyo.wait':'Gracias por tu mensaje. Espera unos segundos antes de enviar otro.','apoyo.now':'ahora','apoyo.count':'mensajes de aliento','apoyo.anon':'Anónimo',
+  'nav.apoyo':'💛 Apoyo','apoyo.title':'Mensajes de apoyo y oraciones por Venezuela','apoyo.sub':'Un muro de aliento para los rescatistas, los voluntarios que levantan escombros, quienes buscan personas, y los médicos, enfermeras y personal de salud. Para llenar de esperanza cada vida que puede ser rescatada.','apoyo.name':'Tu nombre (opcional)','apoyo.ph':'Escribe tu mensaje de aliento u oración por Venezuela…','apoyo.send':'Mis oraciones por Venezuela','apoyo.fixed':'Una oración no se ve, pero sostiene. Unas palabras no levantan escombros, pero levantan el alma de quien sí los levanta. Gracias a los <b>rescatistas</b> que no descansan, a los <b>voluntarios</b> que remueven escombros con sus propias manos, a quienes <b>buscan sin rendirse</b>, y a los <b>médicos, enfermeras y personal de salud</b> que sostienen cada vida. Por cada persona rescatada, cada herido atendido y cada familia que vuelve a abrazarse: <b>Venezuela no está sola.</b> 💛💙❤️','apoyo.thanks':'🤍 Gracias. Tu mensaje quedó registrado.','apoyo.short':'Escribe al menos unas palabras.','apoyo.wait':'Gracias por tu mensaje. Espera unos segundos antes de enviar otro.','apoyo.now':'ahora','apoyo.count':'mensajes de aliento','apoyo.anon':'Anónimo','pray.count':'personas están orando por Venezuela','pray.btn':'Orar por Venezuela',
   'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','fab':'＋ Reportar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
   'legend.crit':'Emergencia crítica','legend.build':'Edificio/acceso dañado','legend.miss':'Desaparecido','legend.acopio':'Centro de acopio','legend.aid':'Ayuda humanitaria','legend.dark':'Zona sin luz','legend.water':'Sin agua potable','legend.volun':'Buscador voluntario',
   'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.miss':'Buscados',
@@ -679,7 +709,7 @@ const I18N={
   'sect.reportes':'Active reports','sect.desap':'Missing persons','sect.hosp':'People located in health centers','sect.acopio':'Collection centers and humanitarian aid points','sect.volun':'Volunteer searchers','sect.tel':'Official emergency phone numbers',
   'search.miss':'Search by name, area or state…','search.hosp':'Search by name, hospital or state…','search.volun':'Search by area or state…','search.clear':'Clear',
   'ally.head':'Also in the partner directory (desaparecidosterremotovenezuela.com):','ally.searching':'Searching the partner directory…','ally.more':'See more at desaparecidosterremotovenezuela.com ↗',
-  'nav.apoyo':'💛 Support','apoyo.title':'Messages of support and prayers for Venezuela','apoyo.sub':'A wall of encouragement for rescuers, the volunteers clearing rubble, those searching for people, and the doctors, nurses and health workers. To bring hope to every life that can be saved.','apoyo.name':'Your name (optional)','apoyo.ph':'Write your message of encouragement or prayer for Venezuela…','apoyo.send':'My prayers for Venezuela','apoyo.fixed':'A prayer is unseen, yet it holds. Words don’t lift rubble, but they lift the spirit of those who do. Thank you to the <b>rescuers</b> who never rest, the <b>volunteers</b> clearing rubble with their own hands, those who <b>search without giving up</b>, and the <b>doctors, nurses and health workers</b> who hold every life. For every person rescued, every injured person cared for, and every family reunited: <b>Venezuela is not alone.</b> 💛💙❤️','apoyo.thanks':'🤍 Thank you. Your message was saved.','apoyo.short':'Write at least a few words.','apoyo.wait':'Thank you. Please wait a few seconds before sending another.','apoyo.now':'now','apoyo.count':'messages of encouragement','apoyo.anon':'Anonymous',
+  'nav.apoyo':'💛 Support','apoyo.title':'Messages of support and prayers for Venezuela','apoyo.sub':'A wall of encouragement for rescuers, the volunteers clearing rubble, those searching for people, and the doctors, nurses and health workers. To bring hope to every life that can be saved.','apoyo.name':'Your name (optional)','apoyo.ph':'Write your message of encouragement or prayer for Venezuela…','apoyo.send':'My prayers for Venezuela','apoyo.fixed':'A prayer is unseen, yet it holds. Words don’t lift rubble, but they lift the spirit of those who do. Thank you to the <b>rescuers</b> who never rest, the <b>volunteers</b> clearing rubble with their own hands, those who <b>search without giving up</b>, and the <b>doctors, nurses and health workers</b> who hold every life. For every person rescued, every injured person cared for, and every family reunited: <b>Venezuela is not alone.</b> 💛💙❤️','apoyo.thanks':'🤍 Thank you. Your message was saved.','apoyo.short':'Write at least a few words.','apoyo.wait':'Thank you. Please wait a few seconds before sending another.','apoyo.now':'now','apoyo.count':'messages of encouragement','apoyo.anon':'Anonymous','pray.count':'people are praying for Venezuela','pray.btn':'Pray for Venezuela',
   'near':'📍 Near me','near.on':'📍 Near me ✓','fab':'＋ Report','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
   'legend.crit':'Critical emergency','legend.build':'Damaged building/access','legend.miss':'Missing person','legend.acopio':'Collection center','legend.aid':'Humanitarian aid','legend.dark':'No power','legend.water':'No drinking water','legend.volun':'Volunteer searcher',
   'stat.crit':'Critical','stat.build':'Damage/utilities','stat.miss':'Searched',
@@ -1516,9 +1546,26 @@ function searchAllies(q){
 
 // ---- Muro de apoyo / oraciones por Venezuela ----
 const APOYO_SEED=[
-  { nombre:'Equipo Emergencia Venezuela', mensaje:'Fuerza, Venezuela. Cada vida cuenta y nadie está solo. 🇻🇪', when:'' },
-  { nombre:'Una familia', mensaje:'Gracias a los rescatistas y voluntarios. Que cada persona vuelva a casa. 🙏', when:'' },
-  { nombre:'Anónimo', mensaje:'Oramos por los heridos, por quienes buscan y por quienes esperan. No se rindan. 💛💙❤️', when:'' },
+  { nombre:'Equipo Emergencia Venezuela', mensaje:'Fuerza, Venezuela. Cada vida cuenta y nadie está solo. 🇻🇪' },
+  { nombre:'Una familia', mensaje:'Gracias a los rescatistas que no descansan. Que cada persona vuelva a casa. 🙏' },
+  { nombre:'Anónimo', mensaje:'Oramos por los heridos, por quienes buscan y por quienes esperan. 💛💙❤️' },
+  { nombre:'Un voluntario', mensaje:'A quienes levantan escombros con sus propias manos: son ángeles. 🕊️' },
+  { nombre:'Anónimo', mensaje:'Cada oración es fuerza. Venezuela se levanta unida.' },
+  { nombre:'Una madre', mensaje:'Por los niños, por los abuelos, por las familias separadas: pronto el reencuentro.' },
+  { nombre:'Un paciente', mensaje:'Médicos y enfermeras, gracias por sostener cada latido. 🤍' },
+  { nombre:'Desde el exterior', mensaje:'No están solos. Desde lejos, también oramos por Venezuela esta noche.' },
+  { nombre:'Anónimo', mensaje:'La esperanza también remueve escombros. ¡Ánimo, hermanos!' },
+  { nombre:'Una vecina', mensaje:'Que cada herido sane y cada familia se abrace de nuevo.' },
+  { nombre:'Un venezolano', mensaje:'Venezuela es fuerte, Venezuela es hermana. Aquí estamos.' },
+  { nombre:'Anónimo', mensaje:'Una vela encendida por cada persona que aún buscamos. 🕯️' },
+  { nombre:'Un rescatista', mensaje:'Gracias a quienes buscan sin rendirse. La esperanza no se cansa.' },
+  { nombre:'Anónimo', mensaje:'Desde lejos y desde cerca, un solo corazón por Venezuela. ❤️' },
+  { nombre:'Una abuela', mensaje:'Que la fe sostenga a quienes hoy más lo necesitan.' },
+  { nombre:'Anónimo', mensaje:'Por bomberos, socorristas y protección civil: héroes anónimos. 💪' },
+  { nombre:'Una familia', mensaje:'Cada reencuentro es un milagro que celebramos juntos.' },
+  { nombre:'Anónimo', mensaje:'Mucha fuerza a las madres y padres que esperan noticias.' },
+  { nombre:'Un hermano', mensaje:'La solidaridad de un pueblo es más fuerte que cualquier terremoto.' },
+  { nombre:'Anónimo', mensaje:'Venezuela, te abrazamos y no te soltamos. 🇻🇪🤍' },
 ];
 let apoyoLoaded=false, lastApoyoTs=0;
 function apoyoLocal(){ try{ const v=localStorage.getItem('vzla_apoyo'); return v?JSON.parse(v):[]; }catch(e){ return []; } }
@@ -1553,6 +1600,40 @@ async function sendApoyo(){
   apoyoLoaded=false; await loadApoyo();
 }
 { const ab=document.getElementById('apoyo-send'); if(ab) ab.addEventListener('click',sendApoyo); }
+
+// ---- Marquesina de mensajes + contador de oración por Venezuela (portada) ----
+function renderMarquee(list){
+  const tr=document.getElementById('prayTrack'); if(!tr) return;
+  const msgs=(list&&list.length?list:APOYO_SEED).map(m=>(m&&m.mensaje)||m).filter(Boolean);
+  const one=msgs.map(sx=>`<span class="pray-item">${esc(sx)}</span>`).join('');
+  tr.innerHTML=one+one;   // duplicado para un bucle continuo y sin saltos
+}
+// El contador es INDEPENDIENTE del nº de mensajes: cuenta toques al botón de oración. Arranca en 170.
+let prayBase=170, prayLocal=0, prayCloud=null, lastPray=0;
+function prayShow(){ const el=document.getElementById('prayTotal'); if(el) el.textContent=(prayCloud!=null?prayCloud:(prayBase+prayLocal)).toLocaleString('es-VE'); }
+async function loadPray(){
+  try{ prayLocal=parseInt(localStorage.getItem('vzla_pray')||'0',10)||0; }catch(e){ prayLocal=0; }
+  prayShow();
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/oraciones?select=total&id=eq.1`,{ headers:SB_HEAD });
+    if(r.ok){ const a=await r.json(); if(a&&a[0]&&a[0].total!=null){ const n=Number(a[0].total); if(isFinite(n)){ prayCloud=n; prayShow(); } } }
+  }catch(e){}
+}
+async function pray(emoji, ev){
+  const now=Date.now(); if(now-lastPray<1200) return; lastPray=now;
+  try{ const f=document.createElement('div'); f.className='pray-float'; f.textContent=emoji||'🙏';
+    const x=(ev&&ev.clientX)||(window.innerWidth/2), y=(ev&&ev.clientY)||120; f.style.left=(x-13)+'px'; f.style.top=(y-20)+'px';
+    document.body.appendChild(f); setTimeout(()=>f.remove(),1000); }catch(e){}
+  if(prayCloud!=null){ prayCloud++; } else { prayLocal++; try{ localStorage.setItem('vzla_pray',String(prayLocal)); }catch(e){} }
+  prayShow();
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/orar`,{ method:'POST', headers:SB_HEAD, body:'{}' });
+    if(r.ok){ const v=await r.json(); const n=Number(v); if(isFinite(n)){ prayCloud=n; prayShow(); } }
+  }catch(e){}
+}
+document.querySelectorAll('.pray-band [data-react]').forEach(b=>b.addEventListener('click',e=>pray(b.dataset.react,e)));
+renderMarquee(APOYO_SEED);
+loadPray();
 const hs=document.getElementById('hospSearch');
 if(hs){ hs.addEventListener('input',e=>{ hospQuery=e.target.value.trim(); render(); }); }
 document.getElementById('hospClear').addEventListener('click',()=>{ hospQuery=''; hs.value=''; render(); });
