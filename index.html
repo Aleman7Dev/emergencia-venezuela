@@ -843,8 +843,10 @@ function computeMatches(){
     let ok=false, strong=false;
     if(mh&&hh&&mh===hh){ ok=true; strong=true; }                       // misma cédula => fuerte
     else if(!isGenericTitle(m)&&!isGenericTitle(h)){
-      const nm=normName(m.title);
-      if(nm && nm===normName(h.title)){ ok=true; strong=false; }       // mismo nombre => posible
+      // comparación invariante al orden Apellido/Nombre (los hospitales suelen venir "Apellido Nombre")
+      const nm=normName(m.title).split(' ').filter(Boolean).sort().join(' ');
+      const nh=normName(h.title).split(' ').filter(Boolean).sort().join(' ');
+      if(nm && nm===nh){ ok=true; strong=false; }                      // mismo nombre => posible
     }
     if(ok){ add(m,h,strong); add(h,m,strong); }
   }));
