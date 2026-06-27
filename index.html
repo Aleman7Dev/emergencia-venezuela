@@ -260,7 +260,8 @@
   .sb-en_proceso{ background:rgba(245,158,11,.16); color:#f59e0b; }
   .sb-cumplida{ background:rgba(100,116,139,.18); color:var(--muted); }
   .sb-urgente{ background:rgba(207,20,43,.16); color:#ef4444; }
-  .sb-org{ background:rgba(0,56,147,.18); color:#5b8def; }
+  .sb-org{ background:rgba(0,56,147,.12); color:#3a6fd0; }
+  .sb-verif{ background:rgba(22,163,74,.16); color:#15803d; font-weight:800; }
   .sol-item .si-actions{ display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
   .sol-item .si-actions button{ border:1px solid var(--line); background:var(--panel2); color:var(--txt); border-radius:9px; padding:7px 11px; font-size:12.5px; cursor:pointer; font-family:inherit; }
   /* Ofrecimientos: acento verde para distinguir del lado de solicitudes */
@@ -832,6 +833,8 @@
     <input id="sf-contacto" maxlength="120" data-i18n-ph="sol.ph.contacto" placeholder="Teléfono / WhatsApp o grupo de la organización">
     <label data-i18n="sol.f.org">Organización (opcional)</label>
     <input id="sf-org" maxlength="80" data-i18n-ph="sol.ph.org" placeholder="Ej.: Comando ConVzla, Cruz Roja, parroquia…">
+    <label data-i18n="sol.f.codigo">Código de organización verificada (opcional)</label>
+    <input id="sf-codigo" maxlength="40" data-i18n-ph="sol.ph.codigo" placeholder="Si tu organización es aliada, te damos un código">
     <label class="sol-chk"><input type="checkbox" id="sf-urgente"> <span data-i18n="sol.f.urgente">Marcar como urgente</span></label>
     <div class="sol-note" data-i18n="sol.note">Usa una zona aproximada, no una dirección exacta. La solicitud es pública. Ante peligro de vida, llama al 171.</div>
     <button class="sol-submit" id="sf-submit" data-i18n="sol.publish">Publicar solicitud</button>
@@ -917,7 +920,7 @@ const I18N={
   'status.base':'Estado de Emergencia Nacional','status.online':' · 🟢 En línea','status.local':' · 🟡 Local (sin conexión)',
   'nav.solicitudes':'Solicitudes','nav.ofrecimientos':'Ofrecimientos','nav.volun':'Voluntarios','nav.denuncias':'Denuncias','nav.mas':'Mapa y más','nav.reportes':'Reportes','nav.acopio':'Acopio y ayuda','nav.tel':'Teléfonos','nav.mapa':'Mapa',
   'sol.title':'Solicitudes de ayuda','sol.sub':'Tablón de necesidades de la respuesta: brazos, agua, alimentos e insumos para equipos y afectados. Es un tablón que revisas, no garantiza que alguien irá. Ante peligro de vida, llama al <b>171</b>.','sol.new':'Publicar solicitud','sol.publish':'Publicar solicitud','sol.empty':'Aún no hay solicitudes publicadas. Cuando una organización o un equipo necesite voluntarios, agua, alimentos o insumos, aparecerán aquí. Mientras tanto, explora:',
-  'sol.f.all':'Todas','sol.f.allKinds':'Todas las categorías','sol.f.kind':'Categoría','sol.f.titulo':'¿Qué se necesita?','sol.f.detalle':'Detalle (opcional)','sol.f.sector':'Zona aproximada','sol.f.contacto':'Contacto (cómo coordinar)','sol.f.org':'Organización (opcional)','sol.f.urgente':'Marcar como urgente',
+  'sol.f.all':'Todas','sol.f.allKinds':'Todas las categorías','sol.f.kind':'Categoría','sol.f.titulo':'¿Qué se necesita?','sol.f.detalle':'Detalle (opcional)','sol.f.sector':'Zona aproximada','sol.f.contacto':'Contacto (cómo coordinar)','sol.f.org':'Organización (opcional)','sol.f.codigo':'Código de organización verificada (opcional)','sol.ph.codigo':'Si tu organización es aliada, te damos un código','sol.verif':'Verificada','sol.f.urgente':'Marcar como urgente',
   'sol.ph.titulo':'Ej.: Se necesitan 10 voluntarios con guantes','sol.ph.detalle':'Cantidad, horario, a quién se entrega, etc.','sol.ph.sector':'Ej.: Caraballeda, La Guaira (sin dirección exacta)','sol.ph.contacto':'Teléfono / WhatsApp o grupo de la organización','sol.ph.org':'Ej.: Comando ConVzla, Cruz Roja, parroquia…',
   'sol.note':'Usa una zona aproximada, no una dirección exacta. La solicitud es pública. Ante peligro de vida, llama al 171.',
   'sol.st.abierta':'Abierta','sol.st.en_proceso':'En proceso','sol.st.cumplida':'Cumplida','sol.st.cancelada':'Cancelada','sol.urgente':'Urgente',
@@ -987,7 +990,7 @@ const I18N={
   'status.base':'National State of Emergency','status.online':' · 🟢 Online','status.local':' · 🟡 Local (offline)',
   'nav.solicitudes':'Requests','nav.ofrecimientos':'Offers','nav.volun':'Volunteers','nav.denuncias':'Grievances','nav.mas':'Map & more','nav.reportes':'Reports','nav.acopio':'Aid & supplies','nav.tel':'Phones','nav.mapa':'Map',
   'sol.title':'Help requests','sol.sub':'A needs board for the response: hands, water, food and supplies for teams and those affected. It is a board you check, not a guarantee someone will come. In a life-threatening emergency, call <b>171</b>.','sol.new':'Post a request','sol.publish':'Post request','sol.empty':'No requests posted yet. When an organization or team needs volunteers, water, food or supplies, they will appear here. Meanwhile, explore:',
-  'sol.f.all':'All','sol.f.allKinds':'All categories','sol.f.kind':'Category','sol.f.titulo':'What is needed?','sol.f.detalle':'Details (optional)','sol.f.sector':'Approximate area','sol.f.contacto':'Contact (how to coordinate)','sol.f.org':'Organization (optional)','sol.f.urgente':'Mark as urgent',
+  'sol.f.all':'All','sol.f.allKinds':'All categories','sol.f.kind':'Category','sol.f.titulo':'What is needed?','sol.f.detalle':'Details (optional)','sol.f.sector':'Approximate area','sol.f.contacto':'Contact (how to coordinate)','sol.f.org':'Organization (optional)','sol.f.codigo':'Verified organization code (optional)','sol.ph.codigo':'If your organization is a partner, we give you a code','sol.verif':'Verified','sol.f.urgente':'Mark as urgent',
   'sol.ph.titulo':'E.g.: 10 volunteers with gloves needed','sol.ph.detalle':'Quantity, schedule, who it goes to, etc.','sol.ph.sector':'E.g.: Caraballeda, La Guaira (no exact address)','sol.ph.contacto':'Phone / WhatsApp or the organization group','sol.ph.org':'E.g.: Comando ConVzla, Red Cross, parish…',
   'sol.note':'Use an approximate area, not an exact address. The request is public. In a life-threatening emergency, call 171.',
   'sol.st.abierta':'Open','sol.st.en_proceso':'In progress','sol.st.cumplida':'Fulfilled','sol.st.cancelada':'Cancelled','sol.urgente':'Urgent',
@@ -2059,7 +2062,7 @@ function fillSolFilters(){
 }
 async function loadSolicitudes(){
   solLoaded=true; fillSolFilters();
-  const cols='id,tipo,kind,titulo,detalle,sector,contacto,organizacion,prioridad,estado,created_at';
+  const cols='id,tipo,kind,titulo,detalle,sector,contacto,organizacion,verificada,prioridad,estado,created_at';
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/solicitudes?select=${cols}&order=created_at.desc&limit=200`,{ headers:SB_HEAD });
     solList = r.ok ? await r.json() : [];
@@ -2073,7 +2076,8 @@ function solCardHtml(s, mine){
   const estKey=(ofrece && (s.estado==='abierta'||s.estado==='cumplida')) ? 'ofr.st.'+s.estado : 'sol.st.'+s.estado;
   let badges=`<span class="sol-badge sb-${esc(s.estado)}">${esc(t(estKey))}</span>`;
   if(urgent) badges+=`<span class="sol-badge sb-urgente">${esc(t('sol.urgente'))}</span>`;
-  if(s.organizacion) badges+=`<span class="sol-badge sb-org">✔ ${esc(s.organizacion)}</span>`;
+  if(s.verificada && s.organizacion) badges+=`<span class="sol-badge sb-verif">✔ ${esc(s.organizacion)} · ${esc(t('sol.verif'))}</span>`;
+  else if(s.organizacion) badges+=`<span class="sol-badge sb-org">${esc(s.organizacion)}</span>`;
   let actions=`<button class="si-wa" data-solshare="${esc(String(s.id))}">${esc(t('sol.share'))}</button>`;
   if(wa) actions+=`<button data-wa="${esc(wa)}">${esc(t(ofrece?'ofr.contact':'sol.contact'))}</button>`;
   if(isMine && s.estado!=='cumplida' && s.estado!=='cancelada'){
@@ -2149,7 +2153,7 @@ async function publicarSolicitud(){
   const payload={ p_tipo:solModalTipo, p_kind:g('sf-kind').value, p_titulo:titulo, p_detalle:(g('sf-detalle').value||'').trim(),
     p_sector:(g('sf-sector').value||'').trim(), p_contacto:(g('sf-contacto').value||'').trim(),
     p_organizacion:(g('sf-org').value||'').trim(), p_prioridad:g('sf-urgente').checked?'urgente':'normal',
-    p_owner:solToken(), p_lon:null, p_lat:null };
+    p_owner:solToken(), p_lon:null, p_lat:null, p_codigo:(g('sf-codigo').value||'').trim() };
   st.style.color='var(--safe)'; const btn=g('sf-submit'); btn.disabled=true;
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/crear_solicitud`,{ method:'POST', headers:SB_HEAD, body:JSON.stringify(payload) });
@@ -2157,7 +2161,7 @@ async function publicarSolicitud(){
     const row=await r.json(); const o=Array.isArray(row)?row[0]:row;
     if(o&&o.id) solAddMine(o.id);
     lastSolTs=now;
-    ['sf-titulo','sf-detalle','sf-sector','sf-contacto','sf-org'].forEach(id=>g(id).value=''); g('sf-urgente').checked=false;
+    ['sf-titulo','sf-detalle','sf-sector','sf-contacto','sf-org','sf-codigo'].forEach(id=>g(id).value=''); g('sf-urgente').checked=false;
     cerrarSolModal(); solLoaded=false; await loadSolicitudes();
     activateTab(ofr?'ofrecimientos':'solicitudes');
   }catch(e){ st.style.color='var(--crit)'; st.textContent=t('sol.errBackend'); }

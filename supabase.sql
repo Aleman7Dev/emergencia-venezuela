@@ -202,8 +202,9 @@ create table if not exists public.solicitudes (
   created_at   timestamptz not null default now(),
   expires_at   timestamptz not null default now() + interval '10 days'
 );
--- Si la tabla ya existía sin la columna "tipo" (solicitud/ofrecimiento), añádela:
+-- Si la tabla ya existía sin estas columnas, añádelas:
 alter table public.solicitudes add column if not exists tipo text not null default 'solicitud';
+alter table public.solicitudes add column if not exists verificada boolean not null default false;
 alter table public.solicitudes enable row level security;
 
 -- Lectura pública SOLO de las vigentes y no canceladas. NUNCA selecciones owner_token
@@ -212,37 +213,59 @@ drop policy if exists "lee solicitudes" on public.solicitudes;
 create policy "lee solicitudes" on public.solicitudes
   for select to anon, authenticated using (estado <> 'cancelada' and expires_at > now());
 
+-- Códigos de organizaciones verificadas (Cruz Roja, Protección Civil, parroquias…).
+-- El administrador reparte un código secreto a cada aliado y lo registra aquí. Quien
+-- publica con un código válido obtiene el badge "Verificada" y el nombre oficial.
+-- NO se lee desde el cliente (RLS sin política de SELECT → solo lo usan las funciones).
+create table if not exists public.org_codes (
+  code         text primary key,
+  organizacion text not null,
+  activo       boolean not null default true
+);
+alter table public.org_codes enable row level security;   -- sin política => el cliente no lo lee
+-- Ejemplo (descomenta y ajusta para dar de alta aliados):
+-- insert into public.org_codes(code, organizacion) values
+--   ('CRUZROJA-2026', 'Cruz Roja Venezolana'),
+--   ('PCIVIL-LAGUAIRA', 'Protección Civil La Guaira')
+-- on conflict (code) do update set organizacion = excluded.organizacion, activo = true;
+
 -- Crear solo por función validada (no INSERT directo con la clave pública).
--- Maneja tanto solicitudes (pide) como ofrecimientos (ofrece) según p_tipo.
--- Se elimina la versión anterior de 10 parámetros para que PostgREST no quede
--- con dos sobrecargas y resuelva sin ambigüedad la nueva de 11 parámetros.
+-- Maneja solicitudes (pide) y ofrecimientos (ofrece) según p_tipo. Si p_codigo coincide
+-- con un código activo de org_codes, marca la publicación como verificada y usa el
+-- nombre oficial de la organización. Se elimina la versión previa para evitar sobrecargas.
 drop function if exists public.crear_solicitud(text,text,text,text,text,text,text,text,double precision,double precision);
+drop function if exists public.crear_solicitud(text,text,text,text,text,text,text,text,text,double precision,double precision);
 create or replace function public.crear_solicitud(
   p_tipo text, p_kind text, p_titulo text, p_detalle text, p_sector text,
   p_contacto text, p_organizacion text, p_prioridad text, p_owner text,
-  p_lon double precision, p_lat double precision
+  p_lon double precision, p_lat double precision, p_codigo text default null
 ) returns public.solicitudes
 language plpgsql security definer set search_path = public as $$
-declare s public.solicitudes;
+declare s public.solicitudes; v_org text; v_verif boolean := false;
 begin
   if p_kind is null or p_kind not in
      ('voluntarios','agua','alimentos','herramientas','insumos','insumos_medicos','transporte','refugio') then
     raise exception 'categoria invalida';
   end if;
   if p_titulo is null or length(btrim(p_titulo)) < 3 then raise exception 'titulo requerido'; end if;
-  insert into public.solicitudes(tipo,kind,titulo,detalle,sector,contacto,organizacion,prioridad,estado,owner_token,lon,lat)
+  if nullif(btrim(coalesce(p_codigo,'')),'') is not null then
+    select organizacion into v_org from public.org_codes where code = btrim(p_codigo) and activo;
+    if found then v_verif := true; end if;
+  end if;
+  insert into public.solicitudes(tipo,kind,titulo,detalle,sector,contacto,organizacion,prioridad,estado,owner_token,lon,lat,verificada)
   values (case when p_tipo='ofrecimiento' then 'ofrecimiento' else 'solicitud' end,
           p_kind, left(btrim(p_titulo),140), left(coalesce(p_detalle,''),1000),
           left(coalesce(p_sector,''),120), left(coalesce(p_contacto,''),120),
-          left(coalesce(p_organizacion,''),80),
+          case when v_verif then v_org else left(coalesce(p_organizacion,''),80) end,
           case when p_prioridad='urgente' then 'urgente' else 'normal' end,
           'abierta', nullif(p_owner,''),
           case when p_lon between -74 and -59 then p_lon else null end,
-          case when p_lat between 0 and 16 then p_lat else null end)
+          case when p_lat between 0 and 16 then p_lat else null end,
+          v_verif)
   returning * into s;
   return s;
 end $$;
-grant execute on function public.crear_solicitud(text,text,text,text,text,text,text,text,text,double precision,double precision)
+grant execute on function public.crear_solicitud(text,text,text,text,text,text,text,text,text,double precision,double precision,text)
   to anon, authenticated;
 
 -- Cambiar estado: SOLO quien la creó (owner_token correcto) puede avanzarla/cerrarla.
