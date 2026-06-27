@@ -1,15 +1,15 @@
 {
   "name": "Emergencia Sísmica · Venezuela",
   "short_name": "Emergencia VE",
-  "description": "Herramienta comunitaria para coordinar reportes ciudadanos durante una emergencia sísmica en Venezuela: emergencias, daños, desaparecidos, hospitales, acopio y ayuda sobre un mapa interactivo.",
+  "description": "Herramienta comunitaria para coordinar ayuda durante una emergencia sísmica en Venezuela: solicitudes y ofrecimientos de ayuda, voluntarios, denuncias públicas, acopio y un mapa de reportes.",
   "lang": "es-VE",
   "dir": "ltr",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0a0e14",
-  "theme_color": "#0a0e14",
+  "background_color": "#eef3fb",
+  "theme_color": "#003893",
   "categories": ["utilities", "health", "navigation"],
   "icons": [
     { "src": "icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },

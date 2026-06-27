@@ -5,7 +5,7 @@
  *   - Municipios y librerías de CDN: se cachean la primera vez que se usan.
  *   - API de Supabase (reportes): SIEMPRE por red, sin caché (no mostrar datos viejos en una emergencia).
  */
-const VERSION = 'ev-v1';
+const VERSION = 'ev-v2';
 const SHELL_CACHE = `shell-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 
@@ -41,6 +41,35 @@ self.addEventListener('activate', (event) => {
 // Permite que la página fuerce la activación de una nueva versión
 self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') self.skipWaiting();
+});
+
+// Push (avisos con la app cerrada). El servidor envía { title, body, url, tag }.
+self.addEventListener('push', (event) => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; }
+  catch (e) { data = { body: (event.data && event.data.text) ? event.data.text() : '' }; }
+  const title = data.title || 'Emergencia Sísmica · Venezuela';
+  const options = {
+    body: data.body || '',
+    icon: 'icon-192.png',
+    badge: 'icon-192.png',
+    tag: data.tag || 'ev-push',
+    renotify: true,
+    data: { url: data.url || './index.html' }
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Al tocar el aviso: enfocar una pestaña abierta o abrir la app
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || './index.html';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((wins) => {
+      for (const w of wins) { if ('focus' in w) return w.focus(); }
+      if (clients.openWindow) return clients.openWindow(target);
+    })
+  );
 });
 
 function isSupabase(url) { return /supabase\.co$/i.test(url.hostname); }

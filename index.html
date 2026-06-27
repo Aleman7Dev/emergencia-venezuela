@@ -250,6 +250,9 @@
   .sf-geo.on{ background:rgba(22,163,74,.14); border-color:#16a34a; color:#15803d; border-style:solid; }
   .si-dist{ color:var(--acc); font-weight:700; }
   .si-match{ display:inline-block; margin-top:8px; background:rgba(252,209,22,.18); border:1px solid #e9c008; color:#7a5b00; border-radius:9px; padding:6px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .sk-card{ height:76px; border-radius:12px; border:1px solid var(--line); margin-bottom:10px; background:linear-gradient(90deg,#eaeff7 25%,#f6f9fe 50%,#eaeff7 75%); background-size:200% 100%; animation:sksh 1.2s ease-in-out infinite; }
+  @keyframes sksh{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  @media (prefers-reduced-motion: reduce){ .sk-card{ animation:none; } }
   .sol-list{ max-width:760px; margin:10px auto 0; display:flex; flex-direction:column; gap:10px; padding-bottom:14px; }
   .sol-empty{ text-align:center; color:var(--muted); font-size:13.5px; line-height:1.6; padding:22px 14px; border:1px dashed var(--line); border-radius:14px; background:rgba(255,255,255,.62); backdrop-filter:blur(4px); }
   .sol-empty .sol-quick{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px; }
@@ -2074,8 +2077,10 @@ function fillSolFilters(){
   const sk=document.getElementById('sf-kind');
   if(sk){ const cur=sk.value; sk.innerHTML=SOL_KINDS.map(x=>`<option value="${x.k}">${x.e} ${esc(solKindLabel(x.k))}</option>`).join(''); if(cur) sk.value=cur; }
 }
+function skeletons(n){ let h=''; for(let i=0;i<(n||4);i++) h+='<div class="sk-card"></div>'; return h; }
 async function loadSolicitudes(){
   solLoaded=true; fillSolFilters();
+  ['sol-list','ofr-list'].forEach(id=>{ const el=document.getElementById(id); if(el && !el.querySelector('.sol-item')) el.innerHTML=skeletons(4); });
   const cols='id,tipo,kind,titulo,detalle,sector,contacto,organizacion,verificada,prioridad,estado,lon,lat,created_at';
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/solicitudes?select=${cols}&order=created_at.desc&limit=200`,{ headers:SB_HEAD });
@@ -2288,6 +2293,7 @@ function fillDenFilters(){
 }
 async function loadDenuncias(){
   denLoaded=true; fillDenFilters();
+  { const el=document.getElementById('den-list'); if(el && !el.querySelector('.sol-item')) el.innerHTML=skeletons(4); }
   const cols='id,categoria,titulo,detalle,sector,respaldos,created_at';
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/denuncias?select=${cols}&order=created_at.desc&limit=200`,{ headers:SB_HEAD });
