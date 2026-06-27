@@ -304,6 +304,7 @@
   .fo-ofr .fab-opt-ic{ background:rgba(22,163,74,.16); }
   .fo-den .fab-opt-ic{ background:rgba(180,30,30,.16); }
   .fo-map .fab-opt-ic{ background:rgba(0,56,147,.14); }
+  .fo-aco .fab-opt-ic{ background:rgba(22,163,74,.18); }
   /* Denuncias públicas */
   .den-warn{ font-size:11.5px; color:var(--txt); line-height:1.5; background:#fff7ed; border:1px solid #fdba74; border-radius:11px; padding:11px 13px; max-width:760px; margin:0 auto 4px; }
   .sol-new.den-new{ background:linear-gradient(90deg,#b91c1c,#7f1d1d); box-shadow:0 3px 14px rgba(185,28,28,.30); }
@@ -325,6 +326,10 @@
   .ally-banner-ic{ font-size:23px; flex:none; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
   .ab-red .ally-banner-ic{ background:rgba(207,20,43,.14); }
   .ab-hosp .ally-banner-ic{ background:rgba(0,56,147,.14); }
+  .ab-enc .ally-banner-ic{ background:rgba(168,85,247,.16); }
+  .sec-intro{ font-size:13px; color:var(--muted); line-height:1.5; margin:2px 2px 12px; }
+  .acopio-cta{ display:block; width:100%; border:none; border-radius:13px; padding:13px; font-size:15px; font-weight:800; color:#fff; background:linear-gradient(90deg,#16a34a,#003893); margin-bottom:14px; cursor:pointer; font-family:inherit; box-shadow:0 4px 14px rgba(22,163,74,.25); }
+  .acopio-cta:active{ transform:scale(.98); }
   .ally-banner-tx{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
   .ally-banner-tx b{ font-size:14px; color:var(--txt); }
   .ally-banner-tx small{ font-size:11.5px; color:var(--muted); line-height:1.35; }
@@ -520,12 +525,12 @@
   <button class="tab" role="tab" aria-selected="false" data-v="ofrecimientos"><span class="tab-ic" aria-hidden="true">🤲</span><span class="tab-tx" data-i18n="nav.ofrecimientos">Ofrecimientos</span></button>
   <button class="tab" role="tab" aria-selected="false" data-v="volun"><span class="tab-ic" aria-hidden="true">🙋</span><span class="tab-tx" data-i18n="nav.volun">Voluntarios</span></button>
   <button class="tab" role="tab" aria-selected="false" data-v="denuncias"><span class="tab-ic" aria-hidden="true">📣</span><span class="tab-tx" data-i18n="nav.denuncias">Denuncias</span></button>
-  <button class="tab tab-wide" role="tab" aria-selected="false" data-v="mas"><span class="tab-ic" aria-hidden="true">🗺️</span><span class="tab-tx" data-i18n="nav.mas">Mapa y más</span></button>
+  <button class="tab" role="tab" aria-selected="false" data-v="acopio"><span class="tab-ic" aria-hidden="true">📦</span><span class="tab-tx" data-i18n="nav.acopio">Acopio y ayuda</span></button>
+  <button class="tab" role="tab" aria-selected="false" data-v="mas"><span class="tab-ic" aria-hidden="true">🗺️</span><span class="tab-tx" data-i18n="nav.mas">Mapa y más</span></button>
 </nav>
 <div class="subnav" id="subnav" role="tablist" aria-label="Mapa y más secciones" hidden>
   <button class="subtab on" role="tab" aria-selected="true" data-v="mapa"><span aria-hidden="true">🗺️</span> <span data-i18n="nav.mapa">Mapa</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="reportes"><span aria-hidden="true">📋</span> <span data-i18n="nav.reportes">Reportes</span></button>
-  <button class="subtab" role="tab" aria-selected="false" data-v="acopio"><span aria-hidden="true">📦</span> <span data-i18n="nav.acopio">Acopio y ayuda</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="tel"><span aria-hidden="true">📞</span> <span data-i18n="nav.tel">Teléfonos</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="apoyo"><span aria-hidden="true">💛</span> <span data-i18n="nav.apoyo">Apoyo</span></button>
 </div>
@@ -659,6 +664,8 @@
 
   <section class="view" id="v-acopio">
     <div class="sectitle" data-i18n="sect.acopio">Centros de acopio y puntos de ayuda humanitaria</div>
+    <p class="sec-intro" data-i18n="acopio.intro">Centros donde se reciben o entregan donaciones (agua, alimentos, medicinas…). Publícalos con foto y ubícalos en el mapa.</p>
+    <button class="acopio-cta" id="acopio-new" data-i18n="acopio.publish">📦 Publicar centro de acopio</button>
     <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-acopio" class="list-grid"></div>
   </section>
@@ -825,6 +832,11 @@
       <span class="ally-banner-tx"><b>Hospitales en Venezuela</b><small data-i18n="allies.hosp">Directorio de personas atendidas en hospitales y centros de salud</small></span>
       <span class="ally-banner-go" aria-hidden="true">↗</span>
     </a>
+    <a class="ally-banner ab-enc" href="https://encuentravenezuela.com/" target="_blank" rel="noopener">
+      <span class="ally-banner-ic">🔎</span>
+      <span class="ally-banner-tx"><b>Encuentra Venezuela</b><small data-i18n="allies.encuentra">Buscador de personas y recursos en Venezuela tras el terremoto</small></span>
+      <span class="ally-banner-go" aria-hidden="true">↗</span>
+    </a>
   </section>
 
   <footer class="appfoot">
@@ -915,9 +927,13 @@
       <span class="fab-opt-ic">📣</span>
       <span class="fab-opt-tx"><b data-i18n="fab.den">Publicar denuncia</b><small data-i18n="fab.den.sub">Injusticias y fallas en la respuesta a los afectados</small></span>
     </button>
+    <button class="fab-opt fo-aco" id="fm-acopio">
+      <span class="fab-opt-ic">📦</span>
+      <span class="fab-opt-tx"><b data-i18n="fab.acopio">Publicar centro de acopio</b><small data-i18n="fab.acopio.sub">Comparte un punto de acopio o ayuda con foto y ubicación</small></span>
+    </button>
     <button class="fab-opt fo-map" id="fm-mapa">
       <span class="fab-opt-ic">🗺️</span>
-      <span class="fab-opt-tx"><b data-i18n="fab.map">Reportar en el mapa</b><small data-i18n="fab.map.sub">Emergencia, escombros, vialidad, servicios, acopio</small></span>
+      <span class="fab-opt-tx"><b data-i18n="fab.map">Reportar en el mapa</b><small data-i18n="fab.map.sub">Emergencia, escombros, vialidad, servicios</small></span>
     </button>
   </div>
 </div>
@@ -962,7 +978,7 @@ const I18N={
   'sol.errTitulo':'Describe brevemente qué se necesita.','sol.wait':'Espera unos segundos antes de publicar otra.','sol.errBackend':'No se pudo publicar. Si eres el administrador, falta crear la tabla «solicitudes» en Supabase (sección 7).',
   'sol.kind.voluntarios':'Voluntarios / brazos','sol.kind.agua':'Agua','sol.kind.alimentos':'Alimentos','sol.kind.herramientas':'Herramientas (palas, cuerdas, maquinaria)','sol.kind.insumos':'Insumos / materiales','sol.kind.insumos_medicos':'Insumos médicos','sol.kind.transporte':'Transporte / logística','sol.kind.refugio':'Refugio / alojamiento',
   'ofr.title':'Ofrecimientos de ayuda','ofr.sub':'Quién ofrece su ayuda a la respuesta: traslado, herramientas (palas, cuerdas, maquinaria), agua, insumos y más. Si necesitas algo, mira aquí si alguien ya lo está ofreciendo. Ante peligro de vida, llama al <b>171</b>.','ofr.new':'Publicar ofrecimiento','ofr.publish':'Publicar ofrecimiento','ofr.empty':'Aún no hay ofrecimientos publicados. Si puedes ofrecer traslado, herramientas, agua o insumos, publícalo para que quienes lo necesitan te encuentren. Mientras tanto, explora:','ofr.f.titulo':'¿Qué ofreces?','ofr.ph.titulo':'Ej.: Ofrezco camioneta para traslado de insumos','ofr.contact':'Contactar','ofr.shareTxt':'Ofrecimiento de ayuda','ofr.mark.cumplida':'Marcar concretado','ofr.st.abierta':'Disponible','ofr.st.cumplida':'Concretado',
-  'fab.title':'¿Qué quieres publicar?','fab.sol':'Pedir ayuda','fab.sol.sub':'Necesito voluntarios, agua, insumos, traslado…','fab.ofr':'Ofrecer ayuda','fab.ofr.sub':'Ofrezco traslado, herramientas, agua, insumos…','fab.den':'Publicar denuncia','fab.den.sub':'Injusticias y fallas en la respuesta a los afectados','fab.map':'Reportar en el mapa','fab.map.sub':'Emergencia, escombros, vialidad, servicios, acopio','allies.title':'🤝 Plataformas aliadas — úsalas también','allies.red':'Red de ayuda y búsqueda de personas tras el terremoto','allies.hosp':'Directorio de personas atendidas en hospitales y centros de salud',
+  'fab.title':'¿Qué quieres publicar?','fab.sol':'Pedir ayuda','fab.sol.sub':'Necesito voluntarios, agua, insumos, traslado…','fab.ofr':'Ofrecer ayuda','fab.ofr.sub':'Ofrezco traslado, herramientas, agua, insumos…','fab.den':'Publicar denuncia','fab.den.sub':'Injusticias y fallas en la respuesta a los afectados','fab.map':'Reportar en el mapa','fab.map.sub':'Emergencia, escombros, vialidad, servicios, acopio','allies.title':'🤝 Plataformas aliadas — úsalas también','allies.red':'Red de ayuda y búsqueda de personas tras el terremoto','allies.hosp':'Directorio de personas atendidas en hospitales y centros de salud','allies.encuentra':'Buscador de personas y recursos en Venezuela tras el terremoto','fab.acopio':'Publicar centro de acopio','fab.acopio.sub':'Comparte un punto de acopio o ayuda con foto y ubicación','acopio.intro':'Centros donde se reciben o entregan donaciones (agua, alimentos, medicinas…). Publícalos con foto y ubícalos en el mapa.','acopio.publish':'📦 Publicar centro de acopio',
   'den.title':'Denuncias públicas','den.sub':'Un espacio para que los afectados hagan oír su voz y visibilicen injusticias y fallas en la respuesta: refugios en mal estado, ayuda que no llega, agua o luz cortadas, cobros indebidos. Respalda las que conozcas para amplificarlas.','den.warn':'⚠️ <b>Verifica antes de difundir.</b> No publiques acusaciones personales sin pruebas, datos privados de terceros ni lenguaje ofensivo. Esto <b>no reemplaza</b> a las autoridades: ante un delito, acude a los organismos competentes.','den.new':'Publicar denuncia','den.publish':'Publicar denuncia','den.empty':'Aún no hay denuncias publicadas. Si eres un afectado y vives una injusticia o falla en la respuesta, publícala para visibilizarla.',
   'den.f.kind':'Tipo de denuncia','den.f.titulo':'¿Qué quieres denunciar?','den.f.detalle':'Detalle de los hechos','den.f.sector':'Zona','den.f.allKinds':'Todos los tipos','den.f.recent':'Recientes','den.f.top':'Más respaldadas',
   'den.ph.titulo':'Ej.: Refugio sin agua ni baños en Caraballeda','den.ph.detalle':'Describe qué ocurre, desde cuándo y a quiénes afecta. Aporta datos verificables.','den.ph.sector':'Ej.: Caraballeda, La Guaira',
@@ -1000,7 +1016,7 @@ const I18N={
   'priv.3':'Al reportar personas <b>se sugiere la cédula</b> (opcional): ayuda a verificar si la persona aparece a la vez como desaparecida y en un centro de salud. Puedes reportar <b>sin cédula</b> (p. ej. menores o personas no identificadas). <b>La cédula no se muestra públicamente</b> — se guarda cifrada y solo se usa para cruzar coincidencias.',
   'priv.4':'Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.',
   'sheet.title':'Nuevo reporte','sheet.sub':'Tu reporte aparece en el mapa para los equipos de rescate.','sheet.submit':'Publicar reporte','sheet.publishing':'Publicando…',
-  'wz.step':'Paso','wz.of':'de','wz.next':'Siguiente →','wz.back':'← Atrás','wz.t1':'¿Qué reportas?','wz.t2':'Detalles','wz.t3':'¿Dónde?','wz.t4':'Revisar','wz.sum.type':'Tipo','wz.sum.loc':'Ubicación','wz.sum.detail':'Detalle','wz.sum.none':'(sin indicar)','wz.sum.approx':'ubicación aproximada','wz.privacy':'Todo lo que publicas es visible públicamente. No incluyas datos sensibles innecesarios; reporta de buena fe.','f.locReq':'Indica la ubicación para continuar.','f.photo':'Foto','f.photo.hint':'Una foto reciente y clara del rostro ayuda muchísimo a identificar. Se verá públicamente.','f.photo.rm':'Quitar foto','f.photo.bad':'Elige un archivo de imagen.','sheet.uploadingPhoto':'Subiendo foto…',
+  'wz.step':'Paso','wz.of':'de','wz.next':'Siguiente →','wz.back':'← Atrás','wz.t1':'¿Qué reportas?','wz.t2':'Detalles','wz.t3':'¿Dónde?','wz.t4':'Revisar','wz.sum.type':'Tipo','wz.sum.loc':'Ubicación','wz.sum.detail':'Detalle','wz.sum.none':'(sin indicar)','wz.sum.approx':'ubicación aproximada','wz.privacy':'Todo lo que publicas es visible públicamente. No incluyas datos sensibles innecesarios; reporta de buena fe.','f.locReq':'Indica la ubicación para continuar.','f.photo':'Foto','f.photo.hint':'Una foto reciente y clara del rostro ayuda muchísimo a identificar. Se verá públicamente.','f.photo.place':'Foto del lugar','f.photo.placeHint':'Ayuda a identificar el centro de acopio o punto de ayuda. La imagen se reduce y se le quitan los datos de ubicación (GPS) antes de subirla.','f.photo.rm':'Quitar foto','f.photo.bad':'Elige un archivo de imagen.','sheet.uploadingPhoto':'Subiendo foto…',
   'f.loc.hosp':'Hospital o centro de salud','f.loc.volun':'Zona que puedes cubrir','f.loc.def':'Ubicación / dirección',
   'fph.loc.hosp':'Ej.: Hospital Vargas, San José, Caracas','fph.loc.volun':'Ej.: Municipio Chacao y este de Caracas','fph.loc.def':'Ej.: Av. Francisco de Miranda, Chacao',
   'f.need.volun':'Cómo puedes ayudar y cómo contactarte','f.need.person':'Nombre y descripción de la persona','f.need.offer':'Qué se ofrece / horario','f.need.def':'Qué se necesita / detalle',
@@ -1033,7 +1049,7 @@ const I18N={
   'sol.errTitulo':'Briefly describe what is needed.','sol.wait':'Wait a few seconds before posting another.','sol.errBackend':'Could not post. If you are the admin, the “solicitudes” table must be created in Supabase (section 7).',
   'sol.kind.voluntarios':'Volunteers / hands','sol.kind.agua':'Water','sol.kind.alimentos':'Food','sol.kind.herramientas':'Tools (shovels, ropes, machinery)','sol.kind.insumos':'Supplies / materials','sol.kind.insumos_medicos':'Medical supplies','sol.kind.transporte':'Transport / logistics','sol.kind.refugio':'Shelter / lodging',
   'ofr.title':'Help offers','ofr.sub':'Who is offering help to the response: transport, tools (shovels, ropes, machinery), water, supplies and more. If you need something, check here whether someone is already offering it. In a life-threatening emergency, call <b>171</b>.','ofr.new':'Post an offer','ofr.publish':'Post offer','ofr.empty':'No offers posted yet. If you can offer transport, tools, water or supplies, post it so those who need it can find you. Meanwhile, explore:','ofr.f.titulo':'What do you offer?','ofr.ph.titulo':'E.g.: I offer a pickup truck to move supplies','ofr.contact':'Contact','ofr.shareTxt':'Help offer','ofr.mark.cumplida':'Mark completed','ofr.st.abierta':'Available','ofr.st.cumplida':'Completed',
-  'fab.title':'What do you want to post?','fab.sol':'Ask for help','fab.sol.sub':'I need volunteers, water, supplies, transport…','fab.ofr':'Offer help','fab.ofr.sub':'I offer transport, tools, water, supplies…','fab.den':'Post a grievance','fab.den.sub':'Injustices and failures in the response to those affected','fab.map':'Report on the map','fab.map.sub':'Emergency, rubble, roads, utilities, collection','allies.title':'🤝 Partner platforms — use them too','allies.red':'Help and people-search network after the earthquake','allies.hosp':'Directory of people treated in hospitals and health centers',
+  'fab.title':'What do you want to post?','fab.sol':'Ask for help','fab.sol.sub':'I need volunteers, water, supplies, transport…','fab.ofr':'Offer help','fab.ofr.sub':'I offer transport, tools, water, supplies…','fab.den':'Post a grievance','fab.den.sub':'Injustices and failures in the response to those affected','fab.map':'Report on the map','fab.map.sub':'Emergency, rubble, roads, utilities, collection','allies.title':'🤝 Partner platforms — use them too','allies.red':'Help and people-search network after the earthquake','allies.hosp':'Directory of people treated in hospitals and health centers','allies.encuentra':'Find people and resources in Venezuela after the earthquake','fab.acopio':'Post a collection center','fab.acopio.sub':'Share a collection or aid point with photo and location','acopio.intro':'Places where donations are received or handed out (water, food, medicine…). Post them with a photo and pin them on the map.','acopio.publish':'📦 Post a collection center',
   'den.title':'Public grievances','den.sub':'A space for those affected to make their voice heard and expose injustices and failures in the response: shelters in poor condition, aid that never arrives, water or power cut off, improper charges. Back the ones you know to amplify them.','den.warn':'⚠️ <b>Verify before sharing.</b> Do not post personal accusations without evidence, third-party private data, or offensive language. This <b>does not replace</b> the authorities: for a crime, go to the competent agencies.','den.new':'Post a grievance','den.publish':'Post grievance','den.empty':'No grievances posted yet. If you are affected and face an injustice or a failure in the response, post it to make it visible.',
   'den.f.kind':'Grievance type','den.f.titulo':'What do you want to report?','den.f.detalle':'Details of the facts','den.f.sector':'Area','den.f.allKinds':'All types','den.f.recent':'Recent','den.f.top':'Most backed',
   'den.ph.titulo':'E.g.: Shelter with no water or toilets in Caraballeda','den.ph.detalle':'Describe what is happening, since when, and who it affects. Provide verifiable facts.','den.ph.sector':'E.g.: Caraballeda, La Guaira',
@@ -1071,7 +1087,7 @@ const I18N={
   'priv.3':'When reporting people, <b>the ID number is suggested</b> (optional): it helps check whether the person appears both as missing and in a health center. You can report <b>without an ID</b> (e.g. minors or unidentified people). <b>The ID is not shown publicly</b> — it is stored encrypted and only used to cross-match.',
   'priv.4':'When reporting people, do so in good faith and with their interest in mind. False reports can cost lives by diverting resources.',
   'sheet.title':'New report','sheet.sub':'Your report appears on the map for rescue teams.','sheet.submit':'Publish report','sheet.publishing':'Publishing…',
-  'wz.step':'Step','wz.of':'of','wz.next':'Next →','wz.back':'← Back','wz.t1':'What are you reporting?','wz.t2':'Details','wz.t3':'Where?','wz.t4':'Review','wz.sum.type':'Type','wz.sum.loc':'Location','wz.sum.detail':'Detail','wz.sum.none':'(not provided)','wz.sum.approx':'approximate location','wz.privacy':'Everything you publish is publicly visible. Don’t include unnecessary sensitive data; report in good faith.','f.locReq':'Enter a location to continue.','f.photo':'Photo','f.photo.hint':'A recent, clear face photo helps a lot with identification. It will be public.','f.photo.rm':'Remove photo','f.photo.bad':'Choose an image file.','sheet.uploadingPhoto':'Uploading photo…',
+  'wz.step':'Step','wz.of':'of','wz.next':'Next →','wz.back':'← Back','wz.t1':'What are you reporting?','wz.t2':'Details','wz.t3':'Where?','wz.t4':'Review','wz.sum.type':'Type','wz.sum.loc':'Location','wz.sum.detail':'Detail','wz.sum.none':'(not provided)','wz.sum.approx':'approximate location','wz.privacy':'Everything you publish is publicly visible. Don’t include unnecessary sensitive data; report in good faith.','f.locReq':'Enter a location to continue.','f.photo':'Photo','f.photo.hint':'A recent, clear face photo helps a lot with identification. It will be public.','f.photo.place':'Photo of the place','f.photo.placeHint':'Helps identify the collection center or aid point. The image is downscaled and its location (GPS) metadata removed before upload.','f.photo.rm':'Remove photo','f.photo.bad':'Choose an image file.','sheet.uploadingPhoto':'Uploading photo…',
   'f.loc.hosp':'Hospital or health center','f.loc.volun':'Area you can cover','f.loc.def':'Location / address',
   'fph.loc.hosp':'e.g. Vargas Hospital, San José, Caracas','fph.loc.volun':'e.g. Chacao municipality and east Caracas','fph.loc.def':'e.g. Francisco de Miranda Ave., Chacao',
   'f.need.volun':'How you can help and how to reach you','f.need.person':'Name and description of the person','f.need.offer':'What is offered / schedule','f.need.def':'What is needed / details',
@@ -1570,7 +1586,7 @@ function animateStagger(sel){ animate({targets:sel, opacity:[0,1], translateY:[1
 // Cuenta animada de un número (contadores). Cae con elegancia si no hay anime.
 function animateCount(el, to){ if(!el) return; to=Number(to)||0; const o={v:Number(String(el.textContent).replace(/\D/g,''))||0}; const inst=animate({targets:o, v:to, duration:700, round:1, easing:'easeOutCubic', update:()=>{ el.textContent=Math.round(o.v).toLocaleString('es-VE'); }}); if(!inst) el.textContent=to.toLocaleString('es-VE'); }
 // Pestañas dentro del grupo "Mapa y más" (nav de segundo nivel)
-const INFO_TABS=['mapa','reportes','acopio','tel','apoyo'];
+const INFO_TABS=['mapa','reportes','tel','apoyo'];
 let lastInfoTab='mapa';
 function activateTab(name){
   if(name==='mas') name=lastInfoTab||'mapa';            // pestaña-grupo → última/def. del grupo
@@ -2591,13 +2607,16 @@ function buildSheet(){
     <label class="fl">${t('f.ficha')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
     <input id="f-link" type="url" inputmode="url" placeholder="https://desaparecidosterremotovenezuela.com/?persona=...">
     <div style="font-size:11px;color:var(--muted);margin-top:4px">${t('f.ficha.hint')}</div>` : '';
-  const photoField = isPerson ? `
-    <label class="fl">${t('f.photo')} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
+  const showPhoto = isPerson || isOffer;   // foto para personas y para centros de acopio/ayuda
+  const photoLbl  = isOffer ? t('f.photo.place') : t('f.photo');
+  const photoHnt  = isOffer ? t('f.photo.placeHint') : t('f.photo.hint');
+  const photoField = showPhoto ? `
+    <label class="fl">${photoLbl} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
     <div class="photo-pick">
       <input type="file" id="f-photo" accept="image/*">
       <div id="photoPrev"></div>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px">${t('f.photo.hint')}</div>` : '';
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">${photoHnt}</div>` : '';
   const roadFields = isRoad ? `
     <label class="fl">${t('f.roadStatus')}</label>
     <select id="f-rstatus">${Object.entries(ROAD_STATUS).map(([k,v])=>`<option value="${k}" ${k==='closed'?'selected':''}>${v.e} ${t('road.'+k)}</option>`).join('')}</select>
@@ -2692,6 +2711,8 @@ function buildReview(){
 const overlay=document.getElementById('overlay');
 // El reporte en el mapa (emergencias, escombros, vialidad, servicios, acopio…)
 function abrirReporteMapa(){ closeFabMenu(); clearPicked(); wizStep=1; wizDraft={}; pickedPhoto=null; if(pickedPhotoURL){ URL.revokeObjectURL(pickedPhotoURL); pickedPhotoURL=null; } buildSheet(); overlay.classList.add('on'); animate({targets:'.sheet',translateY:['100%','0%'],duration:280,easing:'easeOutCubic'}); }
+// Atajo: publicar un centro de acopio / punto de ayuda (reporte con tipo preseleccionado).
+function abrirReporteAcopio(){ selType='acopio'; abrirReporteMapa(); }
 // El FAB ＋ ahora es un punto único de creación: pedir ayuda, ofrecer ayuda o reportar en el mapa
 function openFabMenu(){ const m=document.getElementById('fab-menu'); if(m){ m.classList.add('on'); animate({targets:'#fab-menu .fab-sheet', translateY:['100%','0%'], duration:280, easing:'easeOutCubic'}); animate({targets:'#fab-menu .fab-opt', opacity:[0,1], translateY:[12,0], delay:staggerDelay(45,{start:60}), duration:300, easing:'easeOutCubic'}); } }
 function closeFabMenu(){ const m=document.getElementById('fab-menu'); if(m) m.classList.remove('on'); }
@@ -2701,6 +2722,8 @@ document.getElementById('fab').addEventListener('click',openFabMenu);
 { const b=document.getElementById('fm-ofrecimiento'); if(b) b.addEventListener('click',()=>abrirSolModal('ofrecimiento')); }
 { const b=document.getElementById('fm-denuncia'); if(b) b.addEventListener('click',abrirDenModal); }
 { const b=document.getElementById('fm-mapa'); if(b) b.addEventListener('click',abrirReporteMapa); }
+{ const b=document.getElementById('fm-acopio'); if(b) b.addEventListener('click',abrirReporteAcopio); }
+{ const b=document.getElementById('acopio-new'); if(b) b.addEventListener('click',abrirReporteAcopio); }
 { const b=document.getElementById('fm-close'); if(b) b.addEventListener('click',closeFabMenu); }
 document.getElementById('closeSheet').addEventListener('click',()=>overlay.classList.remove('on'));
 overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.classList.remove('on'); });
