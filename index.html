@@ -253,6 +253,16 @@
   .sk-card{ height:76px; border-radius:12px; border:1px solid var(--line); margin-bottom:10px; background:linear-gradient(90deg,#eaeff7 25%,#f6f9fe 50%,#eaeff7 75%); background-size:200% 100%; animation:sksh 1.2s ease-in-out infinite; }
   @keyframes sksh{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
   @media (prefers-reduced-motion: reduce){ .sk-card{ animation:none; } }
+  /* Contadores de impacto (inicio) */
+  .impact{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; justify-content:center; max-width:760px; margin:10px auto 0; padding:11px 14px; border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.72); backdrop-filter:blur(4px); font-size:12.5px; color:var(--muted); }
+  .impact[hidden]{ display:none; }
+  .impact .impact-h{ font-weight:800; color:var(--txt); text-transform:uppercase; letter-spacing:.4px; font-size:11px; }
+  .impact b{ color:var(--acc); font-size:15px; }
+  /* Alto contraste (accesibilidad) */
+  :root[data-contrast="high"]{ --txt:#000; --muted:#262626; --line:#777; --acc:#0033a0; }
+  :root[data-contrast="high"] .sol-sub, :root[data-contrast="high"] .hsub, :root[data-contrast="high"] .appfoot p, :root[data-contrast="high"] .si-detalle{ color:#1a1a1a; }
+  :root[data-contrast="high"] .tab{ border-color:#777; }
+  #contrastBtn.on{ background:#003893; color:#fff; border-color:#003893; }
   .sol-list{ max-width:760px; margin:10px auto 0; display:flex; flex-direction:column; gap:10px; padding-bottom:14px; }
   .sol-empty{ text-align:center; color:var(--muted); font-size:13.5px; line-height:1.6; padding:22px 14px; border:1px dashed var(--line); border-radius:14px; background:rgba(255,255,255,.62); backdrop-filter:blur(4px); }
   .sol-empty .sol-quick{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px; }
@@ -493,6 +503,8 @@
       </svg>
       <small>Venezuela</small>
     </div>
+    <button class="theme-toggle" id="fontBtn" title="Tamaño de texto" aria-label="Cambiar tamaño de texto">A</button>
+    <button class="theme-toggle" id="contrastBtn" title="Alto contraste" aria-label="Activar alto contraste" aria-pressed="false">◐</button>
     <button class="theme-toggle" id="langToggle" title="Idioma / Language" aria-label="Cambiar idioma">EN</button>
   </div>
 </header>
@@ -532,6 +544,7 @@
         </div>
       </div>
     </div>
+    <div class="impact" id="impact" hidden></div>
     <div class="sol-toolbar">
       <button class="sol-new" id="sol-new"><span data-i18n="sol.new">Publicar solicitud</span></button>
       <select id="sol-fk" class="sol-filter" aria-label="Categoría"></select>
@@ -957,7 +970,7 @@ const I18N={
   'hope.head':'Contador de esperanza','hope.label':'personas reportadas localizadas a salvo','hope.labelShort':'localizadas a salvo · ver apoyo','hope.loading':'Calculando…','hope.allied':'del directorio nacional','hope.own':'confirmadas aquí','hope.srcShort':'Fuente: desaparecidosterremotovenezuela.com + nuestros datos','hope.src':'Datos extraídos de <a href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">desaparecidosterremotovenezuela.com</a> más los reportes confirmados en nuestro sitio.',
   'dedic.label':'Dedicar a:','dedic.resc':'Rescatistas','dedic.med':'Médicos y enfermeras','dedic.fam':'Familias','dedic.vol':'Voluntarios','dedic.pre.rescatistas':'🦺 Para los rescatistas','dedic.pre.medicos':'⛑️ Para los médicos y enfermeras','dedic.pre.familias':'👨‍👩‍👧 Para las familias','dedic.pre.voluntarios':'🙌 Para los voluntarios',
   'apoyo.report':'⚑ Reportar','apoyo.reportTitle':'Ocultar este mensaje en este dispositivo','apoyo.hidden':'Mensaje oculto en este dispositivo.','apoyo.blocked':'Tu mensaje contiene lenguaje no permitido. Mantengamos este muro lleno de aliento. 🤍',
-  'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','sol.geo':'📍 Añadir mi zona aproximada','sol.geoSet':'✓ Zona añadida (aproximada)','sol.locating':'Ubicando…','sol.geoFail':'No se pudo obtener tu ubicación. Activa el GPS o el permiso de ubicación.','notif.off':'🔔 Avisarme','notif.on':'🔔 Avisos ✓','notif.title':'Nuevas solicitudes de ayuda','notif.bodyN':'nuevas solicitudes en tu categoría','notif.unsupported':'Tu navegador no permite notificaciones.','fab':'＋ Publicar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
+  'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','sol.geo':'📍 Añadir mi zona aproximada','sol.geoSet':'✓ Zona añadida (aproximada)','sol.locating':'Ubicando…','sol.geoFail':'No se pudo obtener tu ubicación. Activa el GPS o el permiso de ubicación.','notif.off':'🔔 Avisarme','notif.on':'🔔 Avisos ✓','notif.title':'Nuevas solicitudes de ayuda','notif.bodyN':'nuevas solicitudes en tu categoría','notif.unsupported':'Tu navegador no permite notificaciones.','impact.title':'Impacto','impact.res':'resueltas','impact.con':'concretados','impact.resp':'respaldos a denuncias','fab':'＋ Publicar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
   'legend.crit':'Emergencia crítica','legend.build':'Edificio/acceso dañado','legend.escombros':'Remoción de escombros','legend.miss':'Desaparecido','legend.acopio':'Centro de acopio','legend.aid':'Ayuda humanitaria','legend.dark':'Zona sin luz','legend.water':'Sin agua potable','legend.volun':'Buscador voluntario',
   'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.esc':'Escombros','stat.miss':'Buscados',
   'chart.title':'📊 Estadísticas de reportes','chart.sub':'Distribución en vivo de los reportes activos por categoría y zona.','chart.total':'reportes activos en total','chart.byCat':'Por categoría','chart.byZone':'Zonas más afectadas','chart.loading':'Cargando estadísticas…','chart.empty':'Aún no hay reportes activos para graficar.',
@@ -1028,7 +1041,7 @@ const I18N={
   'hope.head':'Hope counter','hope.label':'people reported located safe','hope.labelShort':'located safe · see support','hope.loading':'Calculating…','hope.allied':'from the national directory','hope.own':'confirmed here','hope.srcShort':'Source: desaparecidosterremotovenezuela.com + our data','hope.src':'Data from <a href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">desaparecidosterremotovenezuela.com</a> plus reports confirmed on our site.',
   'dedic.label':'Dedicate to:','dedic.resc':'Rescuers','dedic.med':'Doctors & nurses','dedic.fam':'Families','dedic.vol':'Volunteers','dedic.pre.rescatistas':'🦺 For the rescuers','dedic.pre.medicos':'⛑️ For the doctors & nurses','dedic.pre.familias':'👨‍👩‍👧 For the families','dedic.pre.voluntarios':'🙌 For the volunteers',
   'apoyo.report':'⚑ Report','apoyo.reportTitle':'Hide this message on this device','apoyo.hidden':'Message hidden on this device.','apoyo.blocked':'Your message contains language that isn’t allowed. Let’s keep this wall full of encouragement. 🤍',
-  'near':'📍 Near me','near.on':'📍 Near me ✓','sol.geo':'📍 Add my approximate area','sol.geoSet':'✓ Area added (approximate)','sol.locating':'Locating…','sol.geoFail':'Could not get your location. Enable GPS or the location permission.','notif.off':'🔔 Notify me','notif.on':'🔔 Alerts ✓','notif.title':'New help requests','notif.bodyN':'new requests in your category','notif.unsupported':'Your browser does not support notifications.','fab':'＋ Post','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
+  'near':'📍 Near me','near.on':'📍 Near me ✓','sol.geo':'📍 Add my approximate area','sol.geoSet':'✓ Area added (approximate)','sol.locating':'Locating…','sol.geoFail':'Could not get your location. Enable GPS or the location permission.','notif.off':'🔔 Notify me','notif.on':'🔔 Alerts ✓','notif.title':'New help requests','notif.bodyN':'new requests in your category','notif.unsupported':'Your browser does not support notifications.','impact.title':'Impact','impact.res':'resolved','impact.con':'completed','impact.resp':'grievance backings','fab':'＋ Post','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
   'legend.crit':'Critical emergency','legend.build':'Damaged building/access','legend.escombros':'Rubble removal','legend.miss':'Missing person','legend.acopio':'Collection center','legend.aid':'Humanitarian aid','legend.dark':'No power','legend.water':'No drinking water','legend.volun':'Volunteer searcher',
   'stat.crit':'Critical','stat.build':'Damage/utilities','stat.esc':'Rubble','stat.miss':'Searched',
   'chart.title':'📊 Report statistics','chart.sub':'Live distribution of active reports by category and area.','chart.total':'active reports in total','chart.byCat':'By category','chart.byZone':'Most affected areas','chart.loading':'Loading statistics…','chart.empty':'No active reports to chart yet.',
@@ -1697,6 +1710,7 @@ async function load(){
   initMap();   // crea el mapa Leaflet (tiles desactivados por defecto)
   render();
   activateTab(savedTab || 'solicitudes');   // home = Solicitudes (activateTab también oculta el FAB allí)
+  if(!denLoaded) loadDenuncias();   // pre-carga en segundo plano para el contador de impacto
   if(savedAuto) setAuto(true);
   // Enlace profundo: si la URL trae ?p=<id>, abrir la app enfocada en ese reporte
   try{ const pid=new URLSearchParams(location.search).get('p'); if(pid) focusReport(pid); }catch(e){}
@@ -2139,6 +2153,7 @@ function renderBoard(mode, ids){
 function renderSolicitudes(){
   renderBoard('solicitud', {list:'sol-list', fk:'sol-fk', fe:'sol-fe'});
   renderBoard('ofrecimiento', {list:'ofr-list', fk:'ofr-fk', fe:'ofr-fe'});
+  if(typeof renderImpact==='function') renderImpact();
 }
 function compartirSolicitud(id){
   const s=solList.find(x=>String(x.id)===String(id)); if(!s) return;
@@ -2325,6 +2340,7 @@ function renderDenuncias(){
       <div class="si-actions">${actions}</div></div>`;
   }).join('');
   animateStagger('#den-list .sol-item');
+  if(typeof renderImpact==='function') renderImpact();
 }
 function compartirDenuncia(id){
   const d=denList.find(x=>String(x.id)===String(id)); if(!d) return;
@@ -2378,6 +2394,32 @@ async function publicarDenuncia(){
 const vs=document.getElementById('volunSearch');
 if(vs){ vs.addEventListener('input',e=>{ volunQuery=e.target.value.trim(); render(); }); }
 const vc=document.getElementById('volunClear'); if(vc){ vc.addEventListener('click',()=>{ volunQuery=''; vs.value=''; render(); }); }
+
+// ---- Contadores de impacto en el inicio ----
+function renderImpact(){
+  const el=document.getElementById('impact'); if(!el) return;
+  const res=solList.filter(s=>(s.tipo||'solicitud')==='solicitud'&&s.estado==='cumplida').length;
+  const con=solList.filter(s=>s.tipo==='ofrecimiento'&&s.estado==='cumplida').length;
+  const resp=(typeof denList!=='undefined'?denList:[]).reduce((a,d)=>a+(Number(d.respaldos)||0),0);
+  if(res+con+resp===0){ el.hidden=true; el.innerHTML=''; return; }
+  let h=`<span class="impact-h">${esc(t('impact.title'))}</span>`;
+  h+=`<span>✅ <b>${res}</b> ${esc(t('impact.res'))}</span>`;
+  h+=`<span>🤲 <b>${con}</b> ${esc(t('impact.con'))}</span>`;
+  if(resp>0) h+=`<span>🙌 <b>${resp}</b> ${esc(t('impact.resp'))}</span>`;
+  el.innerHTML=h; el.hidden=false;
+}
+
+// ---- Accesibilidad: tamaño de texto y alto contraste ----
+const A11Y_LABELS=['A','A+','A++'], A11Y_ZOOM=[1,1.15,1.3];
+function a11yFontIdx(){ let i=0; try{ i=parseInt(localStorage.getItem('vzla_font')||'0',10)||0; }catch(e){} return ((i%3)+3)%3; }
+function applyFontScale(){ const i=a11yFontIdx(); try{ document.documentElement.style.zoom=A11Y_ZOOM[i]; }catch(e){} const b=document.getElementById('fontBtn'); if(b) b.textContent=A11Y_LABELS[i]; }
+function cycleFont(){ const i=(a11yFontIdx()+1)%3; try{ localStorage.setItem('vzla_font',String(i)); }catch(e){} applyFontScale(); }
+function contrastOn(){ try{ return localStorage.getItem('vzla_contrast')==='1'; }catch(e){ return false; } }
+function applyContrast(){ const on=contrastOn(); document.documentElement.setAttribute('data-contrast', on?'high':'normal'); const b=document.getElementById('contrastBtn'); if(b){ b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); } }
+function toggleContrast(){ try{ localStorage.setItem('vzla_contrast', contrastOn()?'0':'1'); }catch(e){} applyContrast(); }
+{ const b=document.getElementById('fontBtn'); if(b) b.addEventListener('click',cycleFont); }
+{ const b=document.getElementById('contrastBtn'); if(b) b.addEventListener('click',toggleContrast); }
+applyFontScale(); applyContrast();
 
 // ---- Idioma (es/en) ----
 const langBtn=document.getElementById('langToggle');
