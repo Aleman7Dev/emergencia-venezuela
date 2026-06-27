@@ -249,6 +249,7 @@
   .sf-geo{ width:100%; margin-top:8px; padding:11px; border-radius:11px; background:var(--panel2); border:1px dashed var(--line); color:var(--txt); font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
   .sf-geo.on{ background:rgba(22,163,74,.14); border-color:#16a34a; color:#15803d; border-style:solid; }
   .si-dist{ color:var(--acc); font-weight:700; }
+  .si-match{ display:inline-block; margin-top:8px; background:rgba(252,209,22,.18); border:1px solid #e9c008; color:#7a5b00; border-radius:9px; padding:6px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
   .sol-list{ max-width:760px; margin:10px auto 0; display:flex; flex-direction:column; gap:10px; padding-bottom:14px; }
   .sol-empty{ text-align:center; color:var(--muted); font-size:13.5px; line-height:1.6; padding:22px 14px; border:1px dashed var(--line); border-radius:14px; background:rgba(255,255,255,.62); backdrop-filter:blur(4px); }
   .sol-empty .sol-quick{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px; }
@@ -934,6 +935,7 @@ const I18N={
   'sol.note':'Usa una zona aproximada, no una dirección exacta. La solicitud es pública. Ante peligro de vida, llama al 171.',
   'sol.st.abierta':'Abierta','sol.st.en_proceso':'En proceso','sol.st.cumplida':'Cumplida','sol.st.cancelada':'Cancelada','sol.urgente':'Urgente',
   'sol.share':'Compartir','sol.contact':'Contactar','sol.shareTxt':'Solicitud de ayuda','sol.mark.proceso':'Marcar en proceso','sol.mark.cumplida':'Marcar cumplida',
+  'match.sol':'ofrecen esto → ver','match.ofr':'lo necesitan → ver',
   'sol.errTitulo':'Describe brevemente qué se necesita.','sol.wait':'Espera unos segundos antes de publicar otra.','sol.errBackend':'No se pudo publicar. Si eres el administrador, falta crear la tabla «solicitudes» en Supabase (sección 7).',
   'sol.kind.voluntarios':'Voluntarios / brazos','sol.kind.agua':'Agua','sol.kind.alimentos':'Alimentos','sol.kind.herramientas':'Herramientas (palas, cuerdas, maquinaria)','sol.kind.insumos':'Insumos / materiales','sol.kind.insumos_medicos':'Insumos médicos','sol.kind.transporte':'Transporte / logística','sol.kind.refugio':'Refugio / alojamiento',
   'ofr.title':'Ofrecimientos de ayuda','ofr.sub':'Quién ofrece su ayuda a la respuesta: traslado, herramientas (palas, cuerdas, maquinaria), agua, insumos y más. Si necesitas algo, mira aquí si alguien ya lo está ofreciendo. Ante peligro de vida, llama al <b>171</b>.','ofr.new':'Publicar ofrecimiento','ofr.publish':'Publicar ofrecimiento','ofr.empty':'Aún no hay ofrecimientos publicados. Si puedes ofrecer traslado, herramientas, agua o insumos, publícalo para que quienes lo necesitan te encuentren. Mientras tanto, explora:','ofr.f.titulo':'¿Qué ofreces?','ofr.ph.titulo':'Ej.: Ofrezco camioneta para traslado de insumos','ofr.contact':'Contactar','ofr.shareTxt':'Ofrecimiento de ayuda','ofr.mark.cumplida':'Marcar concretado','ofr.st.abierta':'Disponible','ofr.st.cumplida':'Concretado',
@@ -1004,6 +1006,7 @@ const I18N={
   'sol.note':'Use an approximate area, not an exact address. The request is public. In a life-threatening emergency, call 171.',
   'sol.st.abierta':'Open','sol.st.en_proceso':'In progress','sol.st.cumplida':'Fulfilled','sol.st.cancelada':'Cancelled','sol.urgente':'Urgent',
   'sol.share':'Share','sol.contact':'Contact','sol.shareTxt':'Help request','sol.mark.proceso':'Mark in progress','sol.mark.cumplida':'Mark fulfilled',
+  'match.sol':'offer this → view','match.ofr':'need this → view',
   'sol.errTitulo':'Briefly describe what is needed.','sol.wait':'Wait a few seconds before posting another.','sol.errBackend':'Could not post. If you are the admin, the “solicitudes” table must be created in Supabase (section 7).',
   'sol.kind.voluntarios':'Volunteers / hands','sol.kind.agua':'Water','sol.kind.alimentos':'Food','sol.kind.herramientas':'Tools (shovels, ropes, machinery)','sol.kind.insumos':'Supplies / materials','sol.kind.insumos_medicos':'Medical supplies','sol.kind.transporte':'Transport / logistics','sol.kind.refugio':'Shelter / lodging',
   'ofr.title':'Help offers','ofr.sub':'Who is offering help to the response: transport, tools (shovels, ropes, machinery), water, supplies and more. If you need something, check here whether someone is already offering it. In a life-threatening emergency, call <b>171</b>.','ofr.new':'Post an offer','ofr.publish':'Post offer','ofr.empty':'No offers posted yet. If you can offer transport, tools, water or supplies, post it so those who need it can find you. Meanwhile, explore:','ofr.f.titulo':'What do you offer?','ofr.ph.titulo':'E.g.: I offer a pickup truck to move supplies','ofr.contact':'Contact','ofr.shareTxt':'Help offer','ofr.mark.cumplida':'Mark completed','ofr.st.abierta':'Available','ofr.st.cumplida':'Completed',
@@ -2095,10 +2098,15 @@ function solCardHtml(s, mine){
     if(s.estado==='abierta') actions+=`<button data-st="en_proceso" data-id="${esc(String(s.id))}">${esc(t('sol.mark.proceso'))}</button>`;
     actions+=`<button data-st="cumplida" data-id="${esc(String(s.id))}">${esc(t(ofrece?'ofr.mark.cumplida':'sol.mark.cumplida'))}</button>`;
   }
+  // Emparejamiento: cuenta del lado contrario con la misma categoría y abiertas
+  const oppTipo=ofrece?'solicitud':'ofrecimiento';
+  const matchN=(s.estado!=='cumplida'&&s.estado!=='cancelada') ? solList.filter(x=>(x.tipo||'solicitud')===oppTipo && x.kind===s.kind && x.estado==='abierta').length : 0;
+  const matchRow=matchN>0 ? `<button class="si-match" data-match="${esc(s.kind)}|${esc(oppTipo)}">💡 ${matchN} ${esc(t(ofrece?'match.ofr':'match.sol'))}</button>` : '';
   return `<div class="sol-item${urgent?' urgente':''}${ofrece?' si-ofrece':''}">
     <div class="si-top"><span class="si-ic">${solKindEmoji(s.kind)}</span>
     <div style="min-width:0"><div class="si-title">${esc(s.titulo||'')}</div>${s.detalle?`<div class="si-detalle">${esc(s.detalle)}</div>`:''}</div></div>
     <div class="si-meta">${badges}${(solNearMode&&userLoc&&s.lat!=null)?`<span class="si-dist">📍 ${distKm(userLoc.lat,userLoc.lon,s.lat,s.lon).toFixed(1)} km</span>`:''}${s.sector?`<span>📍 ${esc(s.sector)}</span>`:''}${s.contacto&&!wa?`<span>✉️ ${esc(s.contacto)}</span>`:''}<span>${esc(relTime(s.created_at))}</span></div>
+    ${matchRow}
     <div class="si-actions">${actions}</div></div>`;
 }
 function renderBoard(mode, ids){
@@ -2181,6 +2189,7 @@ async function publicarSolicitud(){
   btn.disabled=false;
 }
 function solListClick(e){
+  const mt=e.target.closest('[data-match]'); if(mt){ const parts=mt.dataset.match.split('|'); const k=parts[0], tp=parts[1]; const tab=tp==='ofrecimiento'?'ofrecimientos':'solicitudes'; const fk=document.getElementById(tp==='ofrecimiento'?'ofr-fk':'sol-fk'); if(fk) fk.value=k; activateTab(tab); renderSolicitudes(); return; }
   const sh=e.target.closest('[data-solshare]'); if(sh){ compartirSolicitud(sh.dataset.solshare); return; }
   const w=e.target.closest('[data-wa]'); if(w){ window.open('https://wa.me/'+w.dataset.wa,'_blank','noopener'); return; }
   const stt=e.target.closest('[data-st]'); if(stt){ estadoSolicitud(stt.dataset.id, stt.dataset.st); return; }
