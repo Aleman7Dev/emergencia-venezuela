@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Aliados verificados · Emergencia Sísmica Venezuela</title>
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{ --bg:#eef3fb; --panel:#fff; --panel2:#f1f6fd; --line:#d3ddec; --txt:#0e1726; --muted:#566275; --acc:#1f5fe0; --ok:#16a34a; --crit:#cf142b; }
+  html{ min-height:100vh; background:linear-gradient(180deg, rgba(252,209,22,.5) 0%, rgba(0,56,147,.30) 50%, rgba(207,20,43,.45) 100%), var(--bg); background-attachment:fixed; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:var(--txt); max-width:560px; margin:0 auto; padding:18px 16px 60px; }
+  header{ text-align:center; margin-bottom:16px; }
+  .stripe{ height:6px; border-radius:6px; max-width:280px; margin:0 auto 12px; background:linear-gradient(90deg,#FCD116 0 33.3%,#003893 33.3% 66.6%,#CF142B 66.6% 100%); }
+  h1{ font-size:19px; }
+  .sub{ font-size:13px; color:var(--muted); margin-top:4px; line-height:1.5; }
+  .card{ background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:14px; backdrop-filter:blur(5px); }
+  label{ display:block; font-size:12.5px; font-weight:700; color:var(--muted); margin:10px 0 5px; }
+  input{ width:100%; padding:12px; border:1px solid var(--line); border-radius:11px; font-size:15px; font-family:inherit; background:#fff; color:var(--txt); }
+  button{ font-family:inherit; cursor:pointer; }
+  .btn{ width:100%; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:800; color:#fff; background:linear-gradient(90deg,#16a34a,#003893); margin-top:14px; }
+  .btn:active{ transform:scale(.98); }
+  .status{ text-align:center; font-size:13px; min-height:18px; margin-top:10px; }
+  .code-out{ display:none; margin-top:14px; padding:14px; border:1px dashed var(--ok); border-radius:12px; background:rgba(22,163,74,.08); text-align:center; }
+  .code-out.on{ display:block; }
+  .code-big{ font-size:26px; font-weight:900; letter-spacing:3px; color:#15803d; font-family:ui-monospace,Menlo,monospace; }
+  .code-hint{ font-size:12.5px; color:var(--muted); margin-top:6px; }
+  .copy{ margin-top:10px; background:var(--panel2); border:1px solid var(--line); color:var(--txt); border-radius:9px; padding:8px 14px; font-weight:700; font-size:13px; }
+  table{ width:100%; border-collapse:collapse; margin-top:6px; font-size:13px; }
+  th,td{ text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); }
+  th{ color:var(--muted); font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; }
+  .codecell{ font-family:ui-monospace,Menlo,monospace; font-weight:800; }
+  .pill{ font-size:11px; font-weight:800; padding:3px 9px; border-radius:999px; border:none; cursor:pointer; }
+  .pill.on{ background:rgba(22,163,74,.16); color:#15803d; }
+  .pill.off{ background:rgba(207,20,43,.14); color:#b91c1c; }
+  .note{ font-size:11.5px; color:var(--muted); line-height:1.55; margin-top:10px; }
+  a{ color:var(--acc); }
+</style>
+</head>
+<body>
+<header>
+  <div class="stripe"></div>
+  <h1>🤝 Aliados verificados</h1>
+  <div class="sub">Genera un código para una organización aliada y entrégaselo. Al publicar con ese código, sus solicitudes y ofrecimientos mostrarán el badge <b>“Verificada”</b>.</div>
+</header>
+
+<div class="card">
+  <label for="secret">Secreto de administrador</label>
+  <input type="password" id="secret" autocomplete="off" placeholder="El que definiste en app_config (sección 9 del SQL)">
+  <label for="org">Nombre de la organización</label>
+  <input type="text" id="org" maxlength="80" placeholder="Ej.: Cruz Roja Venezolana">
+  <button class="btn" id="gen">Generar código</button>
+  <div class="status" id="status"></div>
+  <div class="code-out" id="codeOut">
+    <div class="code-big" id="codeBig"></div>
+    <div class="code-hint" id="codeHint"></div>
+    <button class="copy" id="copy">Copiar código</button>
+  </div>
+</div>
+
+<div class="card">
+  <label style="margin-top:0">Códigos existentes</label>
+  <button class="copy" id="reload" style="margin-top:0">↻ Cargar / actualizar lista</button>
+  <div id="listWrap"></div>
+  <div class="note">El secreto no se guarda; escríbelo cada vez. La tabla <code>app_config</code> y los códigos no son legibles desde la app: solo estas funciones (con el secreto) los exponen. Usa un secreto largo y único.</div>
+</div>
+
+<div class="sub" style="text-align:center"><a href="index.html">← Volver a la app</a></div>
+
+<script>
+const SUPABASE_URL='https://lzhvyjgbwynyuwylxucu.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6aHZ5amdid3lueXV3eWx4dWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNjc5OTksImV4cCI6MjA5Nzk0Mzk5OX0.D4B2jMLTrBgDg9VIojG1UBLDET10pfn76neJn6rm0ks';
+const H={ apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json' };
+const $=id=>document.getElementById(id);
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function rpc(fn, body){ const r=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+fn,{ method:'POST', headers:H, body:JSON.stringify(body) }); const txt=await r.text(); let data; try{ data=txt?JSON.parse(txt):null; }catch(e){ data=txt; } if(!r.ok) throw new Error((data&&data.message)|| ('Error '+r.status)); return data; }
+
+$('gen').addEventListener('click', async ()=>{
+  const secret=$('secret').value.trim(), org=$('org').value.trim(), st=$('status');
+  if(!secret){ st.style.color='var(--crit)'; st.textContent='Escribe el secreto de administrador.'; return; }
+  if(org.length<2){ st.style.color='var(--crit)'; st.textContent='Escribe el nombre de la organización.'; return; }
+  st.style.color='var(--muted)'; st.textContent='Generando…'; $('gen').disabled=true;
+  try{
+    const code=await rpc('admin_crear_codigo',{ p_secret:secret, p_org:org });
+    st.textContent='';
+    $('codeBig').textContent=code;
+    $('codeHint').innerHTML='Entrégaselo a <b>'+esc(org)+'</b>. Lo escriben al publicar en “Código de organización verificada”.';
+    $('codeOut').classList.add('on');
+    $('org').value='';
+    loadList(secret);
+  }catch(e){ st.style.color='var(--crit)'; st.textContent='No se pudo: '+e.message+' (¿secreto correcto? ¿corriste la sección 9 del SQL?)'; }
+  $('gen').disabled=false;
+});
+$('copy').addEventListener('click', ()=>{ const c=$('codeBig').textContent; try{ navigator.clipboard.writeText(c); $('copy').textContent='✓ Copiado'; setTimeout(()=>$('copy').textContent='Copiar código',1500); }catch(e){} });
+
+async function loadList(secret){
+  secret=secret||$('secret').value.trim();
+  const wrap=$('listWrap');
+  if(!secret){ wrap.innerHTML='<div class="note">Escribe el secreto y pulsa actualizar.</div>'; return; }
+  wrap.innerHTML='<div class="note">Cargando…</div>';
+  try{
+    const rows=await rpc('admin_listar_codigos',{ p_secret:secret });
+    if(!Array.isArray(rows)||!rows.length){ wrap.innerHTML='<div class="note">Aún no hay códigos.</div>'; return; }
+    let h='<table><thead><tr><th>Código</th><th>Organización</th><th>Estado</th></tr></thead><tbody>';
+    rows.forEach(c=>{ h+='<tr><td class="codecell">'+esc(c.code)+'</td><td>'+esc(c.organizacion)+'</td><td>'+
+      '<button class="pill '+(c.activo?'on':'off')+'" data-code="'+esc(c.code)+'" data-activo="'+(c.activo?'0':'1')+'">'+(c.activo?'Activo':'Inactivo')+'</button></td></tr>'; });
+    h+='</tbody></table>';
+    wrap.innerHTML=h;
+    wrap.querySelectorAll('[data-code]').forEach(b=>b.addEventListener('click', async ()=>{
+      try{ await rpc('admin_toggle_codigo',{ p_secret:secret, p_code:b.dataset.code, p_activo:b.dataset.activo==='1' }); loadList(secret); }catch(e){ alert(e.message); }
+    }));
+  }catch(e){ wrap.innerHTML='<div class="note" style="color:var(--crit)">No se pudo: '+esc(e.message)+'</div>'; }
+}
+$('reload').addEventListener('click', ()=>loadList());
+</script>
+</body>
+</html>

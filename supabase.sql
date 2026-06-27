@@ -362,6 +362,52 @@ end $$;
 grant execute on function public.reportar_denuncia(text) to anon, authenticated;
 
 -- ----------------------------------------------------------------------------
+-- 9) Alta fácil de organizaciones verificadas (panel admin en admin.html)
+--    Evita tener que escribir SQL por cada aliado: desde admin.html, con tu
+--    secreto, generas un código y se lo entregas a la organización.
+-- ----------------------------------------------------------------------------
+create table if not exists public.app_config (key text primary key, value text not null);
+alter table public.app_config enable row level security;   -- sin política de SELECT => el cliente no lo lee
+-- Define tu secreto de administrador (CÁMBIALO por uno largo y único):
+insert into public.app_config(key, value) values ('admin_secret', 'CAMBIA-ESTE-SECRETO-largo-y-unico')
+  on conflict (key) do update set value = excluded.value;
+
+-- Generar un código para un aliado (valida el secreto admin)
+create or replace function public.admin_crear_codigo(p_secret text, p_org text)
+returns text language plpgsql security definer set search_path = public as $$
+declare v_ok boolean; v_code text;
+begin
+  select (value = p_secret) into v_ok from public.app_config where key = 'admin_secret';
+  if not coalesce(v_ok, false) then raise exception 'no autorizado'; end if;
+  if p_org is null or length(btrim(p_org)) < 2 then raise exception 'organizacion requerida'; end if;
+  v_code := upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8));
+  insert into public.org_codes(code, organizacion) values (v_code, left(btrim(p_org), 80));
+  return v_code;
+end $$;
+grant execute on function public.admin_crear_codigo(text, text) to anon, authenticated;
+
+-- Listar códigos (valida el secreto admin)
+create or replace function public.admin_listar_codigos(p_secret text)
+returns table(code text, organizacion text, activo boolean)
+language plpgsql security definer set search_path = public as $$
+begin
+  if not exists(select 1 from public.app_config where key='admin_secret' and value=p_secret) then
+    raise exception 'no autorizado'; end if;
+  return query select c.code, c.organizacion, c.activo from public.org_codes c order by c.organizacion;
+end $$;
+grant execute on function public.admin_listar_codigos(text) to anon, authenticated;
+
+-- Activar / desactivar un código (valida el secreto admin)
+create or replace function public.admin_toggle_codigo(p_secret text, p_code text, p_activo boolean)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not exists(select 1 from public.app_config where key='admin_secret' and value=p_secret) then
+    raise exception 'no autorizado'; end if;
+  update public.org_codes set activo = p_activo where code = p_code;
+end $$;
+grant execute on function public.admin_toggle_codigo(text, text, boolean) to anon, authenticated;
+
+-- ----------------------------------------------------------------------------
 -- Notas
 -- ----------------------------------------------------------------------------
 -- · El cruce hospital ↔ desaparecidos (cédula/nombre) NO requiere cambios de
