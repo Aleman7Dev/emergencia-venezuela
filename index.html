@@ -183,6 +183,13 @@
   .photo-pick{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
   .photo-prev{ width:60px; height:60px; object-fit:cover; border-radius:8px; border:1px solid var(--line); }
   .photo-rm{ background:var(--panel2); border:1px solid var(--line); color:var(--muted); border-radius:8px; padding:7px 12px; font-size:12px; cursor:pointer; }
+  #photoPrev, #ax-photoPrev{ display:flex; gap:8px; flex-wrap:wrap; width:100%; }
+  .thumb{ position:relative; display:inline-block; }
+  .thumb img{ width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid var(--line); display:block; }
+  .thumb-rm{ position:absolute; top:-7px; right:-7px; width:22px; height:22px; border-radius:50%; border:none; background:var(--crit); color:#fff; font-size:12px; font-weight:800; cursor:pointer; line-height:1; box-shadow:0 1px 4px rgba(0,0,0,.3); }
+  .card-gallery{ display:flex; gap:6px; flex-wrap:wrap; margin:8px 0 2px; }
+  .card-gallery .card-photo{ width:calc(33.33% - 4px); max-height:120px; margin:0; }
+  .card-gallery .card-photo:only-child{ width:100%; max-height:260px; }
   /* Resultados de la búsqueda federada (directorio aliado) */
   .ally-results{ margin-top:6px; }
   .ally-head{ font-size:12px; color:var(--muted); font-weight:600; margin:10px 2px 8px; display:flex; align-items:center; gap:8px; }
@@ -313,6 +320,8 @@
   .sec-intro{ font-size:13px; color:var(--muted); line-height:1.5; margin:2px 2px 12px; }
   .acopio-cta{ display:block; width:100%; border:none; border-radius:13px; padding:13px; font-size:15px; font-weight:800; color:#fff; background:linear-gradient(90deg,#16a34a,#003893); margin-bottom:14px; cursor:pointer; font-family:inherit; box-shadow:0 4px 14px rgba(22,163,74,.25); }
   .acopio-cta:active{ transform:scale(.98); }
+  .ax-link{ display:block; text-align:center; margin:0 0 14px; padding:11px; border-radius:12px; border:1px dashed var(--acc); background:rgba(31,95,224,.06); color:var(--acc); font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; }
+  .ax-link:active{ transform:scale(.99); }
   .ally-banner-tx{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
   .ally-banner-tx b{ font-size:14px; color:var(--txt); }
   .ally-banner-tx small{ font-size:11.5px; color:var(--muted); line-height:1.35; }
@@ -514,6 +523,7 @@
 <div class="subnav" id="subnav" role="tablist" aria-label="Mapa y más secciones" hidden>
   <button class="subtab on" role="tab" aria-selected="true" data-v="mapa"><span aria-hidden="true">🗺️</span> <span data-i18n="nav.mapa">Mapa</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="reportes"><span aria-hidden="true">📋</span> <span data-i18n="nav.reportes">Reportes</span></button>
+  <button class="subtab" role="tab" aria-selected="false" data-v="acopioint"><span aria-hidden="true">🌎</span> <span data-i18n="nav.acopioint">Acopio exterior</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="tel"><span aria-hidden="true">📞</span> <span data-i18n="nav.tel">Teléfonos</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="apoyo"><span aria-hidden="true">💛</span> <span data-i18n="nav.apoyo">Apoyo</span></button>
 </div>
@@ -643,8 +653,16 @@
     <div class="sectitle" data-i18n="sect.acopio">Centros de acopio y puntos de ayuda humanitaria</div>
     <p class="sec-intro" data-i18n="acopio.intro">Centros donde se reciben o entregan donaciones (agua, alimentos, medicinas…). Publícalos con foto y ubícalos en el mapa.</p>
     <button class="acopio-cta" id="acopio-new" data-i18n="acopio.publish">📦 Publicar centro de acopio</button>
+    <a class="ax-link" id="goAcopioInt" role="button">🌎 <span data-i18n="ax.crosslink">¿Estás fuera de Venezuela? Mira el acopio en el exterior →</span></a>
     <div class="sortbar"><button class="sortnear" data-near aria-pressed="false" data-i18n="near">📍 Cerca de mí</button></div>
     <div id="list-acopio" class="list-grid"></div>
+  </section>
+
+  <section class="view" id="v-acopioint">
+    <div class="sectitle" data-i18n="ax.title">Acopio en el exterior</div>
+    <p class="sec-intro" data-i18n="ax.intro">Centros de acopio fuera de Venezuela para coordinar el envío de ayuda hacia el país.</p>
+    <button class="acopio-cta" id="ax-new" data-i18n="ax.publish">🌎 Publicar centro en el exterior</button>
+    <div id="list-acopioint" class="list-grid"></div>
   </section>
 
   <section class="view" id="v-volun">
@@ -876,6 +894,36 @@
   </div>
 </div>
 
+<div class="sol-modal" id="ax-modal" role="dialog" aria-modal="true" aria-labelledby="ax-modal-t">
+  <div class="sol-card">
+    <div class="sol-modal-head">
+      <h3 id="ax-modal-t" data-i18n="ax.new">Publicar centro de acopio en el exterior</h3>
+      <button class="sol-x" id="ax-close" aria-label="Cerrar">✕</button>
+    </div>
+    <p class="sol-note" data-i18n="ax.intro2">Para coordinar el envío de ayuda hacia Venezuela desde la diáspora.</p>
+    <label data-i18n="ax.f.pais">País</label>
+    <input id="ax-pais" list="ax-countries" maxlength="60" data-i18n-ph="ax.ph.pais" placeholder="Ej.: Estados Unidos">
+    <datalist id="ax-countries"></datalist>
+    <label data-i18n="ax.f.ciudad">Ciudad</label>
+    <input id="ax-ciudad" maxlength="80" data-i18n-ph="ax.ph.ciudad" placeholder="Ej.: Miami, FL">
+    <label data-i18n="ax.f.titulo">Nombre del centro u organización</label>
+    <input id="ax-titulo" maxlength="140" data-i18n-ph="ax.ph.titulo" placeholder="Ej.: Fundación Manos por Venezuela">
+    <label data-i18n="ax.f.detalle">¿Qué reciben y cómo? (detalle)</label>
+    <textarea id="ax-detalle" maxlength="1000" rows="3" data-i18n-ph="ax.ph.detalle" placeholder="Qué insumos reciben, horarios, a qué zona de Venezuela envían, etc."></textarea>
+    <label data-i18n="ax.f.contacto">Contacto</label>
+    <input id="ax-contacto" maxlength="160" data-i18n-ph="ax.ph.contacto" placeholder="WhatsApp / teléfono / correo">
+    <label data-i18n="f.photo.place">Fotos del lugar (hasta 5)</label>
+    <div class="photo-pick">
+      <input type="file" id="ax-photo" accept="image/*" multiple>
+      <div id="ax-photoPrev"></div>
+    </div>
+    <button type="button" class="sf-geo" id="ax-geo" data-i18n="ax.geo">📍 Usar mi ubicación actual (opcional)</button>
+    <div class="sol-note" data-i18n="ax.note">Publica de buena fe. La información es pública; comparte solo lo necesario para coordinar la ayuda.</div>
+    <button class="sol-submit" id="ax-submit" data-i18n="ax.publish">🌎 Publicar centro en el exterior</button>
+    <div class="sol-status" id="ax-status" role="status"></div>
+  </div>
+</div>
+
 <button class="fab" id="fab" aria-label="Publicar o reportar" data-i18n="fab">＋ Publicar</button>
 
 <div class="fab-menu" id="fab-menu" role="dialog" aria-modal="true" aria-label="¿Qué quieres publicar?">
@@ -947,7 +995,7 @@ const I18N={
   'sol.errTitulo':'Describe brevemente qué se necesita.','sol.wait':'Espera unos segundos antes de publicar otra.','sol.errBackend':'No se pudo publicar. Si eres el administrador, falta crear la tabla «solicitudes» en Supabase (sección 7).',
   'sol.kind.voluntarios':'Voluntarios / brazos','sol.kind.agua':'Agua','sol.kind.alimentos':'Alimentos','sol.kind.herramientas':'Herramientas (palas, cuerdas, maquinaria)','sol.kind.insumos':'Insumos / materiales','sol.kind.insumos_medicos':'Insumos médicos','sol.kind.transporte':'Transporte / logística','sol.kind.refugio':'Refugio / alojamiento',
   'ofr.title':'Ofrecimientos de ayuda','ofr.sub':'Quién ofrece su ayuda a la respuesta: traslado, herramientas (palas, cuerdas, maquinaria), agua, insumos y más. Si necesitas algo, mira aquí si alguien ya lo está ofreciendo. Ante peligro de vida, llama al <b>171</b>.','ofr.new':'Publicar ofrecimiento','ofr.publish':'Publicar ofrecimiento','ofr.empty':'Aún no hay ofrecimientos publicados. Si puedes ofrecer traslado, herramientas, agua o insumos, publícalo para que quienes lo necesitan te encuentren. Mientras tanto, explora:','ofr.f.titulo':'¿Qué ofreces?','ofr.ph.titulo':'Ej.: Ofrezco camioneta para traslado de insumos','ofr.contact':'Contactar','ofr.shareTxt':'Ofrecimiento de ayuda','ofr.mark.cumplida':'Marcar concretado','ofr.st.abierta':'Disponible','ofr.st.cumplida':'Concretado',
-  'fab.title':'¿Qué quieres publicar?','fab.sol':'Pedir ayuda','fab.sol.sub':'Necesito voluntarios, agua, insumos, traslado…','fab.ofr':'Ofrecer ayuda','fab.ofr.sub':'Ofrezco traslado, herramientas, agua, insumos…','fab.den':'Publicar denuncia','fab.den.sub':'Injusticias y fallas en la respuesta a los afectados','fab.map':'Reportar en el mapa','fab.map.sub':'Emergencia, escombros, vialidad, servicios, acopio','allies.title':'🤝 Plataformas aliadas — úsalas también','allies.red':'Red de ayuda y búsqueda de personas tras el terremoto','allies.hosp':'Directorio de personas atendidas en hospitales y centros de salud','allies.encuentra':'Buscador de personas y recursos en Venezuela tras el terremoto','fab.acopio':'Publicar centro de acopio','fab.acopio.sub':'Comparte un punto de acopio o ayuda con foto y ubicación','acopio.intro':'Centros donde se reciben o entregan donaciones (agua, alimentos, medicinas…). Publícalos con foto y ubícalos en el mapa.','acopio.publish':'📦 Publicar centro de acopio',
+  'fab.title':'¿Qué quieres publicar?','fab.sol':'Pedir ayuda','fab.sol.sub':'Necesito voluntarios, agua, insumos, traslado…','fab.ofr':'Ofrecer ayuda','fab.ofr.sub':'Ofrezco traslado, herramientas, agua, insumos…','fab.den':'Publicar denuncia','fab.den.sub':'Injusticias y fallas en la respuesta a los afectados','fab.map':'Reportar en el mapa','fab.map.sub':'Emergencia, escombros, vialidad, servicios, acopio','allies.title':'🤝 Plataformas aliadas — úsalas también','allies.red':'Red de ayuda y búsqueda de personas tras el terremoto','allies.hosp':'Directorio de personas atendidas en hospitales y centros de salud','allies.encuentra':'Buscador de personas y recursos en Venezuela tras el terremoto','fab.acopio':'Publicar centro de acopio','fab.acopio.sub':'Comparte un punto de acopio o ayuda con foto y ubicación','acopio.intro':'Centros donde se reciben o entregan donaciones (agua, alimentos, medicinas…). Publícalos con foto y ubícalos en el mapa.','acopio.publish':'📦 Publicar centro de acopio','nav.acopioint':'Acopio exterior','ax.title':'Acopio en el exterior','ax.intro':'Centros de acopio fuera de Venezuela para coordinar el envío de ayuda hacia el país.','ax.intro2':'Para coordinar el envío de ayuda hacia Venezuela desde la diáspora.','ax.crosslink':'¿Estás fuera de Venezuela? Mira el acopio en el exterior →','ax.new':'Publicar centro de acopio en el exterior','ax.publish':'🌎 Publicar centro en el exterior','ax.f.pais':'País','ax.ph.pais':'Ej.: Estados Unidos','ax.f.ciudad':'Ciudad','ax.ph.ciudad':'Ej.: Miami, FL','ax.f.titulo':'Nombre del centro u organización','ax.ph.titulo':'Ej.: Fundación Manos por Venezuela','ax.f.detalle':'¿Qué reciben y cómo? (detalle)','ax.ph.detalle':'Qué insumos reciben, horarios, a qué zona de Venezuela envían, etc.','ax.f.contacto':'Contacto','ax.ph.contacto':'WhatsApp / teléfono / correo','ax.geo':'📍 Usar mi ubicación actual (opcional)','ax.geoWait':'📍 Ubicando…','ax.geoSet':'✓ Ubicación añadida','ax.note':'Publica de buena fe. La información es pública; comparte solo lo necesario para coordinar la ayuda.','ax.loading':'Cargando centros en el exterior…','ax.empty':'Aún no hay centros de acopio en el exterior. ¡Publica el primero!','ax.seeloc':'Ver ubicación','ax.publishing':'Publicando…','ax.errPais':'Indica el país.','ax.errCiudad':'Indica la ciudad.','ax.errTitulo':'Indica el nombre del centro u organización.',
   'den.title':'Denuncias públicas','den.sub':'Un espacio para que los afectados hagan oír su voz y visibilicen injusticias y fallas en la respuesta: refugios en mal estado, ayuda que no llega, agua o luz cortadas, cobros indebidos. Respalda las que conozcas para amplificarlas.','den.warn':'⚠️ <b>Verifica antes de difundir.</b> No publiques acusaciones personales sin pruebas, datos privados de terceros ni lenguaje ofensivo. Esto <b>no reemplaza</b> a las autoridades: ante un delito, acude a los organismos competentes.','den.new':'Publicar denuncia','den.publish':'Publicar denuncia','den.empty':'Aún no hay denuncias publicadas. Si eres un afectado y vives una injusticia o falla en la respuesta, publícala para visibilizarla.',
   'den.f.kind':'Tipo de denuncia','den.f.titulo':'¿Qué quieres denunciar?','den.f.detalle':'Detalle de los hechos','den.f.sector':'Zona','den.f.allKinds':'Todos los tipos','den.f.recent':'Recientes','den.f.top':'Más respaldadas',
   'den.ph.titulo':'Ej.: Refugio sin agua ni baños en Caraballeda','den.ph.detalle':'Describe qué ocurre, desde cuándo y a quiénes afecta. Aporta datos verificables.','den.ph.sector':'Ej.: Caraballeda, La Guaira',
@@ -985,7 +1033,7 @@ const I18N={
   'priv.3':'Al reportar personas <b>se sugiere la cédula</b> (opcional): ayuda a verificar si la persona aparece a la vez como desaparecida y en un centro de salud. Puedes reportar <b>sin cédula</b> (p. ej. menores o personas no identificadas). <b>La cédula no se muestra públicamente</b> — se guarda cifrada y solo se usa para cruzar coincidencias.',
   'priv.4':'Al reportar personas, hazlo de buena fe y con su interés en mente. Los reportes falsos pueden costar vidas al desviar recursos.',
   'sheet.title':'Nuevo reporte','sheet.sub':'Tu reporte aparece en el mapa para los equipos de rescate.','sheet.submit':'Publicar reporte','sheet.publishing':'Publicando…',
-  'wz.step':'Paso','wz.of':'de','wz.next':'Siguiente →','wz.back':'← Atrás','wz.t1':'¿Qué reportas?','wz.t2':'Detalles','wz.t3':'¿Dónde?','wz.t4':'Revisar','wz.sum.type':'Tipo','wz.sum.loc':'Ubicación','wz.sum.detail':'Detalle','wz.sum.none':'(sin indicar)','wz.sum.approx':'ubicación aproximada','wz.privacy':'Todo lo que publicas es visible públicamente. No incluyas datos sensibles innecesarios; reporta de buena fe.','f.locReq':'Indica la ubicación para continuar.','f.photo':'Foto','f.photo.hint':'Una foto reciente y clara del rostro ayuda muchísimo a identificar. Se verá públicamente.','f.photo.place':'Foto del lugar','f.photo.placeHint':'Ayuda a identificar el centro de acopio o punto de ayuda. La imagen se reduce y se le quitan los datos de ubicación (GPS) antes de subirla.','f.photo.rm':'Quitar foto','f.photo.bad':'Elige un archivo de imagen.','sheet.uploadingPhoto':'Subiendo foto…',
+  'wz.step':'Paso','wz.of':'de','wz.next':'Siguiente →','wz.back':'← Atrás','wz.t1':'¿Qué reportas?','wz.t2':'Detalles','wz.t3':'¿Dónde?','wz.t4':'Revisar','wz.sum.type':'Tipo','wz.sum.loc':'Ubicación','wz.sum.detail':'Detalle','wz.sum.none':'(sin indicar)','wz.sum.approx':'ubicación aproximada','wz.privacy':'Todo lo que publicas es visible públicamente. No incluyas datos sensibles innecesarios; reporta de buena fe.','f.locReq':'Indica la ubicación para continuar.','f.photo':'Foto','f.photo.hint':'Una foto reciente y clara del rostro ayuda muchísimo a identificar. Se verá públicamente.','f.photo.place':'Fotos del lugar (hasta 5)','f.photo.placeHint':'Hasta 5 imágenes del centro de acopio o punto de ayuda. Se reducen y se les quitan los datos de ubicación (GPS) antes de subirlas.','f.photo.rm':'Quitar foto','f.photo.bad':'Elige un archivo de imagen.','sheet.uploadingPhoto':'Subiendo foto…',
   'f.loc.hosp':'Hospital o centro de salud','f.loc.volun':'Zona que puedes cubrir','f.loc.def':'Ubicación / dirección',
   'fph.loc.hosp':'Ej.: Hospital Vargas, San José, Caracas','fph.loc.volun':'Ej.: Municipio Chacao y este de Caracas','fph.loc.def':'Ej.: Av. Francisco de Miranda, Chacao',
   'f.need.volun':'Cómo puedes ayudar y cómo contactarte','f.need.person':'Nombre y descripción de la persona','f.need.offer':'Qué se ofrece / horario','f.need.def':'Qué se necesita / detalle',
@@ -1018,7 +1066,7 @@ const I18N={
   'sol.errTitulo':'Briefly describe what is needed.','sol.wait':'Wait a few seconds before posting another.','sol.errBackend':'Could not post. If you are the admin, the “solicitudes” table must be created in Supabase (section 7).',
   'sol.kind.voluntarios':'Volunteers / hands','sol.kind.agua':'Water','sol.kind.alimentos':'Food','sol.kind.herramientas':'Tools (shovels, ropes, machinery)','sol.kind.insumos':'Supplies / materials','sol.kind.insumos_medicos':'Medical supplies','sol.kind.transporte':'Transport / logistics','sol.kind.refugio':'Shelter / lodging',
   'ofr.title':'Help offers','ofr.sub':'Who is offering help to the response: transport, tools (shovels, ropes, machinery), water, supplies and more. If you need something, check here whether someone is already offering it. In a life-threatening emergency, call <b>171</b>.','ofr.new':'Post an offer','ofr.publish':'Post offer','ofr.empty':'No offers posted yet. If you can offer transport, tools, water or supplies, post it so those who need it can find you. Meanwhile, explore:','ofr.f.titulo':'What do you offer?','ofr.ph.titulo':'E.g.: I offer a pickup truck to move supplies','ofr.contact':'Contact','ofr.shareTxt':'Help offer','ofr.mark.cumplida':'Mark completed','ofr.st.abierta':'Available','ofr.st.cumplida':'Completed',
-  'fab.title':'What do you want to post?','fab.sol':'Ask for help','fab.sol.sub':'I need volunteers, water, supplies, transport…','fab.ofr':'Offer help','fab.ofr.sub':'I offer transport, tools, water, supplies…','fab.den':'Post a grievance','fab.den.sub':'Injustices and failures in the response to those affected','fab.map':'Report on the map','fab.map.sub':'Emergency, rubble, roads, utilities, collection','allies.title':'🤝 Partner platforms — use them too','allies.red':'Help and people-search network after the earthquake','allies.hosp':'Directory of people treated in hospitals and health centers','allies.encuentra':'Find people and resources in Venezuela after the earthquake','fab.acopio':'Post a collection center','fab.acopio.sub':'Share a collection or aid point with photo and location','acopio.intro':'Places where donations are received or handed out (water, food, medicine…). Post them with a photo and pin them on the map.','acopio.publish':'📦 Post a collection center',
+  'fab.title':'What do you want to post?','fab.sol':'Ask for help','fab.sol.sub':'I need volunteers, water, supplies, transport…','fab.ofr':'Offer help','fab.ofr.sub':'I offer transport, tools, water, supplies…','fab.den':'Post a grievance','fab.den.sub':'Injustices and failures in the response to those affected','fab.map':'Report on the map','fab.map.sub':'Emergency, rubble, roads, utilities, collection','allies.title':'🤝 Partner platforms — use them too','allies.red':'Help and people-search network after the earthquake','allies.hosp':'Directory of people treated in hospitals and health centers','allies.encuentra':'Find people and resources in Venezuela after the earthquake','fab.acopio':'Post a collection center','fab.acopio.sub':'Share a collection or aid point with photo and location','acopio.intro':'Places where donations are received or handed out (water, food, medicine…). Post them with a photo and pin them on the map.','acopio.publish':'📦 Post a collection center','nav.acopioint':'Abroad','ax.title':'Collection centers abroad','ax.intro':'Collection centers outside Venezuela to coordinate sending aid to the country.','ax.intro2':'To coordinate sending aid to Venezuela from the diaspora.','ax.crosslink':'Outside Venezuela? See collection centers abroad →','ax.new':'Post a collection center abroad','ax.publish':'🌎 Post a center abroad','ax.f.pais':'Country','ax.ph.pais':'e.g. United States','ax.f.ciudad':'City','ax.ph.ciudad':'e.g. Miami, FL','ax.f.titulo':'Name of the center or organization','ax.ph.titulo':'e.g. Manos por Venezuela Foundation','ax.f.detalle':'What do they receive and how? (details)','ax.ph.detalle':'What supplies they receive, hours, which area of Venezuela they ship to, etc.','ax.f.contacto':'Contact','ax.ph.contacto':'WhatsApp / phone / email','ax.geo':'📍 Use my current location (optional)','ax.geoWait':'📍 Locating…','ax.geoSet':'✓ Location added','ax.note':'Post in good faith. Info is public; share only what is needed to coordinate aid.','ax.loading':'Loading centers abroad…','ax.empty':'No collection centers abroad yet. Be the first to post one!','ax.seeloc':'See location','ax.publishing':'Publishing…','ax.errPais':'Enter the country.','ax.errCiudad':'Enter the city.','ax.errTitulo':'Enter the name of the center or organization.',
   'den.title':'Public grievances','den.sub':'A space for those affected to make their voice heard and expose injustices and failures in the response: shelters in poor condition, aid that never arrives, water or power cut off, improper charges. Back the ones you know to amplify them.','den.warn':'⚠️ <b>Verify before sharing.</b> Do not post personal accusations without evidence, third-party private data, or offensive language. This <b>does not replace</b> the authorities: for a crime, go to the competent agencies.','den.new':'Post a grievance','den.publish':'Post grievance','den.empty':'No grievances posted yet. If you are affected and face an injustice or a failure in the response, post it to make it visible.',
   'den.f.kind':'Grievance type','den.f.titulo':'What do you want to report?','den.f.detalle':'Details of the facts','den.f.sector':'Area','den.f.allKinds':'All types','den.f.recent':'Recent','den.f.top':'Most backed',
   'den.ph.titulo':'E.g.: Shelter with no water or toilets in Caraballeda','den.ph.detalle':'Describe what is happening, since when, and who it affects. Provide verifiable facts.','den.ph.sector':'E.g.: Caraballeda, La Guaira',
@@ -1056,7 +1104,7 @@ const I18N={
   'priv.3':'When reporting people, <b>the ID number is suggested</b> (optional): it helps check whether the person appears both as missing and in a health center. You can report <b>without an ID</b> (e.g. minors or unidentified people). <b>The ID is not shown publicly</b> — it is stored encrypted and only used to cross-match.',
   'priv.4':'When reporting people, do so in good faith and with their interest in mind. False reports can cost lives by diverting resources.',
   'sheet.title':'New report','sheet.sub':'Your report appears on the map for rescue teams.','sheet.submit':'Publish report','sheet.publishing':'Publishing…',
-  'wz.step':'Step','wz.of':'of','wz.next':'Next →','wz.back':'← Back','wz.t1':'What are you reporting?','wz.t2':'Details','wz.t3':'Where?','wz.t4':'Review','wz.sum.type':'Type','wz.sum.loc':'Location','wz.sum.detail':'Detail','wz.sum.none':'(not provided)','wz.sum.approx':'approximate location','wz.privacy':'Everything you publish is publicly visible. Don’t include unnecessary sensitive data; report in good faith.','f.locReq':'Enter a location to continue.','f.photo':'Photo','f.photo.hint':'A recent, clear face photo helps a lot with identification. It will be public.','f.photo.place':'Photo of the place','f.photo.placeHint':'Helps identify the collection center or aid point. The image is downscaled and its location (GPS) metadata removed before upload.','f.photo.rm':'Remove photo','f.photo.bad':'Choose an image file.','sheet.uploadingPhoto':'Uploading photo…',
+  'wz.step':'Step','wz.of':'of','wz.next':'Next →','wz.back':'← Back','wz.t1':'What are you reporting?','wz.t2':'Details','wz.t3':'Where?','wz.t4':'Review','wz.sum.type':'Type','wz.sum.loc':'Location','wz.sum.detail':'Detail','wz.sum.none':'(not provided)','wz.sum.approx':'approximate location','wz.privacy':'Everything you publish is publicly visible. Don’t include unnecessary sensitive data; report in good faith.','f.locReq':'Enter a location to continue.','f.photo':'Photo','f.photo.hint':'A recent, clear face photo helps a lot with identification. It will be public.','f.photo.place':'Photos of the place (up to 5)','f.photo.placeHint':'Up to 5 photos of the collection center or aid point. They are downscaled and stripped of location (GPS) metadata before upload.','f.photo.rm':'Remove photo','f.photo.bad':'Choose an image file.','sheet.uploadingPhoto':'Uploading photo…',
   'f.loc.hosp':'Hospital or health center','f.loc.volun':'Area you can cover','f.loc.def':'Location / address',
   'fph.loc.hosp':'e.g. Vargas Hospital, San José, Caracas','fph.loc.volun':'e.g. Chacao municipality and east Caracas','fph.loc.def':'e.g. Francisco de Miranda Ave., Chacao',
   'f.need.volun':'How you can help and how to reach you','f.need.person':'Name and description of the person','f.need.offer':'What is offered / schedule','f.need.def':'What is needed / details',
@@ -1269,13 +1317,21 @@ function stripProfile(text){
 // Foto del reporte. Seguridad: SOLO se acepta una URL de NUESTRO bucket público
 // de Supabase (https, mismo host, ruta /storage/v1/object/public/). Evita que un
 // texto con "IMG:https://malicioso/x.jpg" se renderice como imagen.
-function extractPhoto(rp){
-  const m=String(rp&&rp.need||'').match(/\bIMG:(https:\/\/[^\s"'<>]+)/i);
-  if(!m) return null;
-  try{ const u=new URL(m[1]), su=new URL(SUPABASE_URL);
+function validatePhotoUrl(raw){
+  try{ const u=new URL(raw), su=new URL(SUPABASE_URL);
     if(u.protocol==='https:' && u.hostname===su.hostname && u.pathname.startsWith('/storage/v1/object/public/')) return u.href;
   }catch(e){}
   return null;
+}
+function extractPhoto(rp){
+  const m=String(rp&&rp.need||'').match(/\bIMG:(https:\/\/[^\s"'<>]+)/i);
+  return m ? validatePhotoUrl(m[1]) : null;
+}
+// Todas las imágenes (hasta 5) adjuntas a un reporte como tokens IMG:.
+function extractPhotos(rp){
+  const out=[], re=/\bIMG:(https:\/\/[^\s"'<>]+)/ig, s=String(rp&&rp.need||''); let m;
+  while((m=re.exec(s)) && out.length<5){ const u=validatePhotoUrl(m[1]); if(u) out.push(u); }
+  return out;
 }
 // Estado de paso de un reporte de vialidad (por defecto 'closed' si no se indicó)
 function roadStatus(rp){
@@ -1293,6 +1349,14 @@ function waPhone(text){
   const tail=m[2].replace(/\D/g,'');
   if(tail.length!==7) return null;
   return '58'+m[1]+tail;
+}
+// Como waPhone pero acepta también números internacionales con prefijo + (para
+// los centros de acopio en el exterior, cuyo contacto suele ser de otro país).
+function waAny(text){
+  const ve=waPhone(text); if(ve) return ve;
+  const m=String(text==null?'':text).match(/\+(\d[\d\s.\-]{7,16}\d)/);
+  if(m){ const d=m[1].replace(/\D/g,''); if(d.length>=8 && d.length<=15) return d; }
+  return null;
 }
 
 // ---- Coincidencias hospital ↔ desaparecido ----
@@ -1388,7 +1452,7 @@ let map=null, tileLayer=null, tilesOn=false;
 let statesLayer=null, munisLayer=null, markersLayer=null;
 // Captura de ubicación precisa para reportes nuevos
 let pickMode=false, pickMarker=null, pickedLat=null, pickedLon=null, pickedSrc=null;
-let pickedPhoto=null, pickedPhotoURL=null;   // foto opcional del reporte (File + preview)
+let pickedPhotos=[];   // fotos opcionales del reporte (hasta 5: [{file,url}])
 // Reduce la imagen (máx ~1024px, JPEG): aligera la subida y ELIMINA metadatos EXIF
 // (incluida la ubicación GPS de la cámara) por privacidad.
 function downscaleImage(file, max=1024, quality=0.82){
@@ -1413,12 +1477,18 @@ async function uploadPhoto(blob){
   if(!res.ok) throw new Error('upload '+res.status);
   return `${SUPABASE_URL}/storage/v1/object/public/fotos/${name}`;
 }
-function renderPhotoPrev(){
-  const el=document.getElementById('photoPrev'); if(!el) return;
-  el.innerHTML = pickedPhoto ? `<img class="photo-prev" src="${pickedPhotoURL}" alt=""><button type="button" class="photo-rm" id="photoRm">${t('f.photo.rm')}</button>` : '';
-  const rm=document.getElementById('photoRm');
-  if(rm) rm.addEventListener('click',()=>{ pickedPhoto=null; if(pickedPhotoURL){ URL.revokeObjectURL(pickedPhotoURL); pickedPhotoURL=null; } const inp=document.getElementById('f-photo'); if(inp) inp.value=''; renderPhotoPrev(); });
+// Galería de hasta N imágenes: estado [{file,url}], miniaturas con quitar y subida en lote.
+function addPhotoFiles(arr, files, max){
+  for(const f of (files||[])){ if(arr.length>=(max||5)) break; if(!/^image\//.test(f.type)) continue; arr.push({file:f, url:URL.createObjectURL(f)}); }
 }
+function clearPhotoArr(arr){ for(const p of (arr||[])){ if(p&&p.url) URL.revokeObjectURL(p.url); } if(arr) arr.length=0; }
+function renderThumbs(prevId, arr){
+  const el=document.getElementById(prevId); if(!el) return;
+  el.innerHTML=(arr||[]).map((p,i)=>`<span class="thumb"><img src="${p.url}" alt=""><button type="button" class="thumb-rm" data-i="${i}" aria-label="Quitar foto">✕</button></span>`).join('');
+  el.querySelectorAll('.thumb-rm').forEach(b=>b.addEventListener('click',()=>{ const i=+b.dataset.i; if(arr[i]&&arr[i].url) URL.revokeObjectURL(arr[i].url); arr.splice(i,1); renderThumbs(prevId,arr); }));
+}
+async function uploadAllPhotos(arr){ const urls=[]; for(const p of (arr||[])){ try{ const blob=await downscaleImage(p.file); urls.push(await uploadPhoto(blob)); }catch(e){ console.warn('No se pudo subir una foto:', e); } } return urls; }
+function renderPhotoPrev(){ renderThumbs('photoPrev', pickedPhotos); }
 const VEN_CENTER=[8.0,-66.3], VEN_BOUNDS=[[0.6,-73.4],[12.3,-59.8]];
 // Estilo "Calles": CARTO Voyager — detallado tipo Google Maps (calles, cuadras y
 // huellas de edificios al acercar). Ver nota de uso/llave de proveedor en el chat.
@@ -1555,7 +1625,7 @@ function animateStagger(sel){ animate({targets:sel, opacity:[0,1], translateY:[1
 // Cuenta animada de un número (contadores). Cae con elegancia si no hay anime.
 function animateCount(el, to){ if(!el) return; to=Number(to)||0; const o={v:Number(String(el.textContent).replace(/\D/g,''))||0}; const inst=animate({targets:o, v:to, duration:700, round:1, easing:'easeOutCubic', update:()=>{ el.textContent=Math.round(o.v).toLocaleString('es-VE'); }}); if(!inst) el.textContent=to.toLocaleString('es-VE'); }
 // Pestañas dentro del grupo "Mapa y más" (nav de segundo nivel)
-const INFO_TABS=['mapa','reportes','tel','apoyo'];
+const INFO_TABS=['mapa','reportes','acopioint','tel','apoyo'];
 let lastInfoTab='mapa';
 function activateTab(name){
   if(name==='mas') name=lastInfoTab||'mapa';            // pestaña-grupo → última/def. del grupo
@@ -1575,6 +1645,7 @@ function activateTab(name){
   if(name==='apoyo'){ if(!apoyoLoaded) loadApoyo(); }
   if(name==='solicitudes'||name==='ofrecimientos'){ if(solLoaded) renderSolicitudes(); else loadSolicitudes(); }
   if(name==='denuncias'){ if(denLoaded) renderDenuncias(); else loadDenuncias(); }
+  if(name==='acopioint'){ if(!acopiosExtLoaded) loadAcopiosExt(); }
 }
 
 function drawMunis(){
@@ -1789,8 +1860,8 @@ function card(rp){
     : '';
   const dispLoc = esc(stripProfile(rp.loc));
   const dispNeed = esc(stripProfile(rp.need)) || (lang==='en'?'(no details)':'(sin detalle)');
-  const photo = extractPhoto(rp);
-  const photoEl = photo ? `<img class="card-photo" src="${esc(photo)}" loading="lazy" alt="${esc(displayTitle(rp))}" onclick="window.open(this.src,'_blank','noopener')" onerror="this.style.display='none'">` : '';
+  const photos = extractPhotos(rp);
+  const photoEl = photos.length ? `<div class="card-gallery">`+photos.map(u=>`<img class="card-photo" src="${esc(u)}" loading="lazy" alt="${esc(displayTitle(rp))}" onclick="window.open(this.src,'_blank','noopener')" onerror="this.style.display='none'">`).join('')+`</div>` : '';
   // Aviso de posible coincidencia hospital ↔ desaparecido
   const mlist = currentMatches[rp.id];
   let matchBadge='';
@@ -2553,7 +2624,7 @@ function buildSheet(){
   const photoField = showPhoto ? `
     <label class="fl">${photoLbl} <span style="font-weight:400;color:var(--muted)">${t('f.opt')}</span></label>
     <div class="photo-pick">
-      <input type="file" id="f-photo" accept="image/*">
+      <input type="file" id="f-photo" accept="image/*" multiple>
       <div id="photoPrev"></div>
     </div>
     <div style="font-size:11px;color:var(--muted);margin-top:4px">${photoHnt}</div>` : '';
@@ -2598,9 +2669,7 @@ function buildSheet(){
   document.getElementById('mapBtn').addEventListener('click',enterPickMode);
   const lc=document.getElementById('locClear'); if(lc) lc.addEventListener('click',()=>{ clearPicked(); buildSheet(); });
   const phInp=document.getElementById('f-photo');
-  if(phInp){ phInp.addEventListener('change',()=>{ const f=phInp.files&&phInp.files[0];
-    if(f){ if(!/^image\//.test(f.type)){ alert(t('f.photo.bad')); phInp.value=''; return; } pickedPhoto=f; if(pickedPhotoURL) URL.revokeObjectURL(pickedPhotoURL); pickedPhotoURL=URL.createObjectURL(f); }
-    renderPhotoPrev(); }); renderPhotoPrev(); }
+  if(phInp){ phInp.addEventListener('change',()=>{ addPhotoFiles(pickedPhotos, phInp.files, 5); phInp.value=''; renderPhotoPrev(); }); renderPhotoPrev(); }
   const stateSel=document.getElementById('f-state');
   const muniSel=document.getElementById('f-muni');
   async function fillMunis(){
@@ -2650,7 +2719,7 @@ function buildReview(){
 }
 const overlay=document.getElementById('overlay');
 // El reporte en el mapa (emergencias, escombros, vialidad, servicios, acopio…)
-function abrirReporteMapa(){ closeFabMenu(); clearPicked(); wizStep=1; wizDraft={}; pickedPhoto=null; if(pickedPhotoURL){ URL.revokeObjectURL(pickedPhotoURL); pickedPhotoURL=null; } buildSheet(); overlay.classList.add('on'); animate({targets:'.sheet',translateY:['100%','0%'],duration:280,easing:'easeOutCubic'}); }
+function abrirReporteMapa(){ closeFabMenu(); clearPicked(); wizStep=1; wizDraft={}; clearPhotoArr(pickedPhotos); buildSheet(); overlay.classList.add('on'); animate({targets:'.sheet',translateY:['100%','0%'],duration:280,easing:'easeOutCubic'}); }
 // Atajo: publicar un centro de acopio / punto de ayuda (reporte con tipo preseleccionado).
 function abrirReporteAcopio(){ selType='acopio'; abrirReporteMapa(); }
 // El FAB ＋ ahora es un punto único de creación: pedir ayuda, ofrecer ayuda o reportar en el mapa
@@ -2664,6 +2733,89 @@ document.getElementById('fab').addEventListener('click',openFabMenu);
 { const b=document.getElementById('fm-mapa'); if(b) b.addEventListener('click',abrirReporteMapa); }
 { const b=document.getElementById('fm-acopio'); if(b) b.addEventListener('click',abrirReporteAcopio); }
 { const b=document.getElementById('acopio-new'); if(b) b.addEventListener('click',abrirReporteAcopio); }
+
+// ===== Acopio en el exterior (diáspora): sección y publicación propias (tabla acopios_ext) =====
+const AX_COUNTRIES=[['Estados Unidos','🇺🇸'],['España','🇪🇸'],['Colombia','🇨🇴'],['Chile','🇨🇱'],['Perú','🇵🇪'],['Argentina','🇦🇷'],['Brasil','🇧🇷'],['Ecuador','🇪🇨'],['Panamá','🇵🇦'],['México','🇲🇽'],['República Dominicana','🇩🇴'],['Costa Rica','🇨🇷'],['Canadá','🇨🇦'],['Italia','🇮🇹'],['Portugal','🇵🇹'],['Reino Unido','🇬🇧'],['Alemania','🇩🇪'],['Francia','🇫🇷'],['Países Bajos','🇳🇱'],['Aruba','🇦🇼'],['Curazao','🇨🇼'],['Trinidad y Tobago','🇹🇹'],['Uruguay','🇺🇾'],['Bolivia','🇧🇴'],['Australia','🇦🇺']];
+function flagFor(pais){ const n=normName(pais); const hit=AX_COUNTRIES.find(c=>normName(c[0])===n); return hit?hit[1]:'🌎'; }
+function populateCountries(){ const dl=document.getElementById('ax-countries'); if(!dl||dl.dataset.f) return; dl.innerHTML=AX_COUNTRIES.map(c=>`<option value="${esc(c[0])}">`).join(''); dl.dataset.f='1'; }
+let axPhotos=[], axGeo=null, acopiosExt=[], acopiosExtLoaded=false, lastAxTs=0;
+async function loadAcopiosExt(){
+  const box=document.getElementById('list-acopioint');
+  if(box && !acopiosExt.length) box.innerHTML='<div class="empty">'+t('ax.loading')+'</div>';
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/acopios_ext?select=id,pais,ciudad,titulo,detalle,contacto,fotos,lon,lat,created_at&order=created_at.desc&limit=200`,{headers:SB_HEAD});
+    if(!r.ok) throw new Error('rest '+r.status);
+    acopiosExt=await r.json(); acopiosExtLoaded=true;
+  }catch(e){ acopiosExt=[]; acopiosExtLoaded=true; }
+  renderAcopiosExt();
+}
+function axCard(a){
+  const flag=flagFor(a.pais);
+  const fotos=(Array.isArray(a.fotos)?a.fotos:[]).map(validatePhotoUrl).filter(Boolean).slice(0,5);
+  const gal=fotos.length?`<div class="card-gallery">`+fotos.map(u=>`<img class="card-photo" src="${esc(u)}" loading="lazy" alt="${esc(a.titulo)}" onclick="window.open(this.src,'_blank','noopener')" onerror="this.style.display='none'">`).join('')+`</div>`:'';
+  const ph=waAny(a.contacto);
+  const waBtn=ph?`<a class="sbtn wa" href="https://wa.me/${ph}" target="_blank" rel="noopener">${t('btn.wa')}</a>`:'';
+  const locBtn=(a.lat!=null&&a.lon!=null)?`<a class="sbtn" href="https://www.openstreetmap.org/?mlat=${a.lat}&mlon=${a.lon}#map=13/${a.lat}/${a.lon}" target="_blank" rel="noopener">📍 ${t('ax.seeloc')}</a>`:'';
+  const det=esc(a.detalle||''), con=esc(a.contacto||'');
+  return `<div class="card"><div class="crow">
+    <div class="cicon" style="background:rgba(0,56,147,.12)">${flag}</div>
+    <div style="flex:1">
+      <div class="ctitle">${esc(a.titulo)}</div>
+      <div class="cmeta">📍 ${esc(a.ciudad)}, ${esc(a.pais)}${det?'<br>ℹ️ '+det:''}${con?'<br>✉️ '+con:''}</div>
+      ${gal}
+      <div class="share-row">${waBtn}${locBtn}</div>
+    </div></div></div>`;
+}
+function renderAcopiosExt(){
+  const box=document.getElementById('list-acopioint'); if(!box) return;
+  box.innerHTML = acopiosExt.length ? acopiosExt.map(axCard).join('') : '<div class="empty">'+t('ax.empty')+'</div>';
+}
+function openAxModal(){
+  if(typeof closeFabMenu==='function') closeFabMenu();
+  const m=document.getElementById('ax-modal'); if(!m) return;
+  axGeo=null; const gb=document.getElementById('ax-geo'); if(gb){ gb.classList.remove('on'); gb.textContent=t('ax.geo'); }
+  const st=document.getElementById('ax-status'); if(st) st.textContent='';
+  clearPhotoArr(axPhotos); renderThumbs('ax-photoPrev', axPhotos);
+  populateCountries();
+  m.classList.add('on');
+}
+function closeAxModal(){ const m=document.getElementById('ax-modal'); if(m) m.classList.remove('on'); }
+async function publicarAcopioExt(){
+  const g=id=>document.getElementById(id), st=g('ax-status');
+  const pais=(g('ax-pais').value||'').trim(), ciudad=(g('ax-ciudad').value||'').trim(), titulo=(g('ax-titulo').value||'').trim();
+  if(pais.length<2){ st.style.color='var(--crit)'; st.textContent=t('ax.errPais'); return; }
+  if(ciudad.length<2){ st.style.color='var(--crit)'; st.textContent=t('ax.errCiudad'); return; }
+  if(titulo.length<3){ st.style.color='var(--crit)'; st.textContent=t('ax.errTitulo'); return; }
+  const now=Date.now(); if(now-lastAxTs<8000){ st.style.color='var(--warn)'; st.textContent=t('sol.wait'); return; }
+  const btn=g('ax-submit'); btn.disabled=true; st.style.color='var(--muted)';
+  let fotos=[];
+  try{ if(axPhotos.length){ st.textContent=t('sheet.uploadingPhoto'); fotos=await uploadAllPhotos(axPhotos); } }catch(e){}
+  st.textContent=t('ax.publishing');
+  const payload={ p_pais:pais, p_ciudad:ciudad, p_titulo:titulo, p_detalle:(g('ax-detalle').value||'').trim(),
+    p_contacto:(g('ax-contacto').value||'').trim(), p_fotos:fotos, p_lon:axGeo?axGeo.lon:null, p_lat:axGeo?axGeo.lat:null, p_owner:solToken() };
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/crear_acopio_ext`,{method:'POST',headers:SB_HEAD,body:JSON.stringify(payload)});
+    if(!r.ok) throw new Error('rpc '+r.status);
+    lastAxTs=now;
+    ['ax-pais','ax-ciudad','ax-titulo','ax-detalle','ax-contacto'].forEach(id=>g(id).value='');
+    clearPhotoArr(axPhotos); renderThumbs('ax-photoPrev', axPhotos);
+    closeAxModal(); acopiosExtLoaded=false; await loadAcopiosExt(); activateTab('acopioint');
+  }catch(e){ st.style.color='var(--crit)'; st.textContent=t('sol.errBackend'); }
+  btn.disabled=false;
+}
+{ const b=document.getElementById('ax-new'); if(b) b.addEventListener('click',openAxModal); }
+{ const b=document.getElementById('goAcopioInt'); if(b) b.addEventListener('click',()=>activateTab('acopioint')); }
+{ const b=document.getElementById('ax-close'); if(b) b.addEventListener('click',closeAxModal); }
+{ const m=document.getElementById('ax-modal'); if(m) m.addEventListener('click',e=>{ if(e.target===m) closeAxModal(); }); }
+{ const b=document.getElementById('ax-submit'); if(b) b.addEventListener('click',publicarAcopioExt); }
+{ const ax=document.getElementById('ax-photo'); if(ax) ax.addEventListener('change',()=>{ addPhotoFiles(axPhotos, ax.files, 5); ax.value=''; renderThumbs('ax-photoPrev', axPhotos); }); }
+{ const gb=document.getElementById('ax-geo'); if(gb) gb.addEventListener('click',()=>{
+    if(axGeo){ axGeo=null; gb.classList.remove('on'); gb.textContent=t('ax.geo'); return; }
+    if(!navigator.geolocation){ alert(t('sol.geoFail')); return; }
+    gb.textContent=t('ax.geoWait');
+    navigator.geolocation.getCurrentPosition(p=>{ axGeo={lon:Math.round(p.coords.longitude*100)/100, lat:Math.round(p.coords.latitude*100)/100}; gb.classList.add('on'); gb.textContent=t('ax.geoSet'); },
+      ()=>{ gb.textContent=t('ax.geo'); alert(t('sol.geoFail')); }, {enableHighAccuracy:false, timeout:8000, maximumAge:60000});
+  }); }
 { const b=document.getElementById('fm-close'); if(b) b.addEventListener('click',closeFabMenu); }
 document.getElementById('closeSheet').addEventListener('click',()=>overlay.classList.remove('on'));
 overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.classList.remove('on'); });
@@ -2713,10 +2865,10 @@ async function submitReport(){
   }
   // Foto opcional: redimensiona (quita EXIF/GPS), sube al bucket y adjunta token IMG:.
   // No bloquea: si la subida falla (p. ej. bucket no configurado), publica sin foto.
-  if(pickedPhoto){
+  if(pickedPhotos.length){
     const pb=document.getElementById('submitRep'); if(pb){ pb.textContent=t('sheet.uploadingPhoto'); pb.disabled=true; }
-    try{ const blob=await downscaleImage(pickedPhoto); needFinal += ` IMG:${await uploadPhoto(blob)}`; }
-    catch(e){ console.warn('No se pudo subir la foto:', e); }
+    const urls=await uploadAllPhotos(pickedPhotos);
+    urls.forEach(u=>{ needFinal += ` IMG:${u}`; });
   }
   // Componer ubicación con municipio si se eligió
   const loc = muni ? `${loc0} — ${muni}, ${st}` : loc0;
@@ -2739,7 +2891,7 @@ async function submitReport(){
     reports.unshift({...rep, id:'u'+Date.now(), confirms:0, when:'ahora'}); save(); lastSubmitTs=Date.now();
   }
   clearPicked(); wizStep=1; wizDraft={};
-  pickedPhoto=null; if(pickedPhotoURL){ URL.revokeObjectURL(pickedPhotoURL); pickedPhotoURL=null; }
+  clearPhotoArr(pickedPhotos);
   btn.textContent=t('sheet.submit'); btn.disabled=false;
   render(); overlay.classList.remove('on');
   animate({targets:'#pulse',scale:[1,2.2,1],duration:600,easing:'easeOutQuad'});
