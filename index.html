@@ -244,6 +244,11 @@
   .sol-new{ flex:1 1 100%; border:none; border-radius:12px; padding:13px 16px; font-size:15px; font-weight:800; color:#fff; cursor:pointer; background:linear-gradient(90deg,#CF142B,#003893); box-shadow:0 3px 14px rgba(0,56,147,.32); }
   .sol-new:active{ transform:scale(.97); }
   .sol-filter{ flex:1 1 120px; min-width:0; padding:9px 11px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:13px; font-family:inherit; }
+  .sol-near{ flex:0 0 auto; min-height:38px; padding:8px 14px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .sol-near.on{ background:var(--acc); color:#fff; border-color:var(--acc); }
+  .sf-geo{ width:100%; margin-top:8px; padding:11px; border-radius:11px; background:var(--panel2); border:1px dashed var(--line); color:var(--txt); font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .sf-geo.on{ background:rgba(22,163,74,.14); border-color:#16a34a; color:#15803d; border-style:solid; }
+  .si-dist{ color:var(--acc); font-weight:700; }
   .sol-list{ max-width:760px; margin:10px auto 0; display:flex; flex-direction:column; gap:10px; padding-bottom:14px; }
   .sol-empty{ text-align:center; color:var(--muted); font-size:13.5px; line-height:1.6; padding:22px 14px; border:1px dashed var(--line); border-radius:14px; background:rgba(255,255,255,.62); backdrop-filter:blur(4px); }
   .sol-empty .sol-quick{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px; }
@@ -532,6 +537,7 @@
         <option value="en_proceso" data-i18n="sol.st.en_proceso">En proceso</option>
         <option value="cumplida" data-i18n="sol.st.cumplida">Cumplidas</option>
       </select>
+      <button class="sol-near" id="sol-near" type="button" aria-pressed="false" data-i18n="near">📍 Cerca de mí</button>
     </div>
     <div id="sol-list" class="sol-list"></div>
   </section>
@@ -551,6 +557,7 @@
         <option value="en_proceso" data-i18n="sol.st.en_proceso">En proceso</option>
         <option value="cumplida" data-i18n="ofr.st.cumplida">Concretados</option>
       </select>
+      <button class="sol-near" id="ofr-near" type="button" aria-pressed="false" data-i18n="near">📍 Cerca de mí</button>
     </div>
     <div id="ofr-list" class="sol-list"></div>
   </section>
@@ -829,6 +836,7 @@
     <textarea id="sf-detalle" maxlength="1000" rows="3" data-i18n-ph="sol.ph.detalle" placeholder="Cantidad, horario, a quién se entrega, etc."></textarea>
     <label data-i18n="sol.f.sector">Zona aproximada</label>
     <input id="sf-sector" maxlength="120" data-i18n-ph="sol.ph.sector" placeholder="Ej.: Caraballeda, La Guaira (sin dirección exacta)">
+    <button type="button" class="sf-geo" id="sf-geo" data-i18n="sol.geo">📍 Añadir mi zona aproximada</button>
     <label data-i18n="sol.f.contacto">Contacto (cómo coordinar)</label>
     <input id="sf-contacto" maxlength="120" data-i18n-ph="sol.ph.contacto" placeholder="Teléfono / WhatsApp o grupo de la organización">
     <label data-i18n="sol.f.org">Organización (opcional)</label>
@@ -943,7 +951,7 @@ const I18N={
   'hope.head':'Contador de esperanza','hope.label':'personas reportadas localizadas a salvo','hope.labelShort':'localizadas a salvo · ver apoyo','hope.loading':'Calculando…','hope.allied':'del directorio nacional','hope.own':'confirmadas aquí','hope.srcShort':'Fuente: desaparecidosterremotovenezuela.com + nuestros datos','hope.src':'Datos extraídos de <a href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">desaparecidosterremotovenezuela.com</a> más los reportes confirmados en nuestro sitio.',
   'dedic.label':'Dedicar a:','dedic.resc':'Rescatistas','dedic.med':'Médicos y enfermeras','dedic.fam':'Familias','dedic.vol':'Voluntarios','dedic.pre.rescatistas':'🦺 Para los rescatistas','dedic.pre.medicos':'⛑️ Para los médicos y enfermeras','dedic.pre.familias':'👨‍👩‍👧 Para las familias','dedic.pre.voluntarios':'🙌 Para los voluntarios',
   'apoyo.report':'⚑ Reportar','apoyo.reportTitle':'Ocultar este mensaje en este dispositivo','apoyo.hidden':'Mensaje oculto en este dispositivo.','apoyo.blocked':'Tu mensaje contiene lenguaje no permitido. Mantengamos este muro lleno de aliento. 🤍',
-  'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','fab':'＋ Publicar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
+  'near':'📍 Cerca de mí','near.on':'📍 Cerca de mí ✓','sol.geo':'📍 Añadir mi zona aproximada','sol.geoSet':'✓ Zona añadida (aproximada)','sol.locating':'Ubicando…','sol.geoFail':'No se pudo obtener tu ubicación. Activa el GPS o el permiso de ubicación.','fab':'＋ Publicar','tiletoggle':'🛣️ Calles','tiletoggle.on':'🛣️ Calles ON',
   'legend.crit':'Emergencia crítica','legend.build':'Edificio/acceso dañado','legend.escombros':'Remoción de escombros','legend.miss':'Desaparecido','legend.acopio':'Centro de acopio','legend.aid':'Ayuda humanitaria','legend.dark':'Zona sin luz','legend.water':'Sin agua potable','legend.volun':'Buscador voluntario',
   'stat.crit':'Críticas','stat.build':'Daños/servicios','stat.esc':'Escombros','stat.miss':'Buscados',
   'chart.title':'📊 Estadísticas de reportes','chart.sub':'Distribución en vivo de los reportes activos por categoría y zona.','chart.total':'reportes activos en total','chart.byCat':'Por categoría','chart.byZone':'Zonas más afectadas','chart.loading':'Cargando estadísticas…','chart.empty':'Aún no hay reportes activos para graficar.',
@@ -1013,7 +1021,7 @@ const I18N={
   'hope.head':'Hope counter','hope.label':'people reported located safe','hope.labelShort':'located safe · see support','hope.loading':'Calculating…','hope.allied':'from the national directory','hope.own':'confirmed here','hope.srcShort':'Source: desaparecidosterremotovenezuela.com + our data','hope.src':'Data from <a href="https://desaparecidosterremotovenezuela.com/" target="_blank" rel="noopener">desaparecidosterremotovenezuela.com</a> plus reports confirmed on our site.',
   'dedic.label':'Dedicate to:','dedic.resc':'Rescuers','dedic.med':'Doctors & nurses','dedic.fam':'Families','dedic.vol':'Volunteers','dedic.pre.rescatistas':'🦺 For the rescuers','dedic.pre.medicos':'⛑️ For the doctors & nurses','dedic.pre.familias':'👨‍👩‍👧 For the families','dedic.pre.voluntarios':'🙌 For the volunteers',
   'apoyo.report':'⚑ Report','apoyo.reportTitle':'Hide this message on this device','apoyo.hidden':'Message hidden on this device.','apoyo.blocked':'Your message contains language that isn’t allowed. Let’s keep this wall full of encouragement. 🤍',
-  'near':'📍 Near me','near.on':'📍 Near me ✓','fab':'＋ Post','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
+  'near':'📍 Near me','near.on':'📍 Near me ✓','sol.geo':'📍 Add my approximate area','sol.geoSet':'✓ Area added (approximate)','sol.locating':'Locating…','sol.geoFail':'Could not get your location. Enable GPS or the location permission.','fab':'＋ Post','tiletoggle':'🛣️ Streets','tiletoggle.on':'🛣️ Streets ON',
   'legend.crit':'Critical emergency','legend.build':'Damaged building/access','legend.escombros':'Rubble removal','legend.miss':'Missing person','legend.acopio':'Collection center','legend.aid':'Humanitarian aid','legend.dark':'No power','legend.water':'No drinking water','legend.volun':'Volunteer searcher',
   'stat.crit':'Critical','stat.build':'Damage/utilities','stat.esc':'Rubble','stat.miss':'Searched',
   'chart.title':'📊 Report statistics','chart.sub':'Live distribution of active reports by category and area.','chart.total':'active reports in total','chart.byCat':'By category','chart.byZone':'Most affected areas','chart.loading':'Loading statistics…','chart.empty':'No active reports to chart yet.',
@@ -2048,7 +2056,9 @@ const SOL_KINDS=[
   {k:'herramientas', e:'🛠️'}, {k:'insumos', e:'📦'}, {k:'insumos_medicos', e:'🩺'}, {k:'transporte', e:'🚚'}, {k:'refugio', e:'🏠'},
 ];
 const SOL_KMAP=Object.fromEntries(SOL_KINDS.map(x=>[x.k,x]));
-let solLoaded=false, solList=[], lastSolTs=0;
+let solLoaded=false, solList=[], lastSolTs=0, solNearMode=false, solGeo=null;
+// Obtiene (una vez) la ubicación del usuario para ordenar por cercanía. Reutiliza userLoc del mapa.
+function ensureUserLoc(cb){ if(userLoc){ cb(true); return; } if(!navigator.geolocation){ cb(false); return; } navigator.geolocation.getCurrentPosition(pos=>{ userLoc={lat:pos.coords.latitude,lon:pos.coords.longitude}; cb(true); }, ()=>cb(false), {enableHighAccuracy:true,timeout:10000,maximumAge:60000}); }
 function solKindLabel(k){ return t('sol.kind.'+k); }
 function solKindEmoji(k){ return (SOL_KMAP[k]&&SOL_KMAP[k].e)||'🤝'; }
 function solToken(){ try{ let v=localStorage.getItem('vzla_sol_token'); if(!v){ v=Date.now().toString(36)+Math.random().toString(36).slice(2,10); localStorage.setItem('vzla_sol_token',v); } return v; }catch(e){ return ''; } }
@@ -2062,7 +2072,7 @@ function fillSolFilters(){
 }
 async function loadSolicitudes(){
   solLoaded=true; fillSolFilters();
-  const cols='id,tipo,kind,titulo,detalle,sector,contacto,organizacion,verificada,prioridad,estado,created_at';
+  const cols='id,tipo,kind,titulo,detalle,sector,contacto,organizacion,verificada,prioridad,estado,lon,lat,created_at';
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/solicitudes?select=${cols}&order=created_at.desc&limit=200`,{ headers:SB_HEAD });
     solList = r.ok ? await r.json() : [];
@@ -2087,7 +2097,7 @@ function solCardHtml(s, mine){
   return `<div class="sol-item${urgent?' urgente':''}${ofrece?' si-ofrece':''}">
     <div class="si-top"><span class="si-ic">${solKindEmoji(s.kind)}</span>
     <div style="min-width:0"><div class="si-title">${esc(s.titulo||'')}</div>${s.detalle?`<div class="si-detalle">${esc(s.detalle)}</div>`:''}</div></div>
-    <div class="si-meta">${badges}${s.sector?`<span>📍 ${esc(s.sector)}</span>`:''}${s.contacto&&!wa?`<span>✉️ ${esc(s.contacto)}</span>`:''}<span>${esc(relTime(s.created_at))}</span></div>
+    <div class="si-meta">${badges}${(solNearMode&&userLoc&&s.lat!=null)?`<span class="si-dist">📍 ${distKm(userLoc.lat,userLoc.lon,s.lat,s.lon).toFixed(1)} km</span>`:''}${s.sector?`<span>📍 ${esc(s.sector)}</span>`:''}${s.contacto&&!wa?`<span>✉️ ${esc(s.contacto)}</span>`:''}<span>${esc(relTime(s.created_at))}</span></div>
     <div class="si-actions">${actions}</div></div>`;
 }
 function renderBoard(mode, ids){
@@ -2096,7 +2106,8 @@ function renderBoard(mode, ids){
   const mine=solMine();
   let list=solList.filter(s=>((s.tipo||'solicitud')===mode) && (!fk||s.kind===fk) && (!fe||s.estado===fe));
   const rank=s=>(s.estado==='cumplida'?2:0)+(s.prioridad==='urgente'?-1:0);
-  list=list.slice().sort((a,b)=>rank(a)-rank(b));
+  if(solNearMode && userLoc){ list=list.slice().sort((a,b)=>{ const da=a.lat!=null?distKm(userLoc.lat,userLoc.lon,a.lat,a.lon):1e9; const db=b.lat!=null?distKm(userLoc.lat,userLoc.lon,b.lat,b.lon):1e9; return (da-db)||(rank(a)-rank(b)); }); }
+  else { list=list.slice().sort((a,b)=>rank(a)-rank(b)); }
   if(!list.length){
     const ofr=mode==='ofrecimiento';
     box.innerHTML=`<div class="sol-empty">${esc(t(ofr?'ofr.empty':'sol.empty'))}
@@ -2140,6 +2151,7 @@ function abrirSolModal(tipo){
   set('sf-titulo-l', t(ofr?'ofr.f.titulo':'sol.f.titulo'));
   set('sf-submit', t(ofr?'ofr.publish':'sol.publish'));
   const ti=document.getElementById('sf-titulo'); if(ti) ti.placeholder=t(ofr?'ofr.ph.titulo':'sol.ph.titulo');
+  solGeo=null; const gb=document.getElementById('sf-geo'); if(gb){ gb.classList.remove('on'); gb.textContent=t('sol.geo'); }
   closeFabMenu();
   m.classList.add('on'); const st=document.getElementById('sf-status'); if(st) st.textContent='';
 }
@@ -2153,7 +2165,7 @@ async function publicarSolicitud(){
   const payload={ p_tipo:solModalTipo, p_kind:g('sf-kind').value, p_titulo:titulo, p_detalle:(g('sf-detalle').value||'').trim(),
     p_sector:(g('sf-sector').value||'').trim(), p_contacto:(g('sf-contacto').value||'').trim(),
     p_organizacion:(g('sf-org').value||'').trim(), p_prioridad:g('sf-urgente').checked?'urgente':'normal',
-    p_owner:solToken(), p_lon:null, p_lat:null, p_codigo:(g('sf-codigo').value||'').trim() };
+    p_owner:solToken(), p_lon:solGeo?solGeo.lon:null, p_lat:solGeo?solGeo.lat:null, p_codigo:(g('sf-codigo').value||'').trim() };
   st.style.color='var(--safe)'; const btn=g('sf-submit'); btn.disabled=true;
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/crear_solicitud`,{ method:'POST', headers:SB_HEAD, body:JSON.stringify(payload) });
@@ -2179,6 +2191,20 @@ function solListClick(e){
 { const sb=document.getElementById('sf-submit'); if(sb) sb.addEventListener('click',publicarSolicitud); }
 ['sol-fk','sol-fe','ofr-fk','ofr-fe'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('change',renderSolicitudes); });
 ['sol-list','ofr-list'].forEach(id=>{ const box=document.getElementById(id); if(box) box.addEventListener('click',solListClick); });
+// Cercanía en los tableros (reutiliza la ubicación del mapa)
+function updateSolNearBtns(){ document.querySelectorAll('.sol-near').forEach(b=>{ b.classList.toggle('on',solNearMode); b.setAttribute('aria-pressed',solNearMode?'true':'false'); b.textContent=solNearMode?t('near.on'):t('near'); }); }
+function setSolNear(on){ solNearMode=on; updateSolNearBtns(); renderSolicitudes(); }
+document.querySelectorAll('.sol-near').forEach(b=>b.addEventListener('click',()=>{
+  if(solNearMode){ setSolNear(false); return; }
+  b.textContent=t('sol.locating');
+  ensureUserLoc(ok=>{ if(ok) setSolNear(true); else { updateSolNearBtns(); alert(t('sol.geoFail')); } });
+}));
+// Capturar zona aproximada (coarse, ~1 km) al publicar, para que te encuentren cerca
+{ const gb=document.getElementById('sf-geo'); if(gb) gb.addEventListener('click',()=>{
+  if(solGeo){ solGeo=null; gb.classList.remove('on'); gb.textContent=t('sol.geo'); return; }
+  gb.textContent=t('sol.locating');
+  ensureUserLoc(ok=>{ if(ok && userLoc){ solGeo={lon:Math.round(userLoc.lon*100)/100, lat:Math.round(userLoc.lat*100)/100}; gb.classList.add('on'); gb.textContent=t('sol.geoSet'); } else { gb.textContent=t('sol.geo'); alert(t('sol.geoFail')); } });
+}); }
 
 // ---- Denuncias públicas (voces de los afectados e injusticias en la respuesta) ----
 const DEN_KINDS=[
