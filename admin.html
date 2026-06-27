@@ -34,6 +34,9 @@
   .pill.on{ background:rgba(22,163,74,.16); color:#15803d; }
   .pill.off{ background:rgba(207,20,43,.14); color:#b91c1c; }
   .note{ font-size:11.5px; color:var(--muted); line-height:1.55; margin-top:10px; }
+  .linkrow{ display:flex; gap:8px; margin-top:12px; align-items:stretch; }
+  .linkrow input{ flex:1; font-size:12px; padding:9px 10px; font-family:ui-monospace,Menlo,monospace; color:var(--acc); }
+  .mini{ margin-top:0; white-space:nowrap; padding:8px 11px; font-size:12px; }
   a{ color:var(--acc); }
 </style>
 </head>
@@ -55,6 +58,8 @@
     <div class="code-big" id="codeBig"></div>
     <div class="code-hint" id="codeHint"></div>
     <button class="copy" id="copy">Copiar código</button>
+    <div class="linkrow"><input id="codeLink" readonly onclick="this.select()"><button class="copy mini" id="copyLink">Copiar enlace</button></div>
+    <div class="code-hint">🔗 <b>Enlace mágico</b> (lo más fácil): mándale este enlace. Al abrirlo una vez en su teléfono, el dispositivo queda como organización verificada y sus publicaciones saldrán con el badge <b>solas</b>, sin escribir el código.</div>
   </div>
 </div>
 
@@ -72,6 +77,8 @@ const SUPABASE_URL='https://lzhvyjgbwynyuwylxucu.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6aHZ5amdid3lueXV3eWx4dWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNjc5OTksImV4cCI6MjA5Nzk0Mzk5OX0.D4B2jMLTrBgDg9VIojG1UBLDET10pfn76neJn6rm0ks';
 const H={ apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json' };
 const $=id=>document.getElementById(id);
+const APP_BASE=(location.origin && location.origin.indexOf('http')===0) ? location.origin : 'https://emergenciavenezuela.digital';
+function linkFor(code){ return APP_BASE + '/?org=' + encodeURIComponent(code); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 async function rpc(fn, body){ const r=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+fn,{ method:'POST', headers:H, body:JSON.stringify(body) }); const txt=await r.text(); let data; try{ data=txt?JSON.parse(txt):null; }catch(e){ data=txt; } if(!r.ok) throw new Error((data&&data.message)|| ('Error '+r.status)); return data; }
 
@@ -86,12 +93,14 @@ $('gen').addEventListener('click', async ()=>{
     $('codeBig').textContent=code;
     $('codeHint').innerHTML='Entrégaselo a <b>'+esc(org)+'</b>. Lo escriben al publicar en “Código de organización verificada”.';
     $('codeOut').classList.add('on');
+    $('codeLink').value=linkFor(code);
     $('org').value='';
     loadList(secret);
   }catch(e){ st.style.color='var(--crit)'; st.textContent='No se pudo: '+e.message+' (¿secreto correcto? ¿corriste la sección 9 del SQL?)'; }
   $('gen').disabled=false;
 });
 $('copy').addEventListener('click', ()=>{ const c=$('codeBig').textContent; try{ navigator.clipboard.writeText(c); $('copy').textContent='✓ Copiado'; setTimeout(()=>$('copy').textContent='Copiar código',1500); }catch(e){} });
+$('copyLink').addEventListener('click', ()=>{ const c=$('codeLink').value; try{ navigator.clipboard.writeText(c); $('copyLink').textContent='✓ Copiado'; setTimeout(()=>$('copyLink').textContent='Copiar enlace',1500); }catch(e){} });
 
 async function loadList(secret){
   secret=secret||$('secret').value.trim();
@@ -101,13 +110,17 @@ async function loadList(secret){
   try{
     const rows=await rpc('admin_listar_codigos',{ p_secret:secret });
     if(!Array.isArray(rows)||!rows.length){ wrap.innerHTML='<div class="note">Aún no hay códigos.</div>'; return; }
-    let h='<table><thead><tr><th>Código</th><th>Organización</th><th>Estado</th></tr></thead><tbody>';
+    let h='<table><thead><tr><th>Código</th><th>Organización</th><th>Estado</th><th>Enlace</th></tr></thead><tbody>';
     rows.forEach(c=>{ h+='<tr><td class="codecell">'+esc(c.code)+'</td><td>'+esc(c.organizacion)+'</td><td>'+
-      '<button class="pill '+(c.activo?'on':'off')+'" data-code="'+esc(c.code)+'" data-activo="'+(c.activo?'0':'1')+'">'+(c.activo?'Activo':'Inactivo')+'</button></td></tr>'; });
+      '<button class="pill '+(c.activo?'on':'off')+'" data-code="'+esc(c.code)+'" data-activo="'+(c.activo?'0':'1')+'">'+(c.activo?'Activo':'Inactivo')+'</button></td>'+
+      '<td><button class="copy mini" data-link="'+esc(linkFor(c.code))+'">🔗 Copiar</button></td></tr>'; });
     h+='</tbody></table>';
     wrap.innerHTML=h;
     wrap.querySelectorAll('[data-code]').forEach(b=>b.addEventListener('click', async ()=>{
       try{ await rpc('admin_toggle_codigo',{ p_secret:secret, p_code:b.dataset.code, p_activo:b.dataset.activo==='1' }); loadList(secret); }catch(e){ alert(e.message); }
+    }));
+    wrap.querySelectorAll('[data-link]').forEach(b=>b.addEventListener('click', ()=>{
+      try{ navigator.clipboard.writeText(b.dataset.link); const o=b.textContent; b.textContent='✓ Copiado'; setTimeout(()=>b.textContent=o,1500); }catch(e){}
     }));
   }catch(e){ wrap.innerHTML='<div class="note" style="color:var(--crit)">No se pudo: '+esc(e.message)+'</div>'; }
 }
