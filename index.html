@@ -930,7 +930,7 @@ const I18N={
   'den.f.kind':'Tipo de denuncia','den.f.titulo':'¿Qué quieres denunciar?','den.f.detalle':'Detalle de los hechos','den.f.sector':'Zona','den.f.allKinds':'Todos los tipos','den.f.recent':'Recientes','den.f.top':'Más respaldadas',
   'den.ph.titulo':'Ej.: Refugio sin agua ni baños en Caraballeda','den.ph.detalle':'Describe qué ocurre, desde cuándo y a quiénes afecta. Aporta datos verificables.','den.ph.sector':'Ej.: Caraballeda, La Guaira',
   'den.note':'La denuncia es <b>pública y anónima</b>. No publiques acusaciones personales sin pruebas, datos privados de terceros ni lenguaje ofensivo. No reemplaza a las autoridades.',
-  'den.respaldar':'Respaldar','den.share':'Compartir','den.shareTxt':'Denuncia pública','den.hide':'⚑ Ocultar','den.hideTitle':'Ocultar esta denuncia en este dispositivo',
+  'den.respaldar':'Respaldar','den.share':'Compartir','den.shareTxt':'Denuncia pública','den.report':'⚑ Reportar','den.reportTitle':'Reportar como inapropiada: se oculta aquí y, con varios reportes, se retira para todos.',
   'den.errTitulo':'Resume la denuncia en al menos unas palabras.','den.blocked':'Tu texto contiene lenguaje no permitido. Exprésate con respeto para que tu denuncia tenga fuerza.','den.wait':'Espera unos segundos antes de publicar otra.','den.errBackend':'No se pudo publicar. Si eres el administrador, falta crear la tabla «denuncias» en Supabase (sección 8).',
   'den.kind.ayuda':'Ayuda que no llega','den.kind.refugio':'Refugios','den.kind.servicios':'Servicios (luz/gas)','den.kind.agua':'Agua','den.kind.salud':'Salud','den.kind.cobros':'Cobros indebidos','den.kind.seguridad':'Seguridad','den.kind.otros':'Otros',
   'sect.reportes':'Reportes activos','sect.acopio':'Centros de acopio y puntos de ayuda humanitaria','sect.volun':'Voluntarios disponibles','sect.tel':'Teléfonos de emergencia oficiales',
@@ -1000,7 +1000,7 @@ const I18N={
   'den.f.kind':'Grievance type','den.f.titulo':'What do you want to report?','den.f.detalle':'Details of the facts','den.f.sector':'Area','den.f.allKinds':'All types','den.f.recent':'Recent','den.f.top':'Most backed',
   'den.ph.titulo':'E.g.: Shelter with no water or toilets in Caraballeda','den.ph.detalle':'Describe what is happening, since when, and who it affects. Provide verifiable facts.','den.ph.sector':'E.g.: Caraballeda, La Guaira',
   'den.note':'The grievance is <b>public and anonymous</b>. Do not post personal accusations without evidence, third-party private data, or offensive language. It does not replace the authorities.',
-  'den.respaldar':'Back','den.share':'Share','den.shareTxt':'Public grievance','den.hide':'⚑ Hide','den.hideTitle':'Hide this grievance on this device',
+  'den.respaldar':'Back','den.share':'Share','den.shareTxt':'Public grievance','den.report':'⚑ Report','den.reportTitle':'Report as inappropriate: hidden here and, after several reports, removed for everyone.',
   'den.errTitulo':'Summarize the grievance in at least a few words.','den.blocked':'Your text contains language that isn’t allowed. Express yourself respectfully so your grievance carries weight.','den.wait':'Wait a few seconds before posting another.','den.errBackend':'Could not post. If you are the admin, the “denuncias” table must be created in Supabase (section 8).',
   'den.kind.ayuda':'Aid not arriving','den.kind.refugio':'Shelters','den.kind.servicios':'Utilities (power/gas)','den.kind.agua':'Water','den.kind.salud':'Health','den.kind.cobros':'Improper charges','den.kind.seguridad':'Security','den.kind.otros':'Other',
   'sect.reportes':'Active reports','sect.acopio':'Collection centers and humanitarian aid points','sect.volun':'Available volunteers','sect.tel':'Official emergency phone numbers',
@@ -2192,6 +2192,15 @@ function denBacked(id){ return denBackedSet().has(String(id)); }
 function denAddBacked(id){ try{ const s=denBackedSet(); s.add(String(id)); localStorage.setItem('vzla_den_backed', JSON.stringify([...s])); }catch(e){} }
 function denHiddenSet(){ try{ return new Set(JSON.parse(localStorage.getItem('vzla_den_hidden')||'[]')); }catch(e){ return new Set(); } }
 function denHide(id){ try{ const s=denHiddenSet(); s.add(String(id)); localStorage.setItem('vzla_den_hidden', JSON.stringify([...s])); }catch(e){} renderDenuncias(); }
+function denReportedSet(){ try{ return new Set(JSON.parse(localStorage.getItem('vzla_den_reported')||'[]')); }catch(e){ return new Set(); } }
+// Reportar como inapropiada: oculta en este dispositivo y envía la señal de moderación.
+// Tras varios reportes de distintos dispositivos, el backend la auto-oculta para todos.
+async function reportarDenuncia(id){
+  if(denReportedSet().has(String(id))) { denHide(id); return; }
+  try{ const s=denReportedSet(); s.add(String(id)); localStorage.setItem('vzla_den_reported', JSON.stringify([...s])); }catch(e){}
+  denHide(id);
+  try{ await fetch(`${SUPABASE_URL}/rest/v1/rpc/reportar_denuncia`,{ method:'POST', headers:SB_HEAD, body:JSON.stringify({ p_id:String(id) }) }); }catch(e){}
+}
 // Moderación ligera del lado del cliente (lenguaje claramente ofensivo); el botón "Ocultar"
 // y el aviso complementan: el objetivo es dar voz, no difamar.
 const DEN_BANNED=/(mald(i|í)t|imb(e|é)cil|est(u|ú)pid|idiot|mierda|cara?jo|co(ñ|n)o|put[oa]|maric|malparid|hijo de|perra\b)/i;
@@ -2225,7 +2234,7 @@ function renderDenuncias(){
     const backed=denBacked(d.id), isMine=mine.has(String(d.id)), n=Number(d.respaldos)||0;
     let actions=`<button class="si-back${backed?' backed':''}" data-resp="${esc(String(d.id))}"${backed?' disabled':''}>🙌 ${esc(t('den.respaldar'))} <b>${n}</b></button>`;
     actions+=`<button data-denshare="${esc(String(d.id))}">${esc(t('den.share'))}</button>`;
-    if(!isMine) actions+=`<button class="si-hide" data-denhide="${esc(String(d.id))}" title="${esc(t('den.hideTitle'))}">${esc(t('den.hide'))}</button>`;
+    if(!isMine) actions+=`<button class="si-hide" data-denreport="${esc(String(d.id))}" title="${esc(t('den.reportTitle'))}">${esc(t('den.report'))}</button>`;
     return `<div class="sol-item si-den">
       <div class="si-top"><span class="si-ic">${denKindEmoji(d.categoria)}</span>
       <div style="min-width:0"><div class="si-title">${esc(d.titulo||'')}</div>${d.detalle?`<div class="si-detalle">${esc(d.detalle)}</div>`:''}</div></div>
@@ -2280,7 +2289,7 @@ async function publicarDenuncia(){
 { const box=document.getElementById('den-list'); if(box) box.addEventListener('click',e=>{
   const rb=e.target.closest('[data-resp]'); if(rb){ respaldarDenuncia(rb.dataset.resp); return; }
   const sh=e.target.closest('[data-denshare]'); if(sh){ compartirDenuncia(sh.dataset.denshare); return; }
-  const hd=e.target.closest('[data-denhide]'); if(hd){ denHide(hd.dataset.denhide); return; }
+  const hd=e.target.closest('[data-denreport]'); if(hd){ reportarDenuncia(hd.dataset.denreport); return; }
 }); }
 
 const vs=document.getElementById('volunSearch');

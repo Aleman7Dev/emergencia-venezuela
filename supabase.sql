@@ -278,6 +278,8 @@ create table if not exists public.denuncias (
   created_at  timestamptz not null default now(),
   expires_at  timestamptz not null default now() + interval '30 days'
 );
+-- Moderación comunitaria: nº de reportes; al alcanzar el umbral, la denuncia se auto-oculta.
+alter table public.denuncias add column if not exists reportes integer not null default 0;
 alter table public.denuncias enable row level security;
 
 -- Lectura pública SOLO de las vigentes y visibles. NUNCA selecciones owner_token.
@@ -318,6 +320,23 @@ begin
   return coalesce(n, 0);
 end $$;
 grant execute on function public.respaldar_denuncia(text) to anon, authenticated;
+
+-- Reportar una denuncia como inapropiada. Suma un reporte y, al alcanzar el umbral
+-- (3 dispositivos distintos), la auto-oculta para todos (estado='oculta'). El control
+-- de "uno por dispositivo" lo hace el cliente (localStorage). Devuelve el nuevo total.
+create or replace function public.reportar_denuncia(p_id text)
+returns integer
+language plpgsql security definer set search_path = public as $$
+declare n integer;
+begin
+  update public.denuncias
+     set reportes = reportes + 1,
+         estado = case when reportes + 1 >= 3 then 'oculta' else estado end
+   where id::text = p_id and estado = 'abierta'
+   returning reportes into n;
+  return coalesce(n, 0);
+end $$;
+grant execute on function public.reportar_denuncia(text) to anon, authenticated;
 
 -- ----------------------------------------------------------------------------
 -- Notas
