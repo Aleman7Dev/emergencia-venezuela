@@ -1137,6 +1137,28 @@ const SEED = [];
 const SUPABASE_URL = 'https://lzhvyjgbwynyuwylxucu.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6aHZ5amdid3lueXV3eWx4dWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNjc5OTksImV4cCI6MjA5Nzk0Mzk5OX0.D4B2jMLTrBgDg9VIojG1UBLDET10pfn76neJn6rm0ks';
 const SB_HEAD = { apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`, 'Content-Type':'application/json' };
+// Clave pública VAPID (para avisos push con la app cerrada). La privada vive solo en Vercel.
+const VAPID_PUBLIC='BKAQrHTae2yKTpnPEgfDyQdqcm-dPo9KzBHdAqjW9WvYYgD79eod9edjUwFUAop6nCQcRxl1qyUgZlL-u0ocDO0';
+function urlBase64ToUint8Array(s){ const pad='='.repeat((4-s.length%4)%4); const b=(s+pad).replace(/-/g,'+').replace(/_/g,'/'); const raw=atob(b); const arr=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i); return arr; }
+// Suscribe este dispositivo a push y guarda la suscripción (para avisos con la app cerrada)
+async function pushSubscribe(cat){
+  try{
+    if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub) sub=await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC) });
+    const j=sub.toJSON();
+    await fetch(`${SUPABASE_URL}/rest/v1/rpc/guardar_push`,{ method:'POST', headers:SB_HEAD, body:JSON.stringify({ p_endpoint:j.endpoint, p_p256dh:j.keys&&j.keys.p256dh, p_auth:j.keys&&j.keys.auth, p_cat:cat||'' }) });
+  }catch(e){}
+}
+async function pushUnsubscribe(){
+  try{
+    if(!('serviceWorker' in navigator)) return;
+    const reg=await navigator.serviceWorker.ready;
+    const sub=await reg.pushManager.getSubscription();
+    if(sub){ const ep=sub.endpoint; await sub.unsubscribe(); await fetch(`${SUPABASE_URL}/rest/v1/rpc/borrar_push`,{ method:'POST', headers:SB_HEAD, body:JSON.stringify({ p_endpoint:ep }) }); }
+  }catch(e){}
+}
 let cloudOK = false;
 
 async function sbFetch(){
@@ -2258,14 +2280,14 @@ async function notifPoll(){
 }
 function notifStart(){ if(notifTimer){ clearInterval(notifTimer); notifTimer=null; } if(notifOn()) notifTimer=setInterval(notifPoll, 120000); }
 function notifToggle(){
-  if(localStorage.getItem('vzla_notif_sol')==='1'){ try{ localStorage.setItem('vzla_notif_sol','0'); }catch(e){} if(notifTimer){ clearInterval(notifTimer); notifTimer=null; } updateNotifBtn(); return; }
+  if(localStorage.getItem('vzla_notif_sol')==='1'){ try{ localStorage.setItem('vzla_notif_sol','0'); }catch(e){} if(notifTimer){ clearInterval(notifTimer); notifTimer=null; } pushUnsubscribe(); updateNotifBtn(); return; }
   if(!('Notification' in window)){ alert(t('notif.unsupported')); return; }
   const proceed=()=>{
     if(Notification.permission!=='granted'){ updateNotifBtn(); return; }
     try{ localStorage.setItem('vzla_notif_sol','1'); }catch(e){}
     notifCat=(document.getElementById('sol-fk')||{}).value||''; try{ localStorage.setItem('vzla_notif_cat',notifCat); }catch(e){}
     (solList||[]).forEach(s=>{ if((s.tipo||'solicitud')==='solicitud') notifSeen.add(String(s.id)); }); notifSaveSeen();
-    updateNotifBtn(); notifStart();
+    updateNotifBtn(); notifStart(); pushSubscribe(notifCat);   // también avisos con la app cerrada
   };
   if(Notification.permission==='granted') proceed();
   else Notification.requestPermission().then(proceed).catch(()=>updateNotifBtn());

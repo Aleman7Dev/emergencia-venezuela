@@ -1,0 +1,9 @@
+{
+  "name": "emergencia-venezuela",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Funciones serverless (Vercel) para Emergencia Sísmica · Venezuela.",
+  "dependencies": {
+    "web-push": "^3.6.7"
+  }
+}
