@@ -408,6 +408,40 @@ end $$;
 grant execute on function public.admin_toggle_codigo(text, text, boolean) to anon, authenticated;
 
 -- ----------------------------------------------------------------------------
+-- 10) Avisos PUSH con la app cerrada (suscripciones).  El envío lo hace la función
+--     serverless api/push-send.js (con service_role + VAPID); aquí solo se guardan
+--     las suscripciones de cada dispositivo.
+-- ----------------------------------------------------------------------------
+create table if not exists public.push_subs (
+  endpoint   text primary key,
+  p256dh     text not null,
+  auth       text not null,
+  categoria  text,                      -- categoría suscrita (null = todas)
+  created_at timestamptz not null default now()
+);
+alter table public.push_subs enable row level security;   -- sin política => solo el servidor (service_role) la lee
+
+-- Guardar/actualizar la suscripción de este dispositivo (la app la llama con la clave anónima)
+create or replace function public.guardar_push(p_endpoint text, p_p256dh text, p_auth text, p_cat text)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if p_endpoint is null or length(p_endpoint) < 10 then raise exception 'endpoint invalido'; end if;
+  insert into public.push_subs(endpoint, p256dh, auth, categoria)
+  values (p_endpoint, p_p256dh, p_auth, nullif(btrim(coalesce(p_cat,'')),''))
+  on conflict (endpoint) do update set p256dh = excluded.p256dh, auth = excluded.auth, categoria = excluded.categoria;
+end $$;
+grant execute on function public.guardar_push(text, text, text, text) to anon, authenticated;
+
+-- Borrar la suscripción (cuando el usuario desactiva o el navegador la invalida)
+create or replace function public.borrar_push(p_endpoint text)
+returns void language plpgsql security definer set search_path = public as $$
+begin delete from public.push_subs where endpoint = p_endpoint; end $$;
+grant execute on function public.borrar_push(text) to anon, authenticated;
+
+-- Cursor del último id de solicitud ya notificado por push (lo avanza api/push-send.js)
+insert into public.app_config(key, value) values ('push_last_id', '0') on conflict (key) do nothing;
+
+-- ----------------------------------------------------------------------------
 -- Notas
 -- ----------------------------------------------------------------------------
 -- · El cruce hospital ↔ desaparecidos (cédula/nombre) NO requiere cambios de
