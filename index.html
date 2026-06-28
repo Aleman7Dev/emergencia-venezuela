@@ -58,12 +58,12 @@
   .emergency-banner{ background:linear-gradient(90deg,#7f1d1d,#991b1b); font-size:12.5px; font-weight:600; padding:9px 16px; color:#fecaca; border-bottom:1px solid #b91c1c; line-height:1.4; text-align:center; }
   .emergency-banner a{ color:#fff; font-weight:800; text-decoration:underline; }
 
-  nav{ display:flex; flex-wrap:nowrap; gap:7px; padding:9px 14px; border-bottom:1px solid var(--line); max-width:640px; margin:0 auto; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-  nav::-webkit-scrollbar{ display:none; }
-  .tab{ flex:0 0 auto; min-height:0; padding:8px 14px; border-radius:999px; background:var(--panel); color:var(--muted); font-size:13.5px; font-weight:700; border:1px solid var(--line); cursor:pointer; transition:transform .12s ease, color .15s, background .15s; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
-  .tab-ic{ font-size:15px; line-height:1; }
-  .tab.on{ background:linear-gradient(135deg,#003893,#CF142B); color:#fff; border-color:transparent; box-shadow:0 3px 12px rgba(0,56,147,.28); }
-  .tab:active{ transform:scale(.96); }
+  nav{ position:fixed; left:0; right:0; bottom:0; z-index:5000; display:flex; gap:0; padding:6px 4px calc(6px + env(safe-area-inset-bottom)); background:rgba(255,255,255,.97); backdrop-filter:blur(8px); border-top:1px solid var(--line); box-shadow:0 -2px 16px rgba(0,0,0,.08); max-width:none; margin:0; }
+  .tab{ flex:1 1 0; min-width:0; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:5px 2px; border:none; background:none; border-radius:12px; color:var(--muted); font-size:10.5px; font-weight:700; line-height:1.1; cursor:pointer; text-align:center; transition:color .15s, transform .1s; }
+  .tab-ic{ font-size:21px; line-height:1; }
+  .tab-tx{ display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tab.on{ color:var(--acc); }
+  .tab:active{ transform:scale(.92); }
   .tab:focus-visible{ outline:2px solid var(--acc); outline-offset:2px; }
   .subnav{ display:flex; flex-wrap:wrap; gap:6px; padding:8px 12px 10px; border-bottom:1px solid var(--line); justify-content:center; }
   .subnav[hidden]{ display:none; }
@@ -150,7 +150,7 @@
   .phone .pl{ font-size:14.5px; font-weight:600; color:var(--txt); } .phone .ps{ font-size:12px; color:var(--muted); margin-top:3px; }
   .phone .pn{ font-size:19px; font-weight:800; color:var(--crit); white-space:nowrap; }
 
-  .fab{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1100; background:linear-gradient(90deg,#CF142B,#9e1020); color:#fff; border:none; padding:15px 26px; border-radius:30px; font-size:15.5px; font-weight:700; box-shadow:0 6px 22px rgba(207,20,43,.45); cursor:pointer; max-width:488px; width:calc(100% - 32px); }
+  .fab{ position:fixed; bottom:calc(74px + env(safe-area-inset-bottom)); right:16px; left:auto; transform:none; z-index:5100; background:linear-gradient(135deg,#CF142B,#9e1020); color:#fff; border:none; width:56px; height:56px; padding:0; border-radius:50%; font-size:28px; font-weight:700; line-height:1; box-shadow:0 6px 22px rgba(207,20,43,.45); cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; display:none; align-items:flex-end; justify-content:center; }
   .overlay.on{ display:flex; }
   .sheet{ background:var(--panel); width:100%; max-width:520px; border-radius:18px 18px 0 0; border-top:1px solid var(--line); padding:18px 18px 26px; max-height:88vh; overflow-y:auto; }
@@ -240,6 +240,8 @@
   .dca-need{ background:linear-gradient(135deg,#CF142B,#003893); }
   .dca-give{ background:linear-gradient(135deg,#16a34a,#003893); }
   .dca:active{ transform:scale(.97); }
+  .share-app{ display:block; width:100%; margin:14px 0 4px; border:none; border-radius:13px; padding:13px; font-size:14.5px; font-weight:800; color:#fff; cursor:pointer; font-family:inherit; background:linear-gradient(90deg,#25D366,#128C7E); box-shadow:0 3px 14px rgba(37,211,102,.28); }
+  .share-app:active{ transform:scale(.98); }
   .chips{ display:flex; gap:7px; overflow-x:auto; padding:2px 2px 9px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
   .chips::-webkit-scrollbar{ display:none; }
   .chip{ flex:0 0 auto; border:1px solid var(--line); background:var(--panel); color:var(--txt); border-radius:999px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; font-family:inherit; }
@@ -257,7 +259,7 @@
   .sf-orgmode{ display:none; margin-top:8px; padding:9px 11px; border-radius:10px; background:rgba(22,163,74,.12); border:1px solid #16a34a; color:#15803d; font-size:12.5px; font-weight:700; line-height:1.45; }
   .sf-orgmode.on{ display:block; }
   .sf-orgmode a{ color:#b91c1c; font-weight:800; text-decoration:underline; cursor:pointer; margin-left:6px; }
-  .ev-toast{ position:fixed; left:50%; bottom:88px; transform:translate(-50%,16px); max-width:90%; background:#0e1726; color:#fff; padding:12px 16px; border-radius:12px; font-size:13.5px; font-weight:700; box-shadow:0 8px 28px rgba(0,0,0,.3); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:6000; text-align:center; }
+  .ev-toast{ position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom)); transform:translate(-50%,16px); max-width:90%; background:#0e1726; color:#fff; padding:12px 16px; border-radius:12px; font-size:13.5px; font-weight:700; box-shadow:0 8px 28px rgba(0,0,0,.3); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:6000; text-align:center; }
   .ev-toast.on{ opacity:1; transform:translate(-50%,0); }
   .si-dist{ color:var(--acc); font-weight:700; }
   .si-match{ display:inline-block; margin-top:8px; background:rgba(252,209,22,.18); border:1px solid #e9c008; color:#7a5b00; border-radius:9px; padding:6px 11px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
@@ -426,7 +428,7 @@
     .list-grid .empty{ grid-column:1/-1; }
 
     /* FAB a la esquina; formulario como diálogo centrado */
-    .fab{ left:auto; right:28px; transform:none; width:auto; max-width:none; }
+    .fab{ right:28px; }
     .overlay{ align-items:center; }
     .sheet{ max-width:580px; border-radius:18px; max-height:90vh; }
     .typegrid{ grid-template-columns:repeat(3,1fr); }
@@ -449,7 +451,7 @@
   @supports (padding: env(safe-area-inset-bottom)){
     header{ padding-top:calc(12px + env(safe-area-inset-top)); padding-left:calc(16px + env(safe-area-inset-left)); padding-right:calc(16px + env(safe-area-inset-right)); }
     .emergency-banner{ padding-left:calc(16px + env(safe-area-inset-left)); padding-right:calc(16px + env(safe-area-inset-right)); }
-    .fab{ bottom:calc(20px + env(safe-area-inset-bottom)); }
+    .fab{ bottom:calc(74px + env(safe-area-inset-bottom)); }
     main{ padding-bottom:calc(90px + env(safe-area-inset-bottom)); }
   }
 
@@ -531,13 +533,13 @@
 <nav role="tablist" aria-label="Secciones de la aplicación">
   <button class="tab on" role="tab" aria-selected="true" data-v="solicitudes"><span class="tab-ic" aria-hidden="true">🆘</span><span class="tab-tx" data-i18n="nav.solicitudes">Solicitudes</span></button>
   <button class="tab" role="tab" aria-selected="false" data-v="ofrecimientos"><span class="tab-ic" aria-hidden="true">🤲</span><span class="tab-tx" data-i18n="nav.ofrecimientos">Ofrecimientos</span></button>
-  <button class="tab" role="tab" aria-selected="false" data-v="volun"><span class="tab-ic" aria-hidden="true">🙋</span><span class="tab-tx" data-i18n="nav.volun">Voluntarios</span></button>
+  <button class="tab" role="tab" aria-selected="false" data-v="acopio"><span class="tab-ic" aria-hidden="true">📦</span><span class="tab-tx" data-i18n="short.acopio">Acopio</span></button>
   <button class="tab" role="tab" aria-selected="false" data-v="denuncias"><span class="tab-ic" aria-hidden="true">📣</span><span class="tab-tx" data-i18n="nav.denuncias">Denuncias</span></button>
-  <button class="tab" role="tab" aria-selected="false" data-v="acopio"><span class="tab-ic" aria-hidden="true">📦</span><span class="tab-tx" data-i18n="nav.acopio">Acopio y ayuda</span></button>
-  <button class="tab" role="tab" aria-selected="false" data-v="mas"><span class="tab-ic" aria-hidden="true">🗺️</span><span class="tab-tx" data-i18n="nav.mas">Mapa y más</span></button>
+  <button class="tab" role="tab" aria-selected="false" data-v="mas"><span class="tab-ic" aria-hidden="true">🗺️</span><span class="tab-tx" data-i18n="nav.mas">Más</span></button>
 </nav>
 <div class="subnav" id="subnav" role="tablist" aria-label="Mapa y más secciones" hidden>
   <button class="subtab on" role="tab" aria-selected="true" data-v="mapa"><span aria-hidden="true">🗺️</span> <span data-i18n="nav.mapa">Mapa</span></button>
+  <button class="subtab" role="tab" aria-selected="false" data-v="volun"><span aria-hidden="true">🙋</span> <span data-i18n="nav.volun">Voluntarios</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="reportes"><span aria-hidden="true">📋</span> <span data-i18n="nav.reportes">Reportes</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="acopioint"><span aria-hidden="true">🌎</span> <span data-i18n="nav.acopioint">Acopio exterior</span></button>
   <button class="subtab" role="tab" aria-selected="false" data-v="tel"><span aria-hidden="true">📞</span> <span data-i18n="nav.tel">Teléfonos</span></button>
@@ -569,6 +571,7 @@
       <button class="sol-near" id="sol-notif" type="button" aria-pressed="false" data-i18n="notif.off">🔔 Avisarme</button>
     </div>
     <div id="sol-list" class="sol-list"></div>
+    <button class="share-app" id="share-app" data-i18n="share.app">📲 Compartir esta app por WhatsApp</button>
   </section>
 
   <section class="view" id="v-ofrecimientos">
@@ -910,7 +913,7 @@
   </div>
 </div>
 
-<button class="fab" id="fab" aria-label="Publicar o reportar" data-i18n="fab">＋ Publicar</button>
+<button class="fab" id="fab" aria-label="Publicar o reportar">＋</button>
 
 <div class="fab-menu" id="fab-menu" role="dialog" aria-modal="true" aria-label="¿Qué quieres publicar?">
   <div class="fab-sheet">
@@ -970,8 +973,8 @@ try{ const sl=localStorage.getItem('vzla_lang'); if(sl==='en'||sl==='es') lang=s
 const I18N={
  es:{
   'status.base':'Estado de Emergencia Nacional','status.online':' · 🟢 En línea','status.local':' · 🟡 Local (sin conexión)',
-  'nav.solicitudes':'Solicitudes','nav.ofrecimientos':'Ofrecimientos','nav.volun':'Voluntarios','nav.denuncias':'Denuncias','nav.mas':'Mapa y más','nav.reportes':'Reportes','nav.acopio':'Acopio y ayuda','nav.tel':'Teléfonos','nav.mapa':'Mapa',
-  'sol.title':'Solicitudes de ayuda','sol.sub':'Lo que se necesita ahora mismo. Toca una categoría para filtrar. Ante peligro de vida, llama al <b>171</b>.','sol.new':'Publicar solicitud','banner.warn':'⚠️ Réplicas activas · aléjate de estructuras dañadas · Emergencias <a href="tel:171">171</a>','home.need':'Necesito ayuda','home.give':'Quiero ayudar','search.board':'Buscar por insumo o zona…','sol.publish':'Publicar solicitud','sol.empty':'Aún no hay solicitudes publicadas. Cuando una organización o un equipo necesite voluntarios, agua, alimentos o insumos, aparecerán aquí. Mientras tanto, explora:',
+  'nav.solicitudes':'Solicitudes','nav.ofrecimientos':'Ofrecimientos','nav.volun':'Voluntarios','nav.denuncias':'Denuncias','nav.mas':'Más','nav.reportes':'Reportes','nav.acopio':'Acopio y ayuda','nav.tel':'Teléfonos','nav.mapa':'Mapa',
+  'sol.title':'Solicitudes de ayuda','sol.sub':'Lo que se necesita ahora mismo. Toca una categoría para filtrar. Ante peligro de vida, llama al <b>171</b>.','sol.new':'Publicar solicitud','banner.warn':'⚠️ Réplicas activas · aléjate de estructuras dañadas · Emergencias <a href="tel:171">171</a>','home.need':'Necesito ayuda','home.give':'Quiero ayudar','search.board':'Buscar por insumo o zona…','share.app':'📲 Compartir esta app por WhatsApp','share.appText':'Emergencia Sísmica · Venezuela — app gratuita para pedir y ofrecer ayuda tras el terremoto. Pásala 👉','sol.publish':'Publicar solicitud','sol.empty':'Aún no hay solicitudes publicadas. Cuando una organización o un equipo necesite voluntarios, agua, alimentos o insumos, aparecerán aquí. Mientras tanto, explora:',
   'sol.f.all':'Todas','sol.f.allKinds':'Todas las categorías','sol.f.kind':'Categoría','sol.f.titulo':'¿Qué se necesita?','sol.f.detalle':'Detalle (opcional)','sol.f.sector':'Zona aproximada','sol.f.contacto':'Contacto (cómo coordinar)','sol.f.org':'Organización (opcional)','sol.f.codigo':'Código de organización verificada (opcional)','sol.ph.codigo':'Si tu organización es aliada, te damos un código','sol.verif':'Verificada','org.mode':'Publicarás como organización verificada.','org.clear':'Quitar','org.toast':'Listo: este dispositivo publicará como organización verificada.','sol.f.urgente':'Marcar como urgente',
   'sol.ph.titulo':'Ej.: Se necesitan 10 voluntarios con guantes','sol.ph.detalle':'Cantidad, horario, a quién se entrega, etc.','sol.ph.sector':'Ej.: Caraballeda, La Guaira (sin dirección exacta)','sol.ph.contacto':'Teléfono / WhatsApp o grupo de la organización','sol.ph.org':'Ej.: Comando ConVzla, Cruz Roja, parroquia…',
   'sol.note':'Usa una zona aproximada, no una dirección exacta. La solicitud es pública. Ante peligro de vida, llama al 171.',
@@ -1041,8 +1044,8 @@ const I18N={
  },
  en:{
   'status.base':'National State of Emergency','status.online':' · 🟢 Online','status.local':' · 🟡 Local (offline)',
-  'nav.solicitudes':'Requests','nav.ofrecimientos':'Offers','nav.volun':'Volunteers','nav.denuncias':'Grievances','nav.mas':'Map & more','nav.reportes':'Reports','nav.acopio':'Aid & supplies','nav.tel':'Phones','nav.mapa':'Map',
-  'sol.title':'Help requests','sol.sub':'What is needed right now. Tap a category to filter. In a life-threatening emergency, call <b>171</b>.','sol.new':'Post a request','banner.warn':'⚠️ Active aftershocks · stay away from damaged structures · Emergencies <a href="tel:171">171</a>','home.need':'I need help','home.give':'I want to help','search.board':'Search by supply or area…','sol.publish':'Post request','sol.empty':'No requests posted yet. When an organization or team needs volunteers, water, food or supplies, they will appear here. Meanwhile, explore:',
+  'nav.solicitudes':'Requests','nav.ofrecimientos':'Offers','nav.volun':'Volunteers','nav.denuncias':'Grievances','nav.mas':'More','nav.reportes':'Reports','nav.acopio':'Aid & supplies','nav.tel':'Phones','nav.mapa':'Map',
+  'sol.title':'Help requests','sol.sub':'What is needed right now. Tap a category to filter. In a life-threatening emergency, call <b>171</b>.','sol.new':'Post a request','banner.warn':'⚠️ Active aftershocks · stay away from damaged structures · Emergencies <a href="tel:171">171</a>','home.need':'I need help','home.give':'I want to help','search.board':'Search by supply or area…','share.app':'📲 Share this app on WhatsApp','share.appText':'Earthquake Emergency · Venezuela — free app to request and offer help after the earthquake. Share it 👉','sol.publish':'Post request','sol.empty':'No requests posted yet. When an organization or team needs volunteers, water, food or supplies, they will appear here. Meanwhile, explore:',
   'sol.f.all':'All','sol.f.allKinds':'All categories','sol.f.kind':'Category','sol.f.titulo':'What is needed?','sol.f.detalle':'Details (optional)','sol.f.sector':'Approximate area','sol.f.contacto':'Contact (how to coordinate)','sol.f.org':'Organization (optional)','sol.f.codigo':'Verified organization code (optional)','sol.ph.codigo':'If your organization is a partner, we give you a code','sol.verif':'Verified','org.mode':'You will post as a verified organization.','org.clear':'Remove','org.toast':'Done: this device will post as a verified organization.','sol.f.urgente':'Mark as urgent',
   'sol.ph.titulo':'E.g.: 10 volunteers with gloves needed','sol.ph.detalle':'Quantity, schedule, who it goes to, etc.','sol.ph.sector':'E.g.: Caraballeda, La Guaira (no exact address)','sol.ph.contacto':'Phone / WhatsApp or the organization group','sol.ph.org':'E.g.: Comando ConVzla, Red Cross, parish…',
   'sol.note':'Use an approximate area, not an exact address. The request is public. In a life-threatening emergency, call 171.',
@@ -1611,7 +1614,7 @@ function animateStagger(sel){ animate({targets:sel, opacity:[0,1], translateY:[1
 // Cuenta animada de un número (contadores). Cae con elegancia si no hay anime.
 function animateCount(el, to){ if(!el) return; to=Number(to)||0; const o={v:Number(String(el.textContent).replace(/\D/g,''))||0}; const inst=animate({targets:o, v:to, duration:700, round:1, easing:'easeOutCubic', update:()=>{ el.textContent=Math.round(o.v).toLocaleString('es-VE'); }}); if(!inst) el.textContent=to.toLocaleString('es-VE'); }
 // Pestañas dentro del grupo "Mapa y más" (nav de segundo nivel)
-const INFO_TABS=['mapa','reportes','acopioint','tel'];
+const INFO_TABS=['mapa','volun','reportes','acopioint','tel'];
 let lastInfoTab='mapa';
 function activateTab(name){
   if(name==='mas') name=lastInfoTab||'mapa';            // pestaña-grupo → última/def. del grupo
@@ -1786,6 +1789,10 @@ async function load(){
   // Enlace profundo: si la URL trae ?p=<id>, abrir la app enfocada en ese reporte
   try{ const pid=new URLSearchParams(location.search).get('p'); if(pid) focusReport(pid); }catch(e){}
   orgCodeCapture();   // enlace mágico de aliado: ?org=CODE deja el dispositivo en "modo organización verificada"
+  // Accesos directos de la PWA (mantener pulsado el ícono): ?go=pedir | ?go=ofrecer
+  try{ const go=new URLSearchParams(location.search).get('go');
+    if(go==='pedir') abrirSolModal('solicitud'); else if(go==='ofrecer') abrirSolModal('ofrecimiento');
+    if(go){ const u=new URL(location.href); u.searchParams.delete('go'); history.replaceState(null,'', u.pathname+(u.search||'')+u.hash); } }catch(e){}
 }
 async function save(){ // solo respaldo local cuando no hay nube
   if(cloudOK) return;
@@ -2317,6 +2324,8 @@ function solListClick(e){
 { const n=document.getElementById('sol-new'); if(n) n.addEventListener('click',()=>abrirSolModal('solicitud')); }
 { const b=document.getElementById('home-need'); if(b) b.addEventListener('click',()=>abrirSolModal('solicitud')); }
 { const b=document.getElementById('home-give'); if(b) b.addEventListener('click',()=>abrirSolModal('ofrecimiento')); }
+function shareApp(){ const url='https://emergenciavenezuela.digital'; const txt=t('share.appText'); try{ window.open('https://wa.me/?text='+encodeURIComponent(txt+' '+url),'_blank','noopener'); }catch(e){} }
+{ const b=document.getElementById('share-app'); if(b) b.addEventListener('click',shareApp); }
 { const n=document.getElementById('ofr-new'); if(n) n.addEventListener('click',()=>abrirSolModal('ofrecimiento')); }
 { const x=document.getElementById('sol-close'); if(x) x.addEventListener('click',cerrarSolModal); }
 { const m=document.getElementById('sol-modal'); if(m) m.addEventListener('click',e=>{ if(e.target===m) cerrarSolModal(); }); }

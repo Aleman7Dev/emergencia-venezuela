@@ -11,6 +11,10 @@
   "background_color": "#eef3fb",
   "theme_color": "#003893",
   "categories": ["utilities", "health", "navigation"],
+  "shortcuts": [
+    { "name": "Pedir ayuda", "short_name": "Pedir", "description": "Publicar una solicitud de ayuda", "url": "./index.html?go=pedir", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Ofrecer ayuda", "short_name": "Ofrecer", "description": "Publicar un ofrecimiento de ayuda", "url": "./index.html?go=ofrecer", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ],
   "icons": [
     { "src": "icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
     { "src": "icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
