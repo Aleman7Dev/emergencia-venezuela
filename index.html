@@ -58,12 +58,12 @@
   .emergency-banner{ background:linear-gradient(90deg,#7f1d1d,#991b1b); font-size:12.5px; font-weight:600; padding:9px 16px; color:#fecaca; border-bottom:1px solid #b91c1c; line-height:1.4; text-align:center; }
   .emergency-banner a{ color:#fff; font-weight:800; text-decoration:underline; }
 
-  nav{ display:flex; flex-wrap:wrap; gap:9px; padding:14px 14px 12px; border-bottom:1px solid var(--line); justify-content:center; max-width:560px; margin:0 auto; }
-  .tab{ flex:1 1 calc(50% - 5px); min-height:54px; padding:11px 14px; border-radius:15px; background:var(--panel2); color:var(--muted); font-size:14.5px; font-weight:700; border:1px solid var(--line); cursor:pointer; transition:transform .12s ease, box-shadow .15s, color .15s, background .15s; display:flex; align-items:center; justify-content:center; gap:8px; }
-  .tab-ic{ font-size:21px; line-height:1; }
-  .tab.tab-wide{ flex-basis:100%; }
-  .tab.on{ background:linear-gradient(135deg,#003893,#CF142B); color:#fff; border-color:transparent; box-shadow:0 4px 16px rgba(0,56,147,.34); }
-  .tab:active{ transform:scale(.97); }
+  nav{ display:flex; flex-wrap:nowrap; gap:7px; padding:9px 14px; border-bottom:1px solid var(--line); max-width:640px; margin:0 auto; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  nav::-webkit-scrollbar{ display:none; }
+  .tab{ flex:0 0 auto; min-height:0; padding:8px 14px; border-radius:999px; background:var(--panel); color:var(--muted); font-size:13.5px; font-weight:700; border:1px solid var(--line); cursor:pointer; transition:transform .12s ease, color .15s, background .15s; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+  .tab-ic{ font-size:15px; line-height:1; }
+  .tab.on{ background:linear-gradient(135deg,#003893,#CF142B); color:#fff; border-color:transparent; box-shadow:0 3px 12px rgba(0,56,147,.28); }
+  .tab:active{ transform:scale(.96); }
   .tab:focus-visible{ outline:2px solid var(--acc); outline-offset:2px; }
   .subnav{ display:flex; flex-wrap:wrap; gap:6px; padding:8px 12px 10px; border-bottom:1px solid var(--line); justify-content:center; }
   .subnav[hidden]{ display:none; }
@@ -245,6 +245,10 @@
   .chip{ flex:0 0 auto; border:1px solid var(--line); background:var(--panel); color:var(--txt); border-radius:999px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; font-family:inherit; }
   .chip.on{ background:var(--acc); color:#fff; border-color:var(--acc); }
   .chip:active{ transform:scale(.97); }
+  .chip-n{ font-size:11px; font-weight:800; opacity:.65; margin-left:1px; }
+  .chip.on .chip-n{ opacity:.95; }
+  .board-search{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:11px; font-size:14px; font-family:inherit; background:var(--panel); color:var(--txt); margin-bottom:9px; }
+  .board-search:focus{ outline:none; border-color:var(--acc); }
   .sol-filter{ flex:1 1 120px; min-width:0; padding:9px 11px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:13px; font-family:inherit; }
   .sol-near{ flex:0 0 auto; min-height:38px; padding:8px 14px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; }
   .sol-near.on{ background:var(--acc); color:#fff; border-color:var(--acc); }
@@ -406,7 +410,7 @@
     header{ padding:14px 26px; }
     h1{ font-size:19px; }
     .emergency-banner{ padding:10px 26px; font-size:13px; }
-    nav{ padding:14px 22px 12px; }
+    nav{ padding:9px 22px; }
     main{ padding:20px 26px 96px; }
     .sectitle{ font-size:14px; }
 
@@ -551,6 +555,7 @@
       <button class="dca dca-give" id="home-give"><span class="dca-ic" aria-hidden="true">🤲</span><span data-i18n="home.give">Quiero ayudar</span></button>
     </div>
     <div class="impact" id="impact" hidden></div>
+    <input id="sol-search" class="board-search" type="search" data-i18n-ph="search.board" placeholder="Buscar por insumo o zona…" aria-label="Buscar en el tablón">
     <div class="chips" id="sol-chips" role="tablist" aria-label="Categorías"></div>
     <div class="sol-toolbar">
       <select id="sol-fk" class="sol-filter" hidden aria-label="Categoría"></select>
@@ -572,6 +577,7 @@
       <h2 class="sol-title" data-i18n="ofr.title">Ofrecimientos de ayuda</h2>
       <p class="sol-sub" data-i18n-html="ofr.sub">Quién ofrece su ayuda a la respuesta: traslado, herramientas (palas, cuerdas, maquinaria), agua, insumos y más. Si necesitas algo, mira aquí si alguien ya lo está ofreciendo. Ante peligro de vida, llama al <b>171</b>.</p>
     </div>
+    <input id="ofr-search" class="board-search" type="search" data-i18n-ph="search.board" placeholder="Buscar por insumo o zona…" aria-label="Buscar en el tablón">
     <div class="chips" id="ofr-chips" role="tablist" aria-label="Categorías"></div>
     <div class="sol-toolbar">
       <button class="sol-new ofr-new" id="ofr-new"><span data-i18n="ofr.new">Publicar ofrecimiento</span></button>
@@ -965,7 +971,7 @@ const I18N={
  es:{
   'status.base':'Estado de Emergencia Nacional','status.online':' · 🟢 En línea','status.local':' · 🟡 Local (sin conexión)',
   'nav.solicitudes':'Solicitudes','nav.ofrecimientos':'Ofrecimientos','nav.volun':'Voluntarios','nav.denuncias':'Denuncias','nav.mas':'Mapa y más','nav.reportes':'Reportes','nav.acopio':'Acopio y ayuda','nav.tel':'Teléfonos','nav.mapa':'Mapa',
-  'sol.title':'Solicitudes de ayuda','sol.sub':'Lo que se necesita ahora mismo. Toca una categoría para filtrar. Ante peligro de vida, llama al <b>171</b>.','sol.new':'Publicar solicitud','banner.warn':'⚠️ Réplicas activas · aléjate de estructuras dañadas · Emergencias <a href="tel:171">171</a>','home.need':'Necesito ayuda','home.give':'Quiero ayudar','sol.publish':'Publicar solicitud','sol.empty':'Aún no hay solicitudes publicadas. Cuando una organización o un equipo necesite voluntarios, agua, alimentos o insumos, aparecerán aquí. Mientras tanto, explora:',
+  'sol.title':'Solicitudes de ayuda','sol.sub':'Lo que se necesita ahora mismo. Toca una categoría para filtrar. Ante peligro de vida, llama al <b>171</b>.','sol.new':'Publicar solicitud','banner.warn':'⚠️ Réplicas activas · aléjate de estructuras dañadas · Emergencias <a href="tel:171">171</a>','home.need':'Necesito ayuda','home.give':'Quiero ayudar','search.board':'Buscar por insumo o zona…','sol.publish':'Publicar solicitud','sol.empty':'Aún no hay solicitudes publicadas. Cuando una organización o un equipo necesite voluntarios, agua, alimentos o insumos, aparecerán aquí. Mientras tanto, explora:',
   'sol.f.all':'Todas','sol.f.allKinds':'Todas las categorías','sol.f.kind':'Categoría','sol.f.titulo':'¿Qué se necesita?','sol.f.detalle':'Detalle (opcional)','sol.f.sector':'Zona aproximada','sol.f.contacto':'Contacto (cómo coordinar)','sol.f.org':'Organización (opcional)','sol.f.codigo':'Código de organización verificada (opcional)','sol.ph.codigo':'Si tu organización es aliada, te damos un código','sol.verif':'Verificada','org.mode':'Publicarás como organización verificada.','org.clear':'Quitar','org.toast':'Listo: este dispositivo publicará como organización verificada.','sol.f.urgente':'Marcar como urgente',
   'sol.ph.titulo':'Ej.: Se necesitan 10 voluntarios con guantes','sol.ph.detalle':'Cantidad, horario, a quién se entrega, etc.','sol.ph.sector':'Ej.: Caraballeda, La Guaira (sin dirección exacta)','sol.ph.contacto':'Teléfono / WhatsApp o grupo de la organización','sol.ph.org':'Ej.: Comando ConVzla, Cruz Roja, parroquia…',
   'sol.note':'Usa una zona aproximada, no una dirección exacta. La solicitud es pública. Ante peligro de vida, llama al 171.',
@@ -1036,7 +1042,7 @@ const I18N={
  en:{
   'status.base':'National State of Emergency','status.online':' · 🟢 Online','status.local':' · 🟡 Local (offline)',
   'nav.solicitudes':'Requests','nav.ofrecimientos':'Offers','nav.volun':'Volunteers','nav.denuncias':'Grievances','nav.mas':'Map & more','nav.reportes':'Reports','nav.acopio':'Aid & supplies','nav.tel':'Phones','nav.mapa':'Map',
-  'sol.title':'Help requests','sol.sub':'What is needed right now. Tap a category to filter. In a life-threatening emergency, call <b>171</b>.','sol.new':'Post a request','banner.warn':'⚠️ Active aftershocks · stay away from damaged structures · Emergencies <a href="tel:171">171</a>','home.need':'I need help','home.give':'I want to help','sol.publish':'Post request','sol.empty':'No requests posted yet. When an organization or team needs volunteers, water, food or supplies, they will appear here. Meanwhile, explore:',
+  'sol.title':'Help requests','sol.sub':'What is needed right now. Tap a category to filter. In a life-threatening emergency, call <b>171</b>.','sol.new':'Post a request','banner.warn':'⚠️ Active aftershocks · stay away from damaged structures · Emergencies <a href="tel:171">171</a>','home.need':'I need help','home.give':'I want to help','search.board':'Search by supply or area…','sol.publish':'Post request','sol.empty':'No requests posted yet. When an organization or team needs volunteers, water, food or supplies, they will appear here. Meanwhile, explore:',
   'sol.f.all':'All','sol.f.allKinds':'All categories','sol.f.kind':'Category','sol.f.titulo':'What is needed?','sol.f.detalle':'Details (optional)','sol.f.sector':'Approximate area','sol.f.contacto':'Contact (how to coordinate)','sol.f.org':'Organization (optional)','sol.f.codigo':'Verified organization code (optional)','sol.ph.codigo':'If your organization is a partner, we give you a code','sol.verif':'Verified','org.mode':'You will post as a verified organization.','org.clear':'Remove','org.toast':'Done: this device will post as a verified organization.','sol.f.urgente':'Mark as urgent',
   'sol.ph.titulo':'E.g.: 10 volunteers with gloves needed','sol.ph.detalle':'Quantity, schedule, who it goes to, etc.','sol.ph.sector':'E.g.: Caraballeda, La Guaira (no exact address)','sol.ph.contacto':'Phone / WhatsApp or the organization group','sol.ph.org':'E.g.: Comando ConVzla, Red Cross, parish…',
   'sol.note':'Use an approximate area, not an exact address. The request is public. In a life-threatening emergency, call 171.',
@@ -1620,6 +1626,7 @@ function activateTab(name){
   const view=document.getElementById('v-'+name); if(view) view.classList.add('on');
   animateView(name);
   const at=document.querySelector('nav .tab.on'); if(at) animate({targets:at, scale:[.95,1], duration:260, easing:'easeOutBack'});
+  { const nv=document.querySelector('nav'); if(nv&&at&&nv.scrollTo) try{ nv.scrollTo({left:at.offsetLeft-nv.clientWidth/2+at.clientWidth/2, behavior:'smooth'}); }catch(e){} }
   if(typeof saveTab==='function') saveTab(name);
   if(name==='mapa' && map) setTimeout(()=>map.invalidateSize(),60);
   if(name==='solicitudes'||name==='ofrecimientos'){ if(solLoaded) renderSolicitudes(); else loadSolicitudes(); }
@@ -2188,17 +2195,38 @@ function solCardHtml(s, mine){
     ${matchRow}
     <div class="si-actions">${actions}</div></div>`;
 }
+function matchQ(s,q){ return normName((s.titulo||'')+' '+(s.detalle||'')+' '+(s.sector||'')+' '+(s.organizacion||'')).includes(q); }
+// Cuenta por categoría sobre el conjunto ya filtrado por tipo/estado/búsqueda.
+function setChipCounts(boxId, items){
+  const box=document.getElementById(boxId); if(!box) return;
+  const counts={}; items.forEach(s=>{ counts[s.kind]=(counts[s.kind]||0)+1; });
+  box.querySelectorAll('.chip').forEach(c=>{ const v=c.dataset.v; const n=(v==='')?items.length:(counts[v]||0); const nb=c.querySelector('.chip-n'); if(nb) nb.textContent=n?String(n):''; });
+}
 function renderBoard(mode, ids){
   const box=document.getElementById(ids.list); if(!box) return;
   const fk=(document.getElementById(ids.fk)||{}).value||'', fe=(document.getElementById(ids.fe)||{}).value||'';
+  const q=normName((document.getElementById(ids.search)||{}).value||'');
   const mine=solMine();
-  let list=solList.filter(s=>((s.tipo||'solicitud')===mode) && (!fk||s.kind===fk) && (!fe||s.estado===fe));
+  // Base por tipo + estado + búsqueda (sin categoría): sirve para contar por categoría
+  const base=solList.filter(s=>((s.tipo||'solicitud')===mode) && (!fe||s.estado===fe) && (!q||matchQ(s,q)));
+  if(ids.chips) setChipCounts(ids.chips, base);
+  let list=base.filter(s=>(!fk||s.kind===fk));
   const rank=s=>(s.estado==='cumplida'?2:0)+(s.prioridad==='urgente'?-1:0);
-  if(solNearMode && userLoc){ list=list.slice().sort((a,b)=>{ const da=a.lat!=null?distKm(userLoc.lat,userLoc.lon,a.lat,a.lon):1e9; const db=b.lat!=null?distKm(userLoc.lat,userLoc.lon,b.lat,b.lon):1e9; return (da-db)||(rank(a)-rank(b)); }); }
-  else { list=list.slice().sort((a,b)=>rank(a)-rank(b)); }
+  const tnum=s=>{ const v=Date.parse(s.created_at); return isFinite(v)?v:0; };
+  const distOf=s=>(userLoc&&s.lat!=null)?distKm(userLoc.lat,userLoc.lon,s.lat,s.lon):null;
+  if(solNearMode && userLoc){
+    list=list.slice().sort((a,b)=>{ const da=distOf(a), db=distOf(b); return ((da==null?1e9:da)-(db==null?1e9:db))||(rank(a)-rank(b)); });
+  } else {
+    // Orden inteligente: urgentes primero; luego cercanas (si hay ubicación); luego recientes
+    list=list.slice().sort((a,b)=>{ const r=rank(a)-rank(b); if(r) return r;
+      if(userLoc){ const da=distOf(a), db=distOf(b);
+        if(da!=null&&db!=null){ if(da!==db) return da-db; } else if(da!=null) return -1; else if(db!=null) return 1; }
+      return tnum(b)-tnum(a); });
+  }
   if(!list.length){
     const ofr=mode==='ofrecimiento';
-    box.innerHTML=`<div class="sol-empty">${esc(t(ofr?'ofr.empty':'sol.empty'))}
+    const emptyMsg = q ? (t('empty.nomatch')+' “'+q+'”') : t(ofr?'ofr.empty':'sol.empty');
+    box.innerHTML=`<div class="sol-empty">${esc(emptyMsg)}
       <div class="sol-quick">
         <button data-go="${ofr?'solicitudes':'ofrecimientos'}">${ofr?'🆘':'🤲'} ${esc(t(ofr?'nav.solicitudes':'nav.ofrecimientos'))}</button>
         <button data-go="volun">🙋 ${esc(t('nav.volun'))}</button>
@@ -2213,7 +2241,7 @@ function renderBoard(mode, ids){
 // Chips de categoría: capa visual tocable sobre los <select> ocultos (sol-fk/ofr-fk).
 function renderKindChips(boxId, selId){
   const box=document.getElementById(boxId), sel=document.getElementById(selId); if(!box||!sel) return;
-  box.innerHTML=[...sel.options].map(o=>`<button type="button" class="chip${o.value===sel.value?' on':''}" data-v="${esc(o.value)}">${o.value===''?esc(t('sol.f.all')):o.text}</button>`).join('');
+  box.innerHTML=[...sel.options].map(o=>`<button type="button" class="chip${o.value===sel.value?' on':''}" data-v="${esc(o.value)}">${o.value===''?esc(t('sol.f.all')):o.text} <span class="chip-n"></span></button>`).join('');
   box.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ sel.value=b.dataset.v; renderSolicitudes(); }));
 }
 function syncChips(boxId, selId){
@@ -2221,8 +2249,8 @@ function syncChips(boxId, selId){
   box.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on', c.dataset.v===sel.value));
 }
 function renderSolicitudes(){
-  renderBoard('solicitud', {list:'sol-list', fk:'sol-fk', fe:'sol-fe'});
-  renderBoard('ofrecimiento', {list:'ofr-list', fk:'ofr-fk', fe:'ofr-fe'});
+  renderBoard('solicitud', {list:'sol-list', fk:'sol-fk', fe:'sol-fe', chips:'sol-chips', search:'sol-search'});
+  renderBoard('ofrecimiento', {list:'ofr-list', fk:'ofr-fk', fe:'ofr-fe', chips:'ofr-chips', search:'ofr-search'});
   syncChips('sol-chips','sol-fk'); syncChips('ofr-chips','ofr-fk');
   if(typeof renderImpact==='function') renderImpact();
 }
@@ -2294,6 +2322,7 @@ function solListClick(e){
 { const m=document.getElementById('sol-modal'); if(m) m.addEventListener('click',e=>{ if(e.target===m) cerrarSolModal(); }); }
 { const sb=document.getElementById('sf-submit'); if(sb) sb.addEventListener('click',publicarSolicitud); }
 ['sol-fk','sol-fe','ofr-fk','ofr-fe'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('change',renderSolicitudes); });
+['sol-search','ofr-search'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input',renderSolicitudes); });
 ['sol-list','ofr-list'].forEach(id=>{ const box=document.getElementById(id); if(box) box.addEventListener('click',solListClick); });
 // Cercanía en los tableros (reutiliza la ubicación del mapa)
 function updateSolNearBtns(){ document.querySelectorAll('.sol-near').forEach(b=>{ b.classList.toggle('on',solNearMode); b.setAttribute('aria-pressed',solNearMode?'true':'false'); b.textContent=solNearMode?t('near.on'):t('near'); }); }
